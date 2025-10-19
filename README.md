@@ -1,232 +1,263 @@
-# Indoor Golf League Standings Website
+# Golf League Management Platform
 
-A full-stack web application for managing indoor golf league scorecards, standings, and team statistics. Built with Next.js, Supabase, and Auth0.
+A comprehensive multi-tenant golf league management system built with Next.js, Supabase, and Auth0. Manage multiple leagues, teams, matches, and players with advanced scoring and handicap calculations.
 
 ## Features
 
-- **Scorecard Entry**: Easy hole-by-hole score entry with automatic handicap-based calculations
-- **Live Standings**: Real-time team and player rankings
-- **Handicap Management**: Track and update player handicaps throughout the season
-- **Match Scoring System**:
-  - 2 players per team
-  - Lowest handicaps face each other
-  - Strokes given on par 4s and 5s based on handicap difference
-  - Winner of each hole gets 1 point
-  - Team with lowest net total gets 1 point
-- **Auth0 SSO**: Secure authentication with multiple provider support
-- **AboutGolf Integration**: Ready for future API integration when available
+### League Management
+- **Multi-League Support**: Run multiple independent leagues/seasons
+- **Public League Profiles**: Shareable landing pages with league information
+- **League Announcements**: Pin important updates for league members
+- **Role-Based Access**: League admins, team captains, players, and viewers
+- **Join Request System**: Teams can request to join leagues with admin approval
+- **Week-Based Scheduling**: Automated match scheduling with week numbers
+
+### Team Management
+- **Team Creation**: Users create and captain their own teams
+- **Invite Codes**: Unique 8-character codes for team joining
+- **Team Browsing**: Public directory of teams open to new members
+- **Member Management**: Captains control team roster and permissions
+- **Multi-League Participation**: Teams can join multiple leagues
+
+### Match & Scoring
+- **2v2 Match Play**: Head-to-head team competition format
+- **Advanced Scoring Engine**: Handicap-based stroke allocation
+- **Flexible Match Formats**: 9 or 18 holes (front/back nine selection)
+- **Multiple Tee Boxes**: Black, Gold, Blue, White, Red with yardages
+- **Match Configuration**: Stimp meter settings and pin placement difficulty
+- **Scorecard Entry**: Hole-by-hole score tracking with automatic calculations
+- **Live Results**: Real-time point calculations and match results
+
+### User Features
+- **SSO Authentication**: Secure login via Auth0
+- **User Profiles**: Customizable display names and preferences
+- **Onboarding Flow**: Guided setup for new users
+- **Dashboard**: Quick access to leagues, teams, and matches
+- **Player Statistics**: Track performance across seasons
+
+## Scoring System
+
+### Rules
+- 2 players per team compete in head-to-head matchups
+- Lowest handicap plays opponent's lowest handicap
+- Highest handicap plays opponent's highest handicap
+
+### Stroke Allocation
+- **Par 3s**: No strokes given
+- **Par 4s & 5s**: Strokes based on handicap difference and hole handicap index
+- Higher handicap player receives strokes on indexed holes
+
+### Point System
+- Win a hole = 1 point
+- Team with lowest net total = 1 additional point
+- Maximum points per match: 19 (18 holes + 1 team point)
 
 ## Tech Stack
 
-- **Frontend**: Next.js 15 with TypeScript, Tailwind CSS
-- **Backend**: Next.js API Routes
-- **Database**: Supabase (PostgreSQL)
-- **Authentication**: Auth0
-- **Form Management**: React Hook Form with Zod validation
+- **Frontend**: Next.js 15, React 19, TypeScript, Tailwind CSS 4
+- **Backend**: Next.js API Routes, Node.js
+- **Database**: Supabase (PostgreSQL) with Row Level Security
+- **Authentication**: Auth0 SSO
+- **Forms**: React Hook Form with Zod validation
+- **Deployment**: Self-hosted on Ubuntu with systemd + nginx
 
 ## Project Structure
 
 ```
 golf-league/
 ├── app/
-│   ├── api/
-│   │   ├── auth/[auth0]/      # Auth0 authentication routes
-│   │   ├── matches/[id]/      # Match and scorecard APIs
-│   │   └── standings/         # Standings calculation API
-│   ├── matches/[id]/
-│   │   └── scorecard/         # Scorecard entry page
-│   ├── standings/             # Standings leaderboard page
-│   └── page.tsx               # Home page
+│   ├── api/              # REST API endpoints
+│   │   ├── auth/         # Auth0 authentication
+│   │   ├── leagues/      # League management
+│   │   ├── teams/        # Team operations
+│   │   ├── matches/      # Match and scoring
+│   │   ├── players/      # Player management
+│   │   └── standings/    # Rankings calculation
+│   ├── dashboard/        # User dashboard
+│   ├── leagues/          # League pages
+│   ├── teams/            # Team pages
+│   ├── matches/          # Match and scorecard pages
+│   ├── profile/          # User profile pages
+│   └── welcome/          # Onboarding flow
 ├── lib/
-│   ├── supabase.ts           # Supabase client setup
-│   ├── database.types.ts     # TypeScript database types
-│   ├── auth.ts               # Auth helper functions
-│   └── scoring.ts            # Handicap scoring logic
+│   ├── auth.ts           # Auth0 helpers
+│   ├── scoring.ts        # Match scoring logic
+│   ├── supabase.ts       # Database client
+│   └── database.types.ts # TypeScript types
 └── supabase/
-    └── migrations/
-        └── 00001_initial_schema.sql  # Database schema
+    └── migrations/       # 17 database migrations
 ```
-
-## Setup Instructions
-
-### 1. Prerequisites
-
-- Node.js 18+ installed
-- npm or yarn
-- Supabase account
-- Auth0 account
-
-### 2. Clone and Install
-
-```bash
-cd golf-league
-npm install
-```
-
-### 3. Set Up Supabase
-
-1. Create a new project at [supabase.com](https://supabase.com)
-2. Go to SQL Editor and run the migration file:
-   ```sql
-   -- Copy contents from supabase/migrations/00001_initial_schema.sql
-   -- Paste and execute in Supabase SQL Editor
-   ```
-3. Get your API credentials:
-   - Project URL: https://scwkwwehjnlfjyfjpzoa.supabase.co
-   - Anon Key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNjd2t3d2Voam5sZmp5Zmpwem9hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA3MDc1NDgsImV4cCI6MjA3NjI4MzU0OH0.egp28lF00ryO_nWQxMH-ivLFuUiMSYpi6WCCZKXLCXA
-   - Service Role Key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNjd2t3d2Voam5sZmp5Zmpwem9hIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MDcwNzU0OCwiZXhwIjoyMDc2MjgzNTQ4fQ.sja0KXb62sB30sA0W5-9PCDWZaVzQE2nFSKDWmNSyvw
-
-### 4. Set Up Auth0
-
-1. Create account at [auth0.com](https://auth0.com)
-2. Create a new application (Regular Web Application)
-3. Configure settings:
-   - **Allowed Callback URLs**: `http://localhost:3000/api/auth/callback`
-   - **Allowed Logout URLs**: `http://localhost:3000`
-4. Note down:
-   - Domain: dev-e8b8q2nwta34obya.us.auth0.com
-   - Client ID: d6riKLGRcfGGLxkHjlBEXQOjMGZjuizK
-   - Client Secret: 0kknxDuC5gPEjf13VbXWKgU4mXvRGpGFxyNLQbSOhPMoS4eoFo6XaHMY8mQbWeef
-
-### 5. Environment Variables
-
-Create `.env.local` in the root directory:
-
-```bash
-cp .env.local.example .env.local
-```
-
-Edit `.env.local` and fill in your credentials:
-
-```env
-# Auth0
-AUTH0_SECRET='<run: openssl rand -hex 32>'
-AUTH0_BASE_URL='http://localhost:3000'
-AUTH0_ISSUER_BASE_URL='https://YOUR_DOMAIN.auth0.com'
-AUTH0_CLIENT_ID='your_client_id'
-AUTH0_CLIENT_SECRET='your_client_secret'
-
-# Supabase
-NEXT_PUBLIC_SUPABASE_URL='https://your-project.supabase.co'
-NEXT_PUBLIC_SUPABASE_ANON_KEY='your_anon_key'
-SUPABASE_SERVICE_ROLE_KEY='your_service_role_key'
-```
-
-### 6. Run Development Server
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Database Schema
 
 ### Core Tables
+- **profiles** - User accounts linked to Auth0
+- **leagues** - League/season management
+- **league_members** - User roles within leagues
+- **league_teams** - Team participation in leagues
+- **league_announcements** - League communications
+- **league_join_requests** - Team join request workflow
+- **teams** - Team entities
+- **team_members** - Team membership with captain roles
+- **players** - Player handicap tracking
+- **courses** - Golf course data
+- **holes** - Hole-by-hole details (par, handicap index, yardages)
+- **matches** - Match scheduling and results
+- **scorecards** - Player scorecards
+- **hole_scores** - Individual hole scoring
 
-- **profiles**: User profiles linked to Auth0
-- **teams**: Team information
-- **players**: Player data with handicaps
-- **courses**: Golf courses
-- **holes**: Individual hole data (par, handicap index)
-- **matches**: Match scheduling and status
-- **scorecards**: Player scorecards for each match
-- **hole_scores**: Individual hole scores
+### Security
+- Row Level Security (RLS) enabled on all tables
+- Policy-based access control
+- Site admin and league admin roles
+- Team captain permissions
 
-## Scoring Logic
+## Quick Start
 
-The scoring system is implemented in `lib/scoring.ts`:
+### Prerequisites
+- Node.js 18+
+- Supabase account
+- Auth0 account
 
-### Stroke Allocation
-- **Par 3s**: No strokes given
-- **Par 4s & 5s**: Strokes given based on handicap difference and hole handicap index
-- Example: If handicap diff is 5, strokes given on holes with handicap index 1-5
+### Development Setup
 
-### Point System
-1. **Head-to-Head Points**: Each hole winner gets 1 point (tie = 0 points to both)
-2. **Team Point**: Team with lowest net total gets 1 point
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/technicalogical/golf-league.git
+   cd golf-league
+   ```
 
-### Matchups
-- Lowest handicap player faces opponent's lowest handicap
-- Highest handicap player faces opponent's highest handicap
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-## Key Functions
+3. **Configure Supabase**
+   - Create a project at [supabase.com](https://supabase.com)
+   - Run all migrations in `supabase/migrations/` (in order)
+   - Copy your Project URL and API keys
+   - See `SUPABASE_SETUP.md` for detailed instructions
 
-### `calculateMatchup()`
-Calculates head-to-head scoring between two players with handicap adjustments.
+4. **Configure Auth0**
+   - Create an application at [auth0.com](https://auth0.com)
+   - Add callback URL: `http://localhost:4000/api/auth/callback`
+   - Add logout URL: `http://localhost:4000`
+   - Copy your Domain, Client ID, and Client Secret
+   - See `AUTH0_SETUP.md` for detailed instructions
 
-### `calculateTeamMatch()`
-Calculates full 2v2 team match including:
-- Both head-to-head matchups
-- Team totals (gross and net)
-- Final point totals
+5. **Create environment file**
+   ```bash
+   cp .env.local.example .env.local
+   ```
 
-## API Endpoints
+   Edit `.env.local` and add your credentials:
+   ```env
+   # Auth0
+   AUTH0_SECRET='<generate with: openssl rand -hex 32>'
+   AUTH0_BASE_URL='http://localhost:4000'
+   AUTH0_ISSUER_BASE_URL='https://YOUR_DOMAIN.auth0.com'
+   AUTH0_CLIENT_ID='your_client_id'
+   AUTH0_CLIENT_SECRET='your_client_secret'
 
-### `POST /api/matches/[id]/scores`
-Submit scorecard and calculate results
-- Input: Array of hole scores for all players
-- Output: Match results with points breakdown
+   # Supabase
+   NEXT_PUBLIC_SUPABASE_URL='https://YOUR_PROJECT.supabase.co'
+   NEXT_PUBLIC_SUPABASE_ANON_KEY='your_anon_key'
+   SUPABASE_SERVICE_ROLE_KEY='your_service_role_key'
+   ```
 
-### `GET /api/standings`
-Get current league standings
-- Output: Team and player rankings with statistics
+6. **Run development server**
+   ```bash
+   npm run dev
+   ```
 
-## Next Steps
+   Open [http://localhost:4000](http://localhost:4000)
 
-### Immediate Enhancements
-1. **Admin Dashboard**: Manage courses, teams, players, and handicaps
-2. **Match History**: View past match details and results
-3. **Player Profiles**: Individual statistics and performance tracking
-4. **Schedule Management**: Create and manage match schedules
+## Production Deployment
 
-### Future Features
-- AboutGolf API integration (when available)
-- Mobile app
-- Statistics dashboard with charts
-- Email notifications for matches
-- Photo uploads for scorecards
-- Course handicap calculator
+This application is configured for self-hosted deployment.
 
-## AboutGolf Integration
+### Quick Deploy
 
-Currently, AboutGolf does not provide a public API. Course data must be entered manually through an admin interface (to be built).
+See `DEPLOYMENT_CHECKLIST.md` for step-by-step instructions.
 
-**If you have AboutGolf API access:**
-1. Contact AboutGolf support for API documentation
-2. Implement course data sync in `/lib/aboutgolf.ts`
-3. Add automated course import feature
+**Automated deployment:**
+```bash
+./deploy.sh
+```
 
-## Contributing
+**Manual deployment:**
+1. Configure Auth0 for production (see `AUTH0_SETUP.md`)
+2. Configure Supabase (see `SUPABASE_SETUP.md`)
+3. Set up production environment variables
+4. Install systemd service
+5. Configure nginx reverse proxy
+6. Start the service
 
-This is a custom application for your league. To add features:
+See `PRODUCTION_SETUP.md` for complete instructions.
 
-1. Database changes: Add migration files in `supabase/migrations/`
-2. API routes: Add in `app/api/`
-3. Pages: Add in `app/`
-4. Shared logic: Add in `lib/`
+## Documentation
 
-## Deployment
+- **DEPLOYMENT_CHECKLIST.md** - Quick deployment checklist
+- **PRODUCTION_SETUP.md** - Complete production deployment guide
+- **AUTH0_SETUP.md** - Auth0 configuration instructions
+- **SUPABASE_SETUP.md** - Database setup and migrations
+- **ARCHITECTURE.md** - System architecture overview
+- **LEAGUE_MANAGEMENT.md** - League administration guide
 
-### Vercel (Recommended)
+## API Documentation
 
-1. Push code to GitHub
-2. Import project to Vercel
-3. Add environment variables in Vercel dashboard
-4. Update Auth0 allowed URLs to include your production domain
-5. Deploy
+### Main Endpoints
 
-### Other Platforms
+- `POST /api/leagues` - Create a league
+- `GET /api/leagues/[id]` - Get league details
+- `POST /api/teams` - Create a team
+- `POST /api/teams/join` - Join team with invite code
+- `POST /api/matches` - Create a match
+- `POST /api/matches/[id]/scores` - Submit scorecard
+- `GET /api/standings` - Get league standings
 
-Compatible with any platform supporting Next.js 15:
-- Netlify
-- Railway
-- Self-hosted with Node.js
+See individual route files in `app/api/` for detailed documentation.
+
+## Development
+
+### Adding Features
+
+1. **Database changes**: Create new migration in `supabase/migrations/`
+2. **API routes**: Add in `app/api/`
+3. **Pages**: Add in `app/`
+4. **Business logic**: Add in `lib/`
+5. **Types**: Update `lib/database.types.ts`
+
+### Running Migrations
+
+Migrations are run manually in Supabase SQL Editor. See `SUPABASE_SETUP.md`.
+
+### Code Style
+
+- TypeScript strict mode enabled
+- ESLint configuration included
+- Tailwind CSS for styling
+
+## Security
+
+- Auth0 SSO for authentication
+- Row Level Security (RLS) on all database tables
+- Environment variables for secrets (never committed)
+- HTTPS required in production
+- CORS configured for production domain
 
 ## License
 
-Private use for your indoor golf league.
+Private use. © 2025
 
 ## Support
 
-For issues or questions, create an issue in this repository or contact your league administrator.
+For issues or questions:
+- Create an issue in this repository
+- See documentation in the `*.md` files
+- Contact: lehman.brandon@gmail.com
+
+---
+
+**Production URL**: https://golf.spaceclouds.xyz
+**Repository**: https://github.com/technicalogical/golf-league
