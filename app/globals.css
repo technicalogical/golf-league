@@ -21,6 +21,25 @@
 
 body {
   background: var(--background);
-  color: var(--foreground);
+  color: #111827; /* text-gray-900 - ensure dark text everywhere */
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Make all headings dark and readable */
+h1, h2, h3, h4, h5, h6 {
+  color: #111827; /* text-gray-900 */
+}
+
+/* Override for explicit gray classes if needed */
+.text-gray-600 {
+  color: #4b5563;
+}
+
+/* Make form inputs readable */
+input, textarea, select {
+  color: #111827; /* text-gray-900 - dark text */
+}
+
+input::placeholder, textarea::placeholder {
+  color: #9ca3af; /* text-gray-400 - lighter placeholder */
 }

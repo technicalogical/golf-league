@@ -1,0 +1,134 @@
+import { NextRequest } from 'next/server';
+import { AuthClient, TransactionStore, AbstractSessionStore } from '@auth0/nextjs-auth0/server';
+import * as jose from 'jose';
+import { syncUserProfile } from '@/lib/supabase-server';
+
+// Create a simple session store implementation
+class SimpleSessionStore extends AbstractSessionStore {
+  constructor(secret: string) {
+    super({
+      secret,
+      rolling: true,
+      absoluteDuration: 7 * 24 * 60 * 60, // 7 days
+      inactivityDuration: 24 * 60 * 60, // 24 hours
+    });
+  }
+
+  private async getDerivedKey() {
+    const encoder = new TextEncoder();
+    const keyMaterial = encoder.encode(this.secret);
+
+    // Derive a proper 256-bit key using HKDF
+    const key = await crypto.subtle.importKey(
+      'raw',
+      keyMaterial,
+      'HKDF',
+      false,
+      ['deriveBits']
+    );
+
+    const derivedBits = await crypto.subtle.deriveBits(
+      {
+        name: 'HKDF',
+        hash: 'SHA-256',
+        salt: encoder.encode('auth0-session'),
+        info: encoder.encode(''),
+      },
+      key,
+      256 // 256 bits
+    );
+
+    return new Uint8Array(derivedBits);
+  }
+
+  async get(reqCookies: any) {
+    try {
+      const cookie = reqCookies.get(this.sessionCookieName);
+      if (!cookie?.value) return null;
+
+      const secretKey = await this.getDerivedKey();
+      const { payload } = await jose.jwtDecrypt(cookie.value, secretKey);
+      return payload as any;
+    } catch {
+      return null;
+    }
+  }
+
+  async set(reqCookies: any, resCookies: any, session: any) {
+    const secretKey = await this.getDerivedKey();
+    const maxAge = this.calculateMaxAge(session.internal?.createdAt || this.epoch());
+
+    const token = await new jose.EncryptJWT(session as any)
+      .setProtectedHeader({ alg: 'dir', enc: 'A256GCM' })
+      .setIssuedAt()
+      .setExpirationTime(`${maxAge}s`)
+      .encrypt(secretKey);
+
+    resCookies.set(this.sessionCookieName, token, {
+      ...this.cookieConfig,
+      maxAge,
+    });
+  }
+
+  async delete(reqCookies: any, resCookies: any) {
+    resCookies.delete(this.sessionCookieName);
+  }
+}
+
+const transactionStore = new TransactionStore({
+  secret: process.env.AUTH0_SECRET!,
+});
+
+const sessionStore = new SimpleSessionStore(process.env.AUTH0_SECRET!);
+
+const auth0 = new AuthClient({
+  secret: process.env.AUTH0_SECRET!,
+  domain: process.env.AUTH0_ISSUER_BASE_URL!.replace('https://', ''),
+  clientId: process.env.AUTH0_CLIENT_ID!,
+  clientSecret: process.env.AUTH0_CLIENT_SECRET!,
+  appBaseUrl: process.env.AUTH0_BASE_URL!,
+  routes: {
+    login: '/api/auth/login',
+    logout: '/api/auth/logout',
+    callback: '/api/auth/callback',
+    profile: '/api/auth/me',
+    accessToken: '/api/auth/access-token',
+    backChannelLogout: '/api/auth/backchannel-logout',
+    connectAccount: '/api/auth/connect-account',
+  },
+  transactionStore,
+  sessionStore,
+});
+
+export async function GET(request: NextRequest, { params }: { params: Promise<{ auth0: string }> }) {
+  const { auth0: route } = await params;
+
+  switch (route) {
+    case 'login':
+      return auth0.handleLogin(request);
+    case 'callback': {
+      // Handle the callback and sync user profile
+      const response = await auth0.handleCallback(request);
+
+      // After successful callback, sync the user to Supabase
+      try {
+        const cookieStore = request.cookies;
+        const session = await sessionStore.get(cookieStore as any);
+        if (session) {
+          await syncUserProfile(session);
+        }
+      } catch (error) {
+        console.error('Error syncing user profile:', error);
+        // Don't fail the login if sync fails
+      }
+
+      return response;
+    }
+    case 'logout':
+      return auth0.handleLogout(request);
+    case 'me':
+      return auth0.handleProfile(request);
+    default:
+      return new Response('Not Found', { status: 404 });
+  }
+}

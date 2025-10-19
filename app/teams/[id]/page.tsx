@@ -1,0 +1,187 @@
+import { getSession } from '@/lib/auth';
+import { redirect } from 'next/navigation';
+import Link from 'next/link';
+import { supabaseAdmin } from '@/lib/supabase-server';
+import TeamMembersList from './TeamMembersList';
+import InviteCodeDisplay from './InviteCodeDisplay';
+import LeaveTeamButton from './LeaveTeamButton';
+
+export default async function TeamDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const session = await getSession();
+  if (!session) {
+    redirect('/api/auth/login');
+  }
+
+  const userId = session.user.sub;
+  const { id } = await params;
+
+  // Fetch team with members
+  const { data: team, error } = await supabaseAdmin
+    .from('teams')
+    .select(`
+      *,
+      captain:profiles!teams_captain_id_fkey(
+        id,
+        name,
+        display_name,
+        email
+      )
+    `)
+    .eq('id', id)
+    .single();
+
+  if (error || !team) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Team Not Found</h1>
+          <Link href="/dashboard" className="text-blue-600 hover:text-blue-800">
+            ← Back to Dashboard
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // Fetch team members
+  const { data: members } = await supabaseAdmin
+    .from('team_members')
+    .select(`
+      *,
+      user:profiles(
+        id,
+        name,
+        display_name,
+        email,
+        show_email
+      )
+    `)
+    .eq('team_id', id)
+    .order('is_captain', { ascending: false })
+    .order('joined_at', { ascending: true });
+
+  // Check if current user is captain
+  const isCaptain = team.captain_id === userId;
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow">
+        <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
+          <Link href="/dashboard" className="text-blue-600 hover:text-blue-800 text-sm mb-2 block">
+            ← Back to Dashboard
+          </Link>
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">{team.name}</h1>
+              <p className="text-sm text-gray-600 mt-1">
+                Captain: {team.captain?.display_name || team.captain?.name || 'Unknown'}
+                {isCaptain && <span className="ml-2 text-blue-600">(You)</span>}
+              </p>
+            </div>
+            {team.is_active ? (
+              <span className="px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full font-semibold">
+                Active
+              </span>
+            ) : (
+              <span className="px-3 py-1 bg-gray-100 text-gray-600 text-sm rounded-full font-semibold">
+                Inactive
+              </span>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Team Members */}
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-lg shadow p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold text-gray-900">
+                  Team Members ({members?.length || 0} / {team.max_members})
+                </h2>
+              </div>
+
+              <TeamMembersList
+                teamId={team.id}
+                members={members || []}
+                isCaptain={isCaptain}
+                currentUserId={userId}
+              />
+
+              {(!members || members.length === 0) && (
+                <div className="text-center py-8 text-gray-500">
+                  <div className="text-4xl mb-2">👥</div>
+                  <p>No members yet. Share the invite code to add teammates.</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Team Settings (Captain Only) */}
+            {isCaptain && (
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Captain Controls</h3>
+                <Link
+                  href={`/teams/${team.id}/settings`}
+                  className="block w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-semibold text-center mb-3"
+                >
+                  Team Settings
+                </Link>
+                {team.open_to_join && (
+                  <p className="text-xs text-green-700 bg-green-50 border border-green-200 rounded p-2">
+                    ✓ Team is open - anyone can join
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Invite Code */}
+            {isCaptain && (
+              <InviteCodeDisplay inviteCode={team.invite_code} />
+            )}
+
+            {/* Team Info */}
+            <div className="bg-white rounded-lg shadow p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Team Info</h3>
+              <div className="space-y-3">
+                <div>
+                  <p className="text-sm text-gray-600">Max Members</p>
+                  <p className="font-semibold text-gray-900">{team.max_members}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Available Spots</p>
+                  <p className="font-semibold text-gray-900">
+                    {team.max_members - (members?.length || 0)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Created</p>
+                  <p className="font-semibold text-gray-900">
+                    {new Date(team.created_at).toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Actions */}
+            {!isCaptain && (
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Actions</h3>
+                <LeaveTeamButton teamId={team.id} />
+              </div>
+            )}
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
