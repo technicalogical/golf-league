@@ -1,0 +1,22 @@
+[Unit]
+Description=Golf League Web Application
+After=network.target
+
+[Service]
+Type=simple
+User=brandon
+WorkingDirectory=/var/www/golf-league
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/npm start
+Restart=on-failure
+RestartSec=10
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/var/www/golf-league
+
+[Install]
+WantedBy=multi-user.target
