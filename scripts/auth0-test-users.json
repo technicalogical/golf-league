@@ -1,0 +1,98 @@
+[
+  {
+    "email": "player1@golftest.com",
+    "email_verified": true,
+    "name": "Alex Rivera",
+    "nickname": "alex",
+    "user_metadata": {},
+    "app_metadata": {}
+  },
+  {
+    "email": "player2@golftest.com",
+    "email_verified": true,
+    "name": "Jordan Chen",
+    "nickname": "jordan",
+    "user_metadata": {},
+    "app_metadata": {}
+  },
+  {
+    "email": "player3@golftest.com",
+    "email_verified": true,
+    "name": "Taylor Martinez",
+    "nickname": "taylor",
+    "user_metadata": {},
+    "app_metadata": {}
+  },
+  {
+    "email": "player4@golftest.com",
+    "email_verified": true,
+    "name": "Morgan Anderson",
+    "nickname": "morgan",
+    "user_metadata": {},
+    "app_metadata": {}
+  },
+  {
+    "email": "player5@golftest.com",
+    "email_verified": true,
+    "name": "Casey Thompson",
+    "nickname": "casey",
+    "user_metadata": {},
+    "app_metadata": {}
+  },
+  {
+    "email": "player6@golftest.com",
+    "email_verified": true,
+    "name": "Jamie Wilson",
+    "nickname": "jamie",
+    "user_metadata": {},
+    "app_metadata": {}
+  },
+  {
+    "email": "player7@golftest.com",
+    "email_verified": true,
+    "name": "Riley Garcia",
+    "nickname": "riley",
+    "user_metadata": {},
+    "app_metadata": {}
+  },
+  {
+    "email": "player8@golftest.com",
+    "email_verified": true,
+    "name": "Quinn Robinson",
+    "nickname": "quinn",
+    "user_metadata": {},
+    "app_metadata": {}
+  },
+  {
+    "email": "player9@golftest.com",
+    "email_verified": true,
+    "name": "Avery Lee",
+    "nickname": "avery",
+    "user_metadata": {},
+    "app_metadata": {}
+  },
+  {
+    "email": "player10@golftest.com",
+    "email_verified": true,
+    "name": "Dakota White",
+    "nickname": "dakota",
+    "user_metadata": {},
+    "app_metadata": {}
+  },
+  {
+    "email": "player11@golftest.com",
+    "email_verified": true,
+    "name": "Skyler Harris",
+    "nickname": "skyler",
+    "user_metadata": {},
+    "app_metadata": {}
+  },
+  {
+    "email": "player12@golftest.com",
+    "email_verified": true,
+    "name": "Cameron Clark",
+    "nickname": "cameron",
+    "user_metadata": {},
+    "app_metadata": {}
+  }
+]

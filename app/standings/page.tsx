@@ -171,7 +171,16 @@ export default function StandingsPage() {
                         {index + 1}
                       </span>
                     </td>
-                    <td className="p-4 font-semibold">{team.team_name}</td>
+                    <td className="p-4 font-semibold">
+                      <div className="flex items-center gap-2">
+                        {team.team_name}
+                        {index === 0 && teamStandings.length > 0 && team.matches_played > 0 && (
+                          <span className="text-yellow-500 text-xl" title="League Champion">
+                            🏆
+                          </span>
+                        )}
+                      </div>
+                    </td>
                     <td className="p-4 text-center">{team.matches_played}</td>
                     <td className="p-4 text-center font-bold text-blue-600">
                       {team.total_points}
@@ -232,7 +241,16 @@ export default function StandingsPage() {
                         {index + 1}
                       </span>
                     </td>
-                    <td className="p-4 font-semibold">{player.player_name}</td>
+                    <td className="p-4 font-semibold">
+                      <div className="flex items-center gap-2">
+                        {player.player_name}
+                        {index === 0 && playerStandings.length > 0 && player.matches_played > 0 && (
+                          <span className="text-yellow-500 text-xl" title="Top Player">
+                            🏆
+                          </span>
+                        )}
+                      </div>
+                    </td>
                     <td className="p-4 text-gray-600">{player.team_name}</td>
                     <td className="p-4 text-center">{player.handicap}</td>
                     <td className="p-4 text-center">{player.matches_played}</td>

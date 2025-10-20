@@ -64,13 +64,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Get user's profile to get their name
+    const { data: profile } = await supabaseAdmin
+      .from('profiles')
+      .select('name, email')
+      .eq('id', userId)
+      .single();
+
+    const playerName = profile?.name || profile?.email || 'Unknown Player';
+
     // Add user to team
     const { error: memberError } = await supabaseAdmin
       .from('team_members')
       .insert({
         team_id: team.id,
         user_id: userId,
-        is_captain: false,
+        role: 'member',
       });
 
     if (memberError) {
@@ -79,6 +88,23 @@ export async function POST(request: NextRequest) {
         { error: 'Failed to join team' },
         { status: 500 }
       );
+    }
+
+    // Also create a player record for this user
+    const { error: playerError } = await supabaseAdmin
+      .from('players')
+      .insert({
+        name: playerName,
+        team_id: team.id,
+        user_id: userId,
+        handicap: 0, // Default handicap, user can update later
+        is_active: true,
+      });
+
+    if (playerError) {
+      console.error('Error creating player record:', playerError);
+      // Don't fail the request, just log the error
+      // The team member was still added successfully
     }
 
     return NextResponse.json({
