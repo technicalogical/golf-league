@@ -50,6 +50,7 @@ export default function GenerateSchedulePage() {
   const [endDate, setEndDate] = useState('');
   const [numberOfWeeks, setNumberOfWeeks] = useState<number>(10);
   const [scheduleType, setScheduleType] = useState<string>('random'); // 'random' or 'round-robin'
+  const [doubleRoundRobin, setDoubleRoundRobin] = useState<boolean>(false);
   const [defaultHoles, setDefaultHoles] = useState<number>(18);
   const [generatedSchedule, setGeneratedSchedule] = useState<GeneratedMatch[]>([]);
   const [weekConfigs, setWeekConfigs] = useState<WeekConfig[]>([]);

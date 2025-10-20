@@ -44,6 +44,9 @@ export default function LeagueSettingsPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     loadLeague();
@@ -124,6 +127,33 @@ export default function LeagueSettingsPage() {
       setError(err.message);
     } finally {
       setIsSubmitting(false);
+    }
+  }
+
+  async function handleDelete() {
+    if (deleteConfirmText !== name) {
+      setError('League name does not match. Please type the exact league name to confirm deletion.');
+      return;
+    }
+
+    setIsDeleting(true);
+    setError('');
+
+    try {
+      const response = await fetch(`/api/leagues/${leagueId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to delete league');
+      }
+
+      // Redirect to dashboard after successful deletion
+      router.push('/dashboard');
+    } catch (err: any) {
+      setError(err.message);
+      setIsDeleting(false);
     }
   }
 
@@ -423,6 +453,61 @@ export default function LeagueSettingsPage() {
             </div>
           )}
         </form>
+
+        {/* Danger Zone */}
+        <div className="mt-8 bg-red-50 border-2 border-red-200 rounded-lg p-6">
+          <h2 className="text-xl font-bold text-red-900 mb-2">Danger Zone</h2>
+          <p className="text-sm text-red-800 mb-4">
+            Once you delete a league, there is no going back. This will permanently delete the league,
+            all associated teams, matches, and scores. This action cannot be undone.
+          </p>
+
+          {!showDeleteConfirm ? (
+            <button
+              type="button"
+              onClick={() => setShowDeleteConfirm(true)}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-semibold"
+            >
+              Delete This League
+            </button>
+          ) : (
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="deleteConfirm" className="block text-sm font-semibold text-red-900 mb-2">
+                  Type <span className="font-mono bg-red-100 px-1">{name}</span> to confirm deletion:
+                </label>
+                <input
+                  type="text"
+                  id="deleteConfirm"
+                  value={deleteConfirmText}
+                  onChange={(e) => setDeleteConfirmText(e.target.value)}
+                  placeholder="Type league name here"
+                  className="w-full px-4 py-2 border-2 border-red-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                />
+              </div>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={handleDelete}
+                  disabled={isDeleting || deleteConfirmText !== name}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isDeleting ? 'Deleting...' : 'I understand, delete this league'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowDeleteConfirm(false);
+                    setDeleteConfirmText('');
+                  }}
+                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </main>
     </div>
   );

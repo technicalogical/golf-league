@@ -55,7 +55,7 @@ export default async function UserProfilePage({
   const { data: players } = await supabaseAdmin
     .from('players')
     .select('id, name, handicap, team_id')
-    .eq('profile_id', decodedProfileId);
+    .eq('user_id', decodedProfileId);
 
   // Fetch scorecards with match and course info
   let scorecards: any[] = [];
@@ -127,14 +127,24 @@ export default async function UserProfilePage({
               {profile.bio && (
                 <p className="text-gray-600 mt-1">{profile.bio}</p>
               )}
-              {isOwnProfile && (
-                <Link
-                  href="/profile/edit"
-                  className="inline-block mt-2 text-sm text-blue-600 hover:text-blue-800"
-                >
-                  Edit Profile →
-                </Link>
-              )}
+              <div className="flex gap-4 mt-2">
+                {isOwnProfile && (
+                  <Link
+                    href="/profile/edit"
+                    className="inline-block text-sm text-blue-600 hover:text-blue-800"
+                  >
+                    Edit Profile →
+                  </Link>
+                )}
+                {players && players.length > 0 && (
+                  <Link
+                    href={`/players/${players[0].id}`}
+                    className="inline-block text-sm text-blue-600 hover:text-blue-800 font-medium"
+                  >
+                    📊 View Detailed Stats →
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
         </div>

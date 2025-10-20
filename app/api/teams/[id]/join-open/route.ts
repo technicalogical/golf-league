@@ -87,7 +87,7 @@ export async function POST(
       .insert({
         team_id: teamId,
         user_id: userId,
-        role: 'member',
+        is_captain: false,
       });
 
     if (memberError) {
@@ -113,6 +113,35 @@ export async function POST(
       console.error('Error creating player record:', playerError);
       // Don't fail the request, just log the error
       // The team member was still added successfully
+    }
+
+    // Add user to all leagues this team belongs to
+    const { data: leagues } = await supabaseAdmin
+      .from('league_teams')
+      .select('league_id')
+      .eq('team_id', teamId);
+
+    if (leagues && leagues.length > 0) {
+      for (const leagueTeam of leagues) {
+        // Check if user is already a member of this league
+        const { data: existingMember } = await supabaseAdmin
+          .from('league_members')
+          .select('id')
+          .eq('league_id', leagueTeam.league_id)
+          .eq('user_id', userId)
+          .single();
+
+        if (!existingMember) {
+          // Add user as player role in the league
+          await supabaseAdmin
+            .from('league_members')
+            .insert({
+              league_id: leagueTeam.league_id,
+              user_id: userId,
+              role: 'player',
+            });
+        }
+      }
     }
 
     return NextResponse.json({

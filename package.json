@@ -11,7 +11,9 @@
     "seed:league": "tsx scripts/seed-league.ts",
     "seed:matches": "tsx scripts/seed-matches.ts",
     "seed:all": "npm run seed:users && npm run seed:league && npm run seed:matches",
-    "migrate:players": "tsx scripts/create-players-from-members.ts"
+    "migrate:players": "tsx scripts/create-players-from-members.ts",
+    "migrate:league-members": "tsx scripts/add-team-members-to-leagues.ts",
+    "complete:matches": "tsx scripts/complete-matches.ts"
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^4.11.0",
