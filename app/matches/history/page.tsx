@@ -37,6 +37,12 @@ export default function MatchHistoryPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Check for league_id in URL parameters
+    const params = new URLSearchParams(window.location.search);
+    const leagueId = params.get('league_id');
+    if (leagueId) {
+      setSelectedLeague(leagueId);
+    }
     loadData();
   }, []);
 
