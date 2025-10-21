@@ -68,6 +68,7 @@ export default async function DashboardPage() {
   let lastScore = null;
   let nextMatch = null;
   let totalMatches = 0;
+  let upcomingMatches: any[] = [];
 
   if (playerData) {
     // Get last completed match score
@@ -114,6 +115,46 @@ export default async function DashboardPage() {
         year: 'numeric'
       });
     }
+
+    // Get all upcoming matches for the user
+    const { data: allUpcomingMatches } = await supabaseAdmin
+      .from('matches')
+      .select(`
+        id,
+        match_date,
+        status,
+        team1:teams!matches_team1_id_fkey(id, name),
+        team2:teams!matches_team2_id_fkey(id, name),
+        league:leagues(id, name)
+      `)
+      .eq('status', 'scheduled')
+      .or(`team1_id.eq.${playerData.team_id},team2_id.eq.${playerData.team_id}`)
+      .gte('match_date', new Date().toISOString())
+      .order('match_date', { ascending: true })
+      .limit(5);
+
+    upcomingMatches = allUpcomingMatches || [];
+  }
+
+  // Get recent league announcements across all user's leagues
+  const leagueIds = userLeagues?.map((l: any) => l.league.id) || [];
+  let recentAnnouncements: any[] = [];
+
+  if (leagueIds.length > 0) {
+    const { data: announcements } = await supabaseAdmin
+      .from('league_announcements')
+      .select(`
+        id,
+        title,
+        content,
+        created_at,
+        league:leagues(id, name)
+      `)
+      .in('league_id', leagueIds)
+      .order('created_at', { ascending: false })
+      .limit(5);
+
+    recentAnnouncements = announcements || [];
   }
 
   // Fetch featured public leagues if user has no leagues
@@ -442,103 +483,202 @@ export default async function DashboardPage() {
           </div>
         )}
 
-        {/* Quick Actions */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Link
-            href="/leagues"
-            className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
-          >
-            <div className="text-4xl mb-4">🏅</div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Leagues</h3>
-            <p className="text-gray-600">
-              Manage leagues and seasons
-            </p>
-          </Link>
+        {/* Quick Actions - Grouped by Priority */}
+        <div className="mb-8">
+          <h3 className="text-2xl font-semibold text-gray-900 mb-4">Quick Actions</h3>
 
-          <Link
-            href="/teams/new"
-            className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
-          >
-            <div className="text-4xl mb-4">👥</div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Create Team</h3>
-            <p className="text-gray-600">
-              Start a new team
-            </p>
-          </Link>
+          {/* Primary Actions - Most Frequently Used */}
+          <div className="grid md:grid-cols-2 gap-6 mb-6">
+            <Link
+              href="/matches"
+              className="bg-gradient-to-br from-green-500 to-green-600 p-8 rounded-lg shadow-lg hover:shadow-xl transition-all text-white group"
+            >
+              <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">⛳</div>
+              <h3 className="text-2xl font-bold mb-2">Enter Scores</h3>
+              <p className="text-green-100">
+                Record match results and calculate points
+              </p>
+            </Link>
 
-          <Link
-            href="/teams/browse"
-            className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
-          >
-            <div className="text-4xl mb-4">🔍</div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Browse Teams</h3>
-            <p className="text-gray-600">
-              Find open teams
-            </p>
-          </Link>
+            <Link
+              href="/standings"
+              className="bg-gradient-to-br from-yellow-500 to-yellow-600 p-8 rounded-lg shadow-lg hover:shadow-xl transition-all text-white group"
+            >
+              <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">🏆</div>
+              <h3 className="text-2xl font-bold mb-2">View Standings</h3>
+              <p className="text-yellow-100">
+                Check team and player rankings
+              </p>
+            </Link>
+          </div>
 
-          <Link
-            href="/teams/join"
-            className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
-          >
-            <div className="text-4xl mb-4">🤝</div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Join with Code</h3>
-            <p className="text-gray-600">
-              Enter an invite code
-            </p>
-          </Link>
+          {/* Secondary Actions - League & Team Management */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+            <Link
+              href="/leagues"
+              className="bg-white p-5 rounded-lg shadow hover:shadow-lg transition-shadow group"
+            >
+              <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">🏅</div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-1">Leagues</h3>
+              <p className="text-sm text-gray-600">
+                Manage leagues
+              </p>
+            </Link>
 
-          <Link
-            href="/matches"
-            className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
-          >
-            <div className="text-4xl mb-4">⛳</div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Enter Scores</h3>
-            <p className="text-gray-600">
-              Record match results and calculate points
-            </p>
-          </Link>
+            <Link
+              href="/teams/browse"
+              className="bg-white p-5 rounded-lg shadow hover:shadow-lg transition-shadow group"
+            >
+              <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">🔍</div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-1">Browse Teams</h3>
+              <p className="text-sm text-gray-600">
+                Find open teams
+              </p>
+            </Link>
 
-          <Link
-            href="/standings"
-            className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
-          >
-            <div className="text-4xl mb-4">🏆</div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">View Standings</h3>
-            <p className="text-gray-600">
-              Check team and player rankings
-            </p>
-          </Link>
+            <Link
+              href="/teams/new"
+              className="bg-white p-5 rounded-lg shadow hover:shadow-lg transition-shadow group"
+            >
+              <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">👥</div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-1">Create Team</h3>
+              <p className="text-sm text-gray-600">
+                Start a new team
+              </p>
+            </Link>
 
-          <Link
-            href="/matches/history"
-            className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
-          >
-            <div className="text-4xl mb-4">📊</div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Match History</h3>
-            <p className="text-gray-600">
-              View completed matches
-            </p>
-          </Link>
+            <Link
+              href="/teams/join"
+              className="bg-white p-5 rounded-lg shadow hover:shadow-lg transition-shadow group"
+            >
+              <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">🤝</div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-1">Join with Code</h3>
+              <p className="text-sm text-gray-600">
+                Enter invite code
+              </p>
+            </Link>
+          </div>
 
-          <Link
-            href="/profile/edit"
-            className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
-          >
-            <div className="text-4xl mb-4">👤</div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Your Profile</h3>
-            <p className="text-gray-600">
-              View and edit your profile
-            </p>
-          </Link>
+          {/* Tertiary Actions - Information & History */}
+          <div className="grid md:grid-cols-2 gap-4">
+            <Link
+              href="/matches/history"
+              className="bg-white p-5 rounded-lg shadow hover:shadow-lg transition-shadow group"
+            >
+              <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">📊</div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-1">Match History</h3>
+              <p className="text-sm text-gray-600">
+                View completed matches and details
+              </p>
+            </Link>
+
+            <Link
+              href="/profile/edit"
+              className="bg-white p-5 rounded-lg shadow hover:shadow-lg transition-shadow group"
+            >
+              <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">👤</div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-1">Your Profile</h3>
+              <p className="text-sm text-gray-600">
+                View and edit your profile
+              </p>
+            </Link>
+          </div>
         </div>
 
-        {/* Recent Activity (Placeholder) */}
-        <div className="mt-8 bg-white rounded-lg shadow p-6">
-          <h3 className="text-xl font-semibold text-gray-900 mb-4">Recent Activity</h3>
-          <p className="text-gray-500 text-center py-8">
-            No recent activity to display. Start by entering match scores!
-          </p>
+        {/* Recent Activity - Upcoming Matches & Announcements */}
+        <div className="mt-8 grid md:grid-cols-2 gap-6">
+          {/* Upcoming Matches */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <span className="text-2xl">📅</span> Upcoming Matches
+            </h3>
+            {upcomingMatches.length > 0 ? (
+              <div className="space-y-3">
+                {upcomingMatches.map((match: any) => (
+                  <Link
+                    key={match.id}
+                    href={`/matches/${match.id}`}
+                    className="block p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all"
+                  >
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="flex-1">
+                        <div className="font-semibold text-gray-900">
+                          {match.team1?.name} vs {match.team2?.name}
+                        </div>
+                        {match.league && (
+                          <div className="text-sm text-gray-600 mt-1">
+                            {match.league.name}
+                          </div>
+                        )}
+                      </div>
+                      <div className="text-xs text-gray-500 text-right">
+                        {new Date(match.match_date).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric'
+                        })}
+                      </div>
+                    </div>
+                    <div className="text-xs text-blue-600 font-medium">
+                      View Details →
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                <div className="text-4xl mb-2">📆</div>
+                <p>No upcoming matches scheduled</p>
+                <p className="text-sm mt-1">Check back later for new matches</p>
+              </div>
+            )}
+          </div>
+
+          {/* Recent Announcements */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <span className="text-2xl">📢</span> League Announcements
+            </h3>
+            {recentAnnouncements.length > 0 ? (
+              <div className="space-y-3">
+                {recentAnnouncements.map((announcement: any) => (
+                  <Link
+                    key={announcement.id}
+                    href={`/leagues/${announcement.league.id}`}
+                    className="block p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all"
+                  >
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="flex-1">
+                        <div className="font-semibold text-gray-900 line-clamp-1">
+                          {announcement.title}
+                        </div>
+                        <div className="text-sm text-gray-600 mt-1 line-clamp-2">
+                          {announcement.content}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex justify-between items-center text-xs mt-2">
+                      <span className="text-gray-500">
+                        {announcement.league.name}
+                      </span>
+                      <span className="text-gray-400">
+                        {new Date(announcement.created_at).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric'
+                        })}
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                <div className="text-4xl mb-2">📭</div>
+                <p>No recent announcements</p>
+                <p className="text-sm mt-1">League admins will post updates here</p>
+              </div>
+            )}
+          </div>
         </div>
       </main>
     </div>

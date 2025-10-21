@@ -104,20 +104,22 @@ Consider adding:
 
 ---
 
-### 7. **Dashboard Quick Actions - Visual Hierarchy**
-**Status:** Not Started
+### 7. **Dashboard Quick Actions - Visual Hierarchy** ✅ COMPLETED
+**Status:** Completed 2025-10-21
 **Impact:** Medium
 **Effort:** Small
 
-The 8 cards are equal weight, but some are more important:
-- Make frequently-used actions larger (Enter Scores, View Standings)
-- Group related actions (Teams section, Leagues section, Scores section)
-- Consider a more prominent "Enter Scores" button for league days
+Implemented features:
+- Primary actions (Enter Scores, View Standings) now featured with large gradient cards
+- Green gradient for "Enter Scores" - most frequently used action
+- Yellow gradient for "View Standings" - second most used
+- Secondary actions grouped in 4-column grid (Leagues, Browse Teams, Create Team, Join Code)
+- Tertiary actions in 2-column grid (Match History, Profile)
+- All cards have hover animations with scale effects
+- Clear visual hierarchy guides users to most important actions
 
-**Files to modify:**
-- `/app/dashboard/page.tsx`
-- Adjust grid layout and card sizes
-- Group cards by category
+**Files modified:**
+- `/app/dashboard/page.tsx` - Reorganized quick actions with 3-tier hierarchy
 
 ---
 
@@ -194,21 +196,27 @@ The dashboard cards look great, but consider:
 
 ---
 
-### 12. **Recent Activity - Make it Useful**
-**Status:** Not Started
+### 12. **Recent Activity - Make it Useful** ✅ COMPLETED
+**Status:** Completed 2025-10-21
 **Impact:** Medium
 **Effort:** Medium
 
-Instead of "No recent activity", show:
-- Upcoming matches for user's teams
-- Recent league announcements
-- Friends' recent scores
-- Makes dashboard feel more alive
+Implemented features:
+- Split into two columns: "Upcoming Matches" and "League Announcements"
+- Upcoming Matches section shows next 5 scheduled matches for user's teams
+  - Displays team names, league name, and match date
+  - Clickable cards navigate to match details
+  - Empty state with friendly message when no matches scheduled
+- League Announcements section shows last 5 announcements across all user's leagues
+  - Displays title, content preview (line-clamp), league name, and date
+  - Clickable cards navigate to league page
+  - Empty state explaining admins will post updates
+- Makes dashboard feel active and informative
 
-**Files to modify:**
-- `/app/dashboard/page.tsx`
-- Create `/app/api/activity/route.ts`
-- Query upcoming matches, recent announcements
+**Files modified:**
+- `/app/dashboard/page.tsx` - Added queries for upcoming matches and announcements
+- Fetches all upcoming matches with team and league details
+- Fetches recent announcements from all user's leagues
 
 ---
 
