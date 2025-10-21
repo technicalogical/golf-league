@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { name, max_members = 2, open_to_join = false } = body;
+    const { name, description, max_members = 2, open_to_join = false } = body;
 
     // Validate input
     if (!name || typeof name !== 'string' || name.trim().length === 0) {
@@ -29,6 +29,7 @@ export async function POST(request: NextRequest) {
       .from('teams')
       .insert({
         name: name.trim(),
+        description: description?.trim() || null,
         is_active: true,
         max_members,
         open_to_join,

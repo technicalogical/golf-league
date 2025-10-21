@@ -34,14 +34,54 @@ export default async function LeaguesPage() {
     .select('*')
     .order('created_at', { ascending: false });
 
-  const myLeagues = memberLeagues?.map((ml: any) => ({
-    ...ml.league,
-    role: ml.role,
-  })) || [];
+  // Add team and match counts to leagues
+  const myLeaguesWithCounts = await Promise.all(
+    (memberLeagues || []).map(async (ml: any) => {
+      const league = ml.league;
 
-  const otherLeagues = allLeagues?.filter(
-    (l) => !myLeagues.find((ml) => ml.id === l.id)
-  ) || [];
+      const { count: teamCount } = await supabaseAdmin
+        .from('league_teams')
+        .select('*', { count: 'exact', head: true })
+        .eq('league_id', league.id);
+
+      const { count: matchCount } = await supabaseAdmin
+        .from('matches')
+        .select('*', { count: 'exact', head: true })
+        .eq('league_id', league.id);
+
+      return {
+        ...league,
+        role: ml.role,
+        teamCount: teamCount || 0,
+        matchCount: matchCount || 0,
+      };
+    })
+  );
+
+  const otherLeaguesWithCounts = await Promise.all(
+    (allLeagues || [])
+      .filter((l) => !memberLeagues?.find((ml: any) => ml.league.id === l.id))
+      .map(async (league: any) => {
+        const { count: teamCount } = await supabaseAdmin
+          .from('league_teams')
+          .select('*', { count: 'exact', head: true })
+          .eq('league_id', league.id);
+
+        const { count: matchCount } = await supabaseAdmin
+          .from('matches')
+          .select('*', { count: 'exact', head: true })
+          .eq('league_id', league.id);
+
+        return {
+          ...league,
+          teamCount: teamCount || 0,
+          matchCount: matchCount || 0,
+        };
+      })
+  );
+
+  const myLeagues = myLeaguesWithCounts;
+  const otherLeagues = otherLeaguesWithCounts;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -93,9 +133,19 @@ export default async function LeaguesPage() {
                     </span>
                   </div>
                   {league.description && (
-                    <p className="text-gray-600 text-sm mb-4">{league.description}</p>
+                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">{league.description}</p>
                   )}
-                  <div className="flex justify-between items-center text-sm text-gray-500">
+                  <div className="grid grid-cols-2 gap-2 mb-3 text-sm">
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <span className="text-lg">👥</span>
+                      <span>{league.teamCount} {league.teamCount === 1 ? 'team' : 'teams'}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <span className="text-lg">⛳</span>
+                      <span>{league.matchCount} {league.matchCount === 1 ? 'match' : 'matches'}</span>
+                    </div>
+                  </div>
+                  <div className="flex justify-between items-center text-sm text-gray-500 pt-3 border-t border-gray-200">
                     <span>
                       {new Date(league.start_date).toLocaleDateString()}
                       {league.end_date && ` - ${new Date(league.end_date).toLocaleDateString()}`}
@@ -135,9 +185,19 @@ export default async function LeaguesPage() {
                     </span>
                   </div>
                   {league.description && (
-                    <p className="text-gray-600 text-sm mb-4">{league.description}</p>
+                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">{league.description}</p>
                   )}
-                  <div className="text-sm text-gray-500 mb-4">
+                  <div className="grid grid-cols-2 gap-2 mb-3 text-sm">
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <span className="text-lg">👥</span>
+                      <span>{league.teamCount} {league.teamCount === 1 ? 'team' : 'teams'}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <span className="text-lg">⛳</span>
+                      <span>{league.matchCount} {league.matchCount === 1 ? 'match' : 'matches'}</span>
+                    </div>
+                  </div>
+                  <div className="text-sm text-gray-500 mb-4 pt-3 border-t border-gray-200">
                     {new Date(league.start_date).toLocaleDateString()}
                     {league.end_date && ` - ${new Date(league.end_date).toLocaleDateString()}`}
                   </div>

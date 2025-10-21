@@ -7,6 +7,7 @@ import Link from 'next/link';
 export default function NewTeamPage() {
   const router = useRouter();
   const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
   const [maxMembers, setMaxMembers] = useState(2);
   const [openToJoin, setOpenToJoin] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -25,6 +26,7 @@ export default function NewTeamPage() {
         },
         body: JSON.stringify({
           name,
+          description,
           max_members: maxMembers,
           open_to_join: openToJoin,
         }),
@@ -78,6 +80,23 @@ export default function NewTeamPage() {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Enter your team name..."
               />
+            </div>
+
+            <div>
+              <label htmlFor="description" className="block text-sm font-semibold text-gray-900 mb-2">
+                Team Description (Optional)
+              </label>
+              <textarea
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={3}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Tell others about your team..."
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Help others understand your team's style, goals, or personality
+              </p>
             </div>
 
             <div>
