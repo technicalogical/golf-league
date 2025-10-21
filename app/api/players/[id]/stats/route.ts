@@ -25,11 +25,11 @@ export async function GET(
     }
 
     // Get all scorecards for this player
-    const { data: scorecards } = await supabaseAdmin
+    const { data: scorecards, error: scorecardsError } = await supabaseAdmin
       .from('scorecards')
       .select(`
         *,
-        match:matches!inner(
+        match:matches(
           id,
           match_date,
           status,
@@ -39,13 +39,27 @@ export async function GET(
           team2_points
         )
       `)
-      .eq('player_id', playerId)
-      .eq('match.status', 'completed')
-      .order('match.match_date', { ascending: false });
+      .eq('player_id', playerId);
 
+    console.log('Scorecards query result:', {
+      scorecardsCount: scorecards?.length,
+      scorecardsError,
+      playerId,
+      sampleScorecard: scorecards?.[0]
+    });
+
+    // Filter for completed matches with valid scores
     const completedScorecards = (scorecards || []).filter(
-      (sc: any) => sc.total_score && sc.total_score > 0
+      (sc: any) =>
+        sc.match?.status === 'completed' &&
+        sc.total_score &&
+        sc.total_score > 0
     );
+
+    console.log('Completed scorecards:', {
+      count: completedScorecards.length,
+      sample: completedScorecards[0]
+    });
 
     // Calculate stats
     const total_matches = completedScorecards.length;
@@ -77,8 +91,11 @@ export async function GET(
     const best_score = scores.length > 0 ? Math.min(...scores) : null;
     const worst_score = scores.length > 0 ? Math.max(...scores) : null;
 
-    // Prepare trends data (last 10 matches)
-    const trends = completedScorecards.slice(0, 10).reverse().map((sc: any) => ({
+    // Prepare trends data (last 10 matches, sorted by date)
+    const sortedScorecards = [...completedScorecards].sort(
+      (a, b) => new Date(a.match.match_date).getTime() - new Date(b.match.match_date).getTime()
+    );
+    const trends = sortedScorecards.slice(-10).map((sc: any) => ({
       date: sc.match.match_date,
       score: sc.total_score,
       points: sc.points_earned || 0,
