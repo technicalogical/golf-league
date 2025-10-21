@@ -171,47 +171,64 @@ export default async function LeagueDetailPage({
 
       <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         {/* Action Buttons */}
-        {isAdmin && (
-          <div className="mb-6 flex gap-4 flex-wrap">
-            <Link
-              href={`/leagues/${id}/settings`}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-semibold"
-            >
-              League Settings
-            </Link>
-            <Link
-              href={`/leagues/${id}/teams/add`}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold"
-            >
-              Add Teams
-            </Link>
-            <Link
-              href={`/leagues/${id}/members`}
-              className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 font-semibold"
-            >
-              Manage Members
-            </Link>
-            <Link
-              href={`/leagues/${id}/schedule`}
-              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold"
-            >
-              Generate Schedule
-            </Link>
-            <Link
-              href={`/leagues/${id}/weeks`}
-              className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-semibold"
-            >
-              Manage Week Settings
-            </Link>
-            <Link
-              href={`/leagues/${id}/announcements`}
-              className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 font-semibold"
-            >
-              Manage Announcements
-            </Link>
-            <DestroyScheduleButton leagueId={id} />
-          </div>
-        )}
+        <div className="mb-6 flex gap-4 flex-wrap">
+          {/* Links for all members */}
+          <Link
+            href={`/standings?league_id=${id}`}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold"
+          >
+            View Standings
+          </Link>
+          <Link
+            href={`/matches/history?league_id=${id}`}
+            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold"
+          >
+            Match History
+          </Link>
+
+          {/* Admin-only buttons */}
+          {isAdmin && (
+            <>
+              <Link
+                href={`/leagues/${id}/settings`}
+                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-semibold"
+              >
+                League Settings
+              </Link>
+              <Link
+                href={`/leagues/${id}/teams/add`}
+                className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 font-semibold"
+              >
+                Add Teams
+              </Link>
+              <Link
+                href={`/leagues/${id}/members`}
+                className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 font-semibold"
+              >
+                Manage Members
+              </Link>
+              <Link
+                href={`/leagues/${id}/schedule`}
+                className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-semibold"
+              >
+                Generate Schedule
+              </Link>
+              <Link
+                href={`/leagues/${id}/weeks`}
+                className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-semibold"
+              >
+                Manage Week Settings
+              </Link>
+              <Link
+                href={`/leagues/${id}/announcements`}
+                className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 font-semibold"
+              >
+                Manage Announcements
+              </Link>
+              <DestroyScheduleButton leagueId={id} />
+            </>
+          )}
+        </div>
 
         {/* Announcements Section */}
         {announcements && announcements.length > 0 && (

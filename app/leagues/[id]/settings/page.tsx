@@ -8,6 +8,7 @@ interface LeagueSettings {
   id: string;
   name: string;
   description: string;
+  status: string;
   league_day: string;
   league_time: string;
   is_public: boolean;
@@ -29,6 +30,7 @@ export default function LeagueSettingsPage() {
   const [league, setLeague] = useState<LeagueSettings | null>(null);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+  const [status, setStatus] = useState('upcoming');
   const [leagueDay, setLeagueDay] = useState('');
   const [leagueTime, setLeagueTime] = useState('');
   const [isPublic, setIsPublic] = useState(false);
@@ -60,6 +62,7 @@ export default function LeagueSettingsPage() {
       setLeague(data);
       setName(data.name || '');
       setDescription(data.description || '');
+      setStatus(data.status || 'upcoming');
       setLeagueDay(data.day_of_week || data.league_day || '');
       setLeagueTime(data.time_of_day || data.league_time || '');
       setIsPublic(data.is_public || false);
@@ -94,6 +97,7 @@ export default function LeagueSettingsPage() {
         body: JSON.stringify({
           name,
           description,
+          status,
           league_day: leagueDay,
           league_time: leagueTime,
           is_public: isPublic,
@@ -211,6 +215,25 @@ export default function LeagueSettingsPage() {
                   rows={2}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
+              </div>
+
+              <div>
+                <label htmlFor="status" className="block text-sm font-semibold text-gray-900 mb-2">
+                  League Status *
+                </label>
+                <select
+                  id="status"
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="upcoming">Upcoming</option>
+                  <option value="active">Active</option>
+                  <option value="ended">Ended</option>
+                </select>
+                <p className="mt-1 text-sm text-gray-500">
+                  Set to "Active" during play, "Ended" when the season is over
+                </p>
               </div>
 
               <div className="grid md:grid-cols-2 gap-4">

@@ -7,10 +7,23 @@ export async function GET(request: NextRequest) {
     const leagueId = searchParams.get('league_id');
 
     // Get team standings
-    const { data: teams, error: teamsError } = await supabaseAdmin
-      .from('teams')
-      .select('id, name');
+    let teamsQuery = supabaseAdmin.from('teams').select('id, name');
 
+    // If filtering by league, only get teams in that league
+    if (leagueId && leagueId !== 'all') {
+      const { data: leagueTeams } = await supabaseAdmin
+        .from('league_teams')
+        .select('team_id')
+        .eq('league_id', leagueId);
+
+      const teamIds = (leagueTeams || []).map(lt => lt.team_id);
+      if (teamIds.length === 0) {
+        return NextResponse.json({ teams: [], players: [] });
+      }
+      teamsQuery = teamsQuery.in('id', teamIds);
+    }
+
+    const { data: teams, error: teamsError } = await teamsQuery;
     if (teamsError) throw teamsError;
 
     // Calculate team stats
@@ -63,7 +76,7 @@ export async function GET(request: NextRequest) {
     teamStandings.sort((a, b) => b.total_points - a.total_points);
 
     // Get player standings
-    const { data: players, error: playersError } = await supabaseAdmin
+    let playersQuery = supabaseAdmin
       .from('players')
       .select(`
         id,
@@ -73,6 +86,20 @@ export async function GET(request: NextRequest) {
         team:teams(name)
       `);
 
+    // If filtering by league, only get players on teams in that league
+    if (leagueId && leagueId !== 'all') {
+      const { data: leagueTeams } = await supabaseAdmin
+        .from('league_teams')
+        .select('team_id')
+        .eq('league_id', leagueId);
+
+      const teamIds = (leagueTeams || []).map(lt => lt.team_id);
+      if (teamIds.length > 0) {
+        playersQuery = playersQuery.in('team_id', teamIds);
+      }
+    }
+
+    const { data: players, error: playersError } = await playersQuery;
     if (playersError) throw playersError;
 
     const playerStandings = await Promise.all(
