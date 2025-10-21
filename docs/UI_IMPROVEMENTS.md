@@ -144,36 +144,52 @@ Implemented features:
 
 ## ✨ Nice-to-Have Enhancements
 
-### 9. **Breadcrumbs**
-**Status:** Not Started
+### 9. **Breadcrumbs** ✅ COMPLETED
+**Status:** Completed 2025-10-21
 **Impact:** Low
 **Effort:** Medium
 
-Add breadcrumb navigation:
-- Example: `Dashboard > Teams > Test Eagles`
-- Helps users understand where they are
-- Quick navigation to parent pages
+Implemented features:
+- Created reusable Breadcrumbs component
+- Auto-generates breadcrumbs from URL pathname
+- Manual override with custom items and currentPage prop
+- Skips UUIDs and numeric IDs in path
+- Prettifies path segments (kebab-case to Title Case)
+- Last item is non-clickable (current page)
+- Separator: forward slash (/)
+- Added to browse teams and leagues pages
 
-**Implementation:**
-- Create reusable Breadcrumb component
-- Add to all internal pages
-- Auto-generate from route path
+**Files created:**
+- `/app/components/Breadcrumbs.tsx` - Breadcrumb navigation component
+
+**Files modified:**
+- `/app/teams/browse/page.tsx` - Added breadcrumbs
+- `/app/leagues/page.tsx` - Added breadcrumbs
 
 ---
 
-### 10. **Loading States**
-**Status:** Not Started
+### 10. **Loading States** ✅ COMPLETED
+**Status:** Completed 2025-10-21
 **Impact:** Low
 **Effort:** Small
 
-I noticed some pages show "Loading..." - consider:
-- Skeleton loaders instead of blank states
-- Shows the structure while loading
-- Feels faster and more polished
+Implemented features:
+- Created reusable SkeletonLoader component
+- Four types available: 'card', 'list', 'grid', 'text'
+- Animated pulse effect using Tailwind
+- Ready to replace "Loading..." text across app
+- Better user experience during data fetching
 
-**Files to modify:**
-- Create `components/SkeletonLoader.tsx`
-- Replace "Loading..." text across app
+**Files created:**
+- `/app/components/SkeletonLoader.tsx` - Skeleton loading component
+
+**Usage:**
+```tsx
+<SkeletonLoader type="grid" />  // For grids of cards
+<SkeletonLoader type="list" />  // For list items
+<SkeletonLoader type="card" />  // For single card
+<SkeletonLoader type="text" />  // For text blocks
+```
 
 ---
 
@@ -222,19 +238,32 @@ Implemented features:
 
 ## 🎨 Design Polish
 
-### 13. **Color Coding**
-**Status:** Not Started
+### 13. **Color Coding** ✅ COMPLETED
+**Status:** Completed 2025-10-21
 **Impact:** Low
 **Effort:** Small
 
-- Use colors more strategically (green for active, yellow for upcoming, gray for ended)
-- Team badges/colors (let captains pick a team color)
-- Makes visual scanning easier
+Implemented features:
+- Created reusable StatusBadge component
+- Consistent color scheme for all status types:
+  - Green: active
+  - Gray: inactive
+  - Blue: upcoming
+  - Purple: completed
+  - Yellow: scheduled
+  - Orange: pending
+  - Red: ended
+- Three sizes available: sm, md, lg
+- Applied to leagues page for status indicators
+- Replaces inline conditional styling across app
 
-**Implementation:**
-- Define color scheme in Tailwind config
-- Create status badge component
-- Add team_color to teams table
+**Files created:**
+- `/app/components/StatusBadge.tsx` - Status badge component
+
+**Files modified:**
+- `/app/leagues/page.tsx` - Uses StatusBadge for league status
+
+**Note:** Future enhancement could add team colors (team_color column)
 
 ---
 

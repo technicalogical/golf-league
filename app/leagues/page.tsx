@@ -2,6 +2,8 @@ import { redirect } from 'next/navigation';
 import { getSession } from '@/lib/auth';
 import { supabaseAdmin } from '@/lib/supabase-server';
 import Link from 'next/link';
+import Breadcrumbs from '@/app/components/Breadcrumbs';
+import StatusBadge from '@/app/components/StatusBadge';
 
 export default async function LeaguesPage() {
   const session = await getSession();
@@ -87,9 +89,7 @@ export default async function LeaguesPage() {
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-          <Link href="/dashboard" className="text-blue-600 hover:text-blue-800 text-sm mb-2 block">
-            ← Back to Dashboard
-          </Link>
+          <Breadcrumbs />
           <div className="flex justify-between items-center">
             <h1 className="text-3xl font-bold text-gray-900">Leagues</h1>
             <Link
@@ -120,17 +120,7 @@ export default async function LeaguesPage() {
                 >
                   <div className="flex justify-between items-start mb-2">
                     <h3 className="text-xl font-bold text-gray-900">{league.name}</h3>
-                    <span
-                      className={`px-2 py-1 text-xs font-semibold rounded ${
-                        league.status === 'active'
-                          ? 'bg-green-100 text-green-800'
-                          : league.status === 'upcoming'
-                          ? 'bg-blue-100 text-blue-800'
-                          : 'bg-gray-100 text-gray-800'
-                      }`}
-                    >
-                      {league.status}
-                    </span>
+                    <StatusBadge status={league.status} size="sm" />
                   </div>
                   {league.description && (
                     <p className="text-gray-600 text-sm mb-4 line-clamp-2">{league.description}</p>
@@ -172,17 +162,7 @@ export default async function LeaguesPage() {
                 >
                   <div className="flex justify-between items-start mb-2">
                     <h3 className="text-xl font-bold text-gray-900">{league.name}</h3>
-                    <span
-                      className={`px-2 py-1 text-xs font-semibold rounded ${
-                        league.status === 'active'
-                          ? 'bg-green-100 text-green-800'
-                          : league.status === 'upcoming'
-                          ? 'bg-blue-100 text-blue-800'
-                          : 'bg-gray-100 text-gray-800'
-                      }`}
-                    >
-                      {league.status}
-                    </span>
+                    <StatusBadge status={league.status} size="sm" />
                   </div>
                   {league.description && (
                     <p className="text-gray-600 text-sm mb-4 line-clamp-2">{league.description}</p>

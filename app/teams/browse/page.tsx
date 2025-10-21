@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { supabaseAdmin } from '@/lib/supabase-server';
 import BrowseTeamsClient from './BrowseTeamsClient';
+import Breadcrumbs from '@/app/components/Breadcrumbs';
 
 export default async function BrowseTeamsPage() {
   const session = await getSession();
@@ -55,9 +56,7 @@ export default async function BrowseTeamsPage() {
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
-          <Link href="/dashboard" className="text-blue-600 hover:text-blue-800 text-sm mb-2 block">
-            ← Back to Dashboard
-          </Link>
+          <Breadcrumbs currentPage="Browse Open Teams" />
           <h1 className="text-2xl font-bold text-gray-900">Browse Open Teams</h1>
           <p className="text-gray-600 mt-1">Join a team that's looking for members</p>
         </div>
