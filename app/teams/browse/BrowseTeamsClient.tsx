@@ -60,7 +60,7 @@ export default function BrowseTeamsClient({ teams }: { teams: Team[] }) {
   return (
     <div>
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow p-4 mb-6">
+      <div className="bg-white rounded-lg shadow p-6 mb-8">
         <div className="grid md:grid-cols-3 gap-4">
           {/* Search */}
           <div>

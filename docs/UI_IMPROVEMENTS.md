@@ -267,33 +267,47 @@ Implemented features:
 
 ---
 
-### 14. **Typography Hierarchy**
-**Status:** Not Started
+### 14. **Typography Hierarchy** ✅ COMPLETED
+**Status:** Completed 2025-10-21
 **Impact:** Low
 **Effort:** Small
 
-- Some headings feel similar in size
-- Consider: Page title (largest) > Section title (medium) > Card title (smaller)
-- Better visual hierarchy guides the eye
+Implemented features:
+- Established clear 3-tier heading hierarchy across app:
+  - Page title (h1): text-4xl (dashboard welcome)
+  - Page title (h1): text-3xl (internal pages)
+  - Section title (h2): text-2xl font-bold
+  - Card/subsection title (h3): text-xl font-semibold
+- Improved spacing between heading and content (mb-6 for sections)
+- Better visual separation with consistent font weights
+- Applied across dashboard, leagues, and browse teams pages
 
-**Files to modify:**
-- Review all heading sizes across app
-- Establish consistent sizing scale
+**Files modified:**
+- `/app/dashboard/page.tsx` - Updated all heading sizes and weights
+- `/app/leagues/page.tsx` - Consistent section headings
+- `/app/teams/browse/page.tsx` - Page title hierarchy
 
 ---
 
-### 15. **Spacing & White Space**
-**Status:** Not Started
+### 15. **Spacing & White Space** ✅ COMPLETED
+**Status:** Completed 2025-10-21
 **Impact:** Low
 **Effort:** Small
 
-- Some sections feel cramped (browse teams cards)
-- Add more breathing room between cards
-- Consider max-width for text blocks for readability
+Implemented features:
+- Increased section spacing from mb-8 to mb-10/mb-12 for better breathing room
+- Added max-width constraints to text blocks (max-w-2xl on welcome message)
+- Improved padding on cards and containers:
+  - Welcome card: p-6 → p-8
+  - Filter panels: p-4 → p-6
+  - Section spacing: mb-4 → mb-6
+- Increased gaps between sections for clearer visual separation
+- Added mt-12 before Recent Activity for clear section break
 
-**Files to modify:**
-- Review padding/margins across app
-- Add max-width constraints to content areas
+**Files modified:**
+- `/app/dashboard/page.tsx` - Improved spacing throughout
+- `/app/teams/browse/BrowseTeamsClient.tsx` - Filter panel padding
+- `/app/leagues/page.tsx` - Section spacing
 
 ---
 

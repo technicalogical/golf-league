@@ -55,10 +55,10 @@ export default async function BrowseTeamsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
           <Breadcrumbs currentPage="Browse Open Teams" />
-          <h1 className="text-2xl font-bold text-gray-900">Browse Open Teams</h1>
-          <p className="text-gray-600 mt-1">Join a team that's looking for members</p>
+          <h1 className="text-3xl font-bold text-gray-900 mt-2">Browse Open Teams</h1>
+          <p className="text-gray-600 mt-2 text-base">Join a team that's looking for members</p>
         </div>
       </header>
 

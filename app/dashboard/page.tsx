@@ -240,11 +240,11 @@ export default async function DashboardPage() {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         {/* Welcome Section with Quick Overview */}
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
+        <div className="grid md:grid-cols-3 gap-6 mb-10">
           {/* Welcome Card */}
-          <div className="md:col-span-2 bg-white rounded-lg shadow p-6">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome, {displayName}!</h2>
-            <p className="text-gray-600">
+          <div className="md:col-span-2 bg-white rounded-lg shadow p-8">
+            <h1 className="text-4xl font-bold text-gray-900 mb-3">Welcome, {displayName}!</h1>
+            <p className="text-gray-600 text-lg max-w-2xl">
               Manage your golf league, enter scores, and track your standings.
             </p>
           </div>
@@ -290,8 +290,8 @@ export default async function DashboardPage() {
 
         {/* My Teams Section */}
         {allUserTeams && allUserTeams.length > 0 && (
-          <div className="mb-8">
-            <h3 className="text-2xl font-semibold text-gray-900 mb-4">My Teams</h3>
+          <div className="mb-10">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">My Teams</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {allUserTeams.map((teamMembership: any) => {
                 const team = teamMembership.team;
@@ -330,8 +330,8 @@ export default async function DashboardPage() {
 
         {/* My Leagues */}
         {leaguesWithTeams && leaguesWithTeams.length > 0 && (
-          <div className="mb-8">
-            <h3 className="text-2xl font-semibold text-gray-900 mb-4">My Leagues</h3>
+          <div className="mb-10">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">My Leagues</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {leaguesWithTeams.map((membership: any) => {
                 const league = membership.league;
@@ -484,8 +484,8 @@ export default async function DashboardPage() {
         )}
 
         {/* Quick Actions - Grouped by Priority */}
-        <div className="mb-8">
-          <h3 className="text-2xl font-semibold text-gray-900 mb-4">Quick Actions</h3>
+        <div className="mb-10">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Quick Actions</h2>
 
           {/* Primary Actions - Most Frequently Used */}
           <div className="grid md:grid-cols-2 gap-6 mb-6">
@@ -586,12 +586,14 @@ export default async function DashboardPage() {
         </div>
 
         {/* Recent Activity - Upcoming Matches & Announcements */}
-        <div className="mt-8 grid md:grid-cols-2 gap-6">
-          {/* Upcoming Matches */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-              <span className="text-2xl">📅</span> Upcoming Matches
-            </h3>
+        <div className="mt-12 mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Recent Activity</h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Upcoming Matches */}
+            <div className="bg-white rounded-lg shadow p-6">
+              <h3 className="text-xl font-semibold text-gray-900 mb-5 flex items-center gap-2">
+                <span className="text-2xl">📅</span> Upcoming Matches
+              </h3>
             {upcomingMatches.length > 0 ? (
               <div className="space-y-3">
                 {upcomingMatches.map((match: any) => (
@@ -634,11 +636,11 @@ export default async function DashboardPage() {
             )}
           </div>
 
-          {/* Recent Announcements */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-              <span className="text-2xl">📢</span> League Announcements
-            </h3>
+            {/* Recent Announcements */}
+            <div className="bg-white rounded-lg shadow p-6">
+              <h3 className="text-xl font-semibold text-gray-900 mb-5 flex items-center gap-2">
+                <span className="text-2xl">📢</span> League Announcements
+              </h3>
             {recentAnnouncements.length > 0 ? (
               <div className="space-y-3">
                 {recentAnnouncements.map((announcement: any) => (
@@ -678,6 +680,7 @@ export default async function DashboardPage() {
                 <p className="text-sm mt-1">League admins will post updates here</p>
               </div>
             )}
+            </div>
           </div>
         </div>
       </main>

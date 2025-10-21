@@ -105,7 +105,7 @@ export default async function LeaguesPage() {
       <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         {/* My Leagues */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">My Leagues</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">My Leagues</h2>
           {myLeagues.length === 0 ? (
             <div className="bg-white rounded-lg shadow p-6 text-center text-gray-500">
               You are not a member of any leagues yet.
@@ -153,7 +153,7 @@ export default async function LeaguesPage() {
         {/* Other Leagues */}
         {otherLeagues.length > 0 && (
           <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Other Leagues</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Other Leagues</h2>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {otherLeagues.map((league: any) => (
                 <div
