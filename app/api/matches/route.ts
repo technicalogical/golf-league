@@ -137,7 +137,13 @@ export async function GET() {
   try {
     const { data: matches, error } = await supabaseAdmin
       .from('matches')
-      .select('*')
+      .select(`
+        *,
+        team1:teams!matches_team1_id_fkey(id, name),
+        team2:teams!matches_team2_id_fkey(id, name),
+        league:leagues(id, name),
+        course:courses(id, name)
+      `)
       .order('match_date', { ascending: false });
 
     if (error) {
