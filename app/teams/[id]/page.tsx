@@ -47,7 +47,7 @@ export default async function TeamDetailPage({
     );
   }
 
-  // Fetch team members
+  // Fetch team members with player stats
   const { data: members } = await supabaseAdmin
     .from('team_members')
     .select(`
@@ -57,12 +57,65 @@ export default async function TeamDetailPage({
         name,
         display_name,
         email,
-        show_email
+        show_email,
+        avatar_url
       )
     `)
     .eq('team_id', id)
     .order('is_captain', { ascending: false })
     .order('joined_at', { ascending: true });
+
+  // Get player records for team members
+  const memberUserIds = members?.map((m: any) => m.user_id) || [];
+  const { data: players } = await supabaseAdmin
+    .from('players')
+    .select('id, user_id, handicap, team_id')
+    .in('user_id', memberUserIds)
+    .eq('team_id', id);
+
+  // Get match counts for each player
+  const playerIds = players?.map((p: any) => p.id) || [];
+  const { data: scorecards } = await supabaseAdmin
+    .from('scorecards')
+    .select(`
+      player_id,
+      points_earned,
+      match:matches!inner(status)
+    `)
+    .in('player_id', playerIds);
+
+  // Aggregate stats by player
+  const playerStats = (players || []).map((player: any) => {
+    const playerScorecards = (scorecards || []).filter(
+      (sc: any) => sc.player_id === player.id && sc.match?.status === 'completed'
+    );
+    const totalPoints = playerScorecards.reduce(
+      (sum: number, sc: any) => sum + (sc.points_earned || 0),
+      0
+    );
+
+    return {
+      user_id: player.user_id,
+      player_id: player.id,
+      handicap: player.handicap,
+      matches_played: playerScorecards.length,
+      total_points: totalPoints,
+    };
+  });
+
+  // Merge stats with members
+  const membersWithStats = (members || []).map((member: any) => {
+    const stats = playerStats.find((ps: any) => ps.user_id === member.user_id);
+    return {
+      ...member,
+      stats: stats || {
+        player_id: null,
+        handicap: null,
+        matches_played: 0,
+        total_points: 0,
+      },
+    };
+  });
 
   // Check if current user is captain
   const isCaptain = team.captain_id === userId;
@@ -110,12 +163,12 @@ export default async function TeamDetailPage({
 
               <TeamMembersList
                 teamId={team.id}
-                members={members || []}
+                members={membersWithStats || []}
                 isCaptain={isCaptain}
                 currentUserId={userId}
               />
 
-              {(!members || members.length === 0) && (
+              {(!membersWithStats || membersWithStats.length === 0) && (
                 <div className="text-center py-8 text-gray-500">
                   <div className="text-4xl mb-2">👥</div>
                   <p>No members yet. Share the invite code to add teammates.</p>
