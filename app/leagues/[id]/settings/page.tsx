@@ -164,14 +164,14 @@ export default function LeagueSettingsPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-xl text-gray-600">Loading...</div>
+        <div className="text-xl text-gray-600 dark:text-gray-300">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <header className="bg-white dark:bg-gray-800 shadow">
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
           <Link
             href={`/leagues/${leagueId}`}
@@ -179,14 +179,14 @@ export default function LeagueSettingsPage() {
           >
             ← Back to League
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900">League Settings</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">League Settings</h1>
         </div>
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Information */}
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <h2 className="text-xl font-bold text-gray-900 mb-4">Basic Information</h2>
 
             <div className="space-y-4">
@@ -231,7 +231,7 @@ export default function LeagueSettingsPage() {
                   <option value="active">Active</option>
                   <option value="ended">Ended</option>
                 </select>
-                <p className="mt-1 text-sm text-gray-500">
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                   Set to "Active" during play, "Ended" when the season is over
                 </p>
               </div>
@@ -275,7 +275,7 @@ export default function LeagueSettingsPage() {
           </div>
 
           {/* Visibility Settings */}
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <h2 className="text-xl font-bold text-gray-900 mb-4">Visibility Settings</h2>
 
             <div className="space-y-4">
@@ -287,8 +287,8 @@ export default function LeagueSettingsPage() {
                   className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"
                 />
                 <div className="ml-3">
-                  <span className="text-sm font-semibold text-gray-900">Public League</span>
-                  <p className="text-xs text-gray-500">
+                  <span className="text-sm font-semibold text-gray-900 dark:text-white">Public League</span>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
                     Allow non-members to view league information and standings
                   </p>
                 </div>
@@ -302,8 +302,8 @@ export default function LeagueSettingsPage() {
                   className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"
                 />
                 <div className="ml-3">
-                  <span className="text-sm font-semibold text-gray-900">Enable Landing Page</span>
-                  <p className="text-xs text-gray-500">
+                  <span className="text-sm font-semibold text-gray-900 dark:text-white">Enable Landing Page</span>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
                     Create a public landing page with league information and contact details
                   </p>
                 </div>
@@ -313,7 +313,7 @@ export default function LeagueSettingsPage() {
 
           {/* Landing Page Content */}
           {landingPageEnabled && (
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
               <h2 className="text-xl font-bold text-gray-900 mb-4">Landing Page Content</h2>
 
               <div className="space-y-4">
@@ -350,7 +350,7 @@ export default function LeagueSettingsPage() {
 
           {/* Contact Information */}
           {landingPageEnabled && (
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
               <h2 className="text-xl font-bold text-gray-900 mb-4">Contact Information</h2>
 
               <div className="space-y-4">
@@ -398,7 +398,7 @@ export default function LeagueSettingsPage() {
 
           {/* Registration Settings */}
           {landingPageEnabled && (
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
               <h2 className="text-xl font-bold text-gray-900 mb-4">Registration</h2>
 
               <div className="space-y-4">
@@ -410,8 +410,8 @@ export default function LeagueSettingsPage() {
                     className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"
                   />
                   <div className="ml-3">
-                    <span className="text-sm font-semibold text-gray-900">Registration Open</span>
-                    <p className="text-xs text-gray-500">
+                    <span className="text-sm font-semibold text-gray-900 dark:text-white">Registration Open</span>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                       Show that the league is accepting new members
                     </p>
                   </div>
@@ -457,7 +457,7 @@ export default function LeagueSettingsPage() {
             </button>
             <Link
               href={`/leagues/${leagueId}`}
-              className="flex-1 px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold text-center"
+              className="flex-1 px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold text-center"
             >
               Cancel
             </Link>
@@ -523,7 +523,7 @@ export default function LeagueSettingsPage() {
                     setShowDeleteConfirm(false);
                     setDeleteConfirmText('');
                   }}
-                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold"
+                  className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold"
                 >
                   Cancel
                 </button>

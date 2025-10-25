@@ -73,21 +73,21 @@ export default async function MatchResultsPage({
   });
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <header className="bg-white shadow">
+      <header className="bg-white dark:bg-gray-800 shadow">
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
           <Link href="/matches" className="text-blue-600 hover:text-blue-800 text-sm mb-2 block">
             ← Back to Matches
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900">Match Results</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Match Results</h1>
         </div>
       </header>
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         {/* Match Summary */}
-        <div className="bg-white rounded-lg shadow p-8 mb-8">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-8 mb-8">
           <div className="text-center mb-6">
             <div className="text-sm text-gray-600 mb-2">
               {new Date(match.match_date).toLocaleDateString('en-US', {
@@ -97,7 +97,7 @@ export default async function MatchResultsPage({
                 day: 'numeric',
               })}
             </div>
-            <div className="text-xs text-gray-500">{match.course?.name} • Par {match.course?.par}</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400">{match.course?.name} • Par {match.course?.par}</div>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 items-center">
@@ -128,13 +128,13 @@ export default async function MatchResultsPage({
         </div>
 
         {/* Detailed Scorecard */}
-        <div className="bg-white rounded-lg shadow overflow-x-auto">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-x-auto">
           <div className="p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Detailed Scorecard</h2>
           </div>
 
           <table className="w-full text-sm">
-            <thead className="bg-gray-100 border-y-2 border-gray-300">
+            <thead className="bg-gray-100 dark:bg-gray-700 border-y-2 border-gray-300 dark:border-gray-600">
               <tr>
                 <th className="p-3 text-left font-semibold">Hole</th>
                 <th className="p-3 text-center font-semibold">Par</th>
@@ -160,7 +160,7 @@ export default async function MatchResultsPage({
                   <tr key={holeNumber} className="border-b hover:bg-gray-50">
                     <td className="p-3 font-semibold">{holeNumber}</td>
                     <td className="p-3 text-center">{holeData?.hole?.par || '-'}</td>
-                    <td className="p-3 text-center text-sm text-gray-600">
+                    <td className="p-3 text-center text-sm text-gray-600 dark:text-gray-300">
                       {holeData?.hole?.handicap_index || '-'}
                     </td>
                     {match.scorecards?.map((sc: any) => {
@@ -191,14 +191,14 @@ export default async function MatchResultsPage({
               })}
 
               {/* Totals Row */}
-              <tr className="bg-gray-100 font-bold border-t-2 border-gray-300">
+              <tr className="bg-gray-100 dark:bg-gray-700 font-bold border-t-2 border-gray-300 dark:border-gray-600">
                 <td className="p-3" colSpan={3}>
                   TOTAL
                 </td>
                 {match.scorecards?.map((sc: any) => (
                   <td key={sc.id} className="p-3 text-center">
                     <div>{sc.total_score}</div>
-                    <div className="text-xs font-normal text-gray-600">
+                    <div className="text-xs font-normal text-gray-600 dark:text-gray-300">
                       {sc.points_earned} pts
                     </div>
                   </td>
@@ -212,7 +212,7 @@ export default async function MatchResultsPage({
         <div className="mt-6 flex gap-4 justify-center">
           <Link
             href="/matches"
-            className="px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold"
+            className="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold"
           >
             Back to Matches
           </Link>

@@ -119,9 +119,9 @@ export default function PlayerStatsPage() {
   const { player, stats: playerStats, trends, recent_matches, head_to_head } = stats;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <header className="bg-white shadow">
+      <header className="bg-white dark:bg-gray-800 shadow">
         <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
           <Link
             href={`/teams/${player.team.id}`}
@@ -131,11 +131,11 @@ export default function PlayerStatsPage() {
           </Link>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">{player.name}</h1>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{player.name}</h1>
               <p className="text-gray-600 mt-1">{player.team.name}</p>
             </div>
             <div className="text-right">
-              <div className="text-sm text-gray-600">Current Handicap</div>
+              <div className="text-sm text-gray-600 dark:text-gray-300">Current Handicap</div>
               <div className="text-3xl font-bold text-blue-600">{player.handicap}</div>
             </div>
           </div>
@@ -145,25 +145,25 @@ export default function PlayerStatsPage() {
       <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         {/* Career Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="text-sm text-gray-600">Total Matches</div>
-            <div className="text-3xl font-bold text-gray-900">{playerStats.total_matches}</div>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <div className="text-sm text-gray-600 dark:text-gray-300">Total Matches</div>
+            <div className="text-3xl font-bold text-gray-900 dark:text-white">{playerStats.total_matches}</div>
           </div>
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="text-sm text-gray-600">Total Points</div>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <div className="text-sm text-gray-600 dark:text-gray-300">Total Points</div>
             <div className="text-3xl font-bold text-blue-600">{playerStats.total_points.toFixed(1)}</div>
           </div>
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="text-sm text-gray-600">Record</div>
-            <div className="text-lg font-bold text-gray-900">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <div className="text-sm text-gray-600 dark:text-gray-300">Record</div>
+            <div className="text-lg font-bold text-gray-900 dark:text-white">
               <span className="text-green-600">{playerStats.wins}</span>-
               <span className="text-red-600">{playerStats.losses}</span>-
-              <span className="text-gray-600">{playerStats.ties}</span>
+              <span className="text-gray-600 dark:text-gray-300">{playerStats.ties}</span>
             </div>
           </div>
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="text-sm text-gray-600">Avg Score</div>
-            <div className="text-3xl font-bold text-gray-900">{playerStats.avg_score.toFixed(1)}</div>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <div className="text-sm text-gray-600 dark:text-gray-300">Avg Score</div>
+            <div className="text-3xl font-bold text-gray-900 dark:text-white">{playerStats.avg_score.toFixed(1)}</div>
           </div>
         </div>
 
@@ -171,7 +171,7 @@ export default function PlayerStatsPage() {
         {trends && trends.length > 0 && (
           <div className="grid md:grid-cols-2 gap-6 mb-8">
             {/* Score Trend */}
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
               <h2 className="text-xl font-bold text-gray-900 mb-4">Score Trend</h2>
               <ResponsiveContainer width="100%" height={250}>
                 <LineChart data={trends}>
@@ -197,7 +197,7 @@ export default function PlayerStatsPage() {
             </div>
 
             {/* Points Trend */}
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
               <h2 className="text-xl font-bold text-gray-900 mb-4">Points Trend</h2>
               <ResponsiveContainer width="100%" height={250}>
                 <LineChart data={trends}>
@@ -226,11 +226,11 @@ export default function PlayerStatsPage() {
 
         {/* Recent Matches */}
         {recent_matches && recent_matches.length > 0 && (
-          <div className="bg-white rounded-lg shadow p-6 mb-8">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8">
             <h2 className="text-xl font-bold text-gray-900 mb-4">Recent Matches</h2>
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-100 border-b">
+                <thead className="bg-gray-100 dark:bg-gray-700 border-b">
                   <tr>
                     <th className="p-3 text-left">Date</th>
                     <th className="p-3 text-left">Opponent</th>
@@ -257,7 +257,7 @@ export default function PlayerStatsPage() {
                               ? 'bg-green-100 text-green-800'
                               : match.result === 'loss'
                               ? 'bg-red-100 text-red-800'
-                              : 'bg-gray-100 text-gray-800'
+                              : 'bg-gray-100 dark:bg-gray-700 text-gray-800'
                           }`}
                         >
                           {match.result.toUpperCase()}
@@ -273,11 +273,11 @@ export default function PlayerStatsPage() {
 
         {/* Head to Head Records */}
         {head_to_head && head_to_head.length > 0 && (
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <h2 className="text-xl font-bold text-gray-900 mb-4">Head-to-Head Records</h2>
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-100 border-b">
+                <thead className="bg-gray-100 dark:bg-gray-700 border-b">
                   <tr>
                     <th className="p-3 text-left">Opponent</th>
                     <th className="p-3 text-center">Matches</th>
@@ -303,7 +303,7 @@ export default function PlayerStatsPage() {
                         <td className="p-3 text-center text-red-600">
                           {record.losses}
                         </td>
-                        <td className="p-3 text-center text-gray-600">
+                        <td className="p-3 text-center text-gray-600 dark:text-gray-300">
                           {record.ties}
                         </td>
                         <td className="p-3 text-center font-semibold">

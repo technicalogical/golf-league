@@ -168,12 +168,12 @@ export default function ScorecardPage() {
     <div className="min-h-screen bg-gray-50 p-4">
       <div className="max-w-7xl mx-auto">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Scorecard Entry</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Scorecard Entry</h1>
           <p className="text-gray-600 mt-2">
             Enter scores for all players. Net scores calculated automatically.
           </p>
           {match && (
-            <div className="mt-3 flex gap-4 text-sm text-gray-700">
+            <div className="mt-3 flex gap-4 text-sm text-gray-700 dark:text-gray-200">
               <span className="font-semibold">
                 {match.holes_to_play === 9
                   ? `9 Holes (${match.nine_selection === 'front' ? 'Front' : 'Back'})`
@@ -201,9 +201,9 @@ export default function ScorecardPage() {
         </div>
 
         {/* Scorecard Table */}
-        <div className="bg-white rounded-lg shadow overflow-x-auto">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-gray-100 border-b-2 border-gray-300">
+            <thead className="bg-gray-100 dark:bg-gray-700 border-b-2 border-gray-300 dark:border-gray-600">
               <tr>
                 <th className="p-3 text-left font-semibold">Hole</th>
                 <th className="p-3 text-center font-semibold">Yards</th>
@@ -223,9 +223,9 @@ export default function ScorecardPage() {
               {holes.map((hole) => (
                 <tr key={hole.id} className="border-b hover:bg-gray-50">
                   <td className="p-3 font-semibold">{hole.hole_number}</td>
-                  <td className="p-3 text-center text-sm text-gray-600">{getYardage(hole)}</td>
+                  <td className="p-3 text-center text-sm text-gray-600 dark:text-gray-300">{getYardage(hole)}</td>
                   <td className="p-3 text-center">{hole.par}</td>
-                  <td className="p-3 text-center text-sm text-gray-600">
+                  <td className="p-3 text-center text-sm text-gray-600 dark:text-gray-300">
                     {hole.handicap_index}
                   </td>
                   {players.map((player) => {
@@ -256,7 +256,7 @@ export default function ScorecardPage() {
                 </tr>
               ))}
               {/* Totals Row */}
-              <tr className="bg-gray-100 font-bold">
+              <tr className="bg-gray-100 dark:bg-gray-700 font-bold">
                 <td className="p-3" colSpan={4}>
                   TOTAL
                 </td>

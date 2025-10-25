@@ -47,9 +47,9 @@ export default function AddPlayerPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <header className="bg-white shadow">
+      <header className="bg-white dark:bg-gray-800 shadow">
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
           <Link
             href={`/teams/${teamId}`}
@@ -57,13 +57,13 @@ export default function AddPlayerPage() {
           >
             ← Back to Team
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900">Add Player to Team</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Add Player to Team</h1>
         </div>
       </header>
 
       {/* Main Content */}
       <main className="max-w-2xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-800 rounded-lg p-4">
@@ -113,7 +113,7 @@ export default function AddPlayerPage() {
                 onChange={(e) => setIsActive(e.target.checked)}
                 className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
               />
-              <label htmlFor="is_active" className="text-sm font-medium text-gray-900">
+              <label htmlFor="is_active" className="text-sm font-medium text-gray-900 dark:text-white">
                 Active (can participate in matches)
               </label>
             </div>
@@ -128,7 +128,7 @@ export default function AddPlayerPage() {
               </button>
               <Link
                 href={`/teams/${teamId}`}
-                className="flex-1 px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold text-center"
+                className="flex-1 px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold text-center"
               >
                 Cancel
               </Link>

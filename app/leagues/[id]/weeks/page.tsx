@@ -147,7 +147,7 @@ export default function LeagueWeekSettingsPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-xl text-gray-600">Loading...</div>
+        <div className="text-xl text-gray-600 dark:text-gray-300">Loading...</div>
       </div>
     );
   }
@@ -158,8 +158,8 @@ export default function LeagueWeekSettingsPage() {
 
   if (weeks.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <header className="bg-white shadow">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <header className="bg-white dark:bg-gray-800 shadow">
           <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
             <Link
               href={`/leagues/${leagueId}`}
@@ -167,11 +167,11 @@ export default function LeagueWeekSettingsPage() {
             >
               ← Back to League
             </Link>
-            <h1 className="text-2xl font-bold text-gray-900">Manage Week Settings</h1>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Manage Week Settings</h1>
           </div>
         </header>
         <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-lg shadow p-6 text-center">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center">
             <p className="text-gray-600 mb-4">
               No scheduled matches with week numbers found. Generate a schedule first.
             </p>
@@ -188,8 +188,8 @@ export default function LeagueWeekSettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <header className="bg-white dark:bg-gray-800 shadow">
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
           <Link
             href={`/leagues/${leagueId}`}
@@ -197,7 +197,7 @@ export default function LeagueWeekSettingsPage() {
           >
             ← Back to League
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900">Manage Week Settings</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Manage Week Settings</h1>
           <p className="text-gray-600 mt-1">
             Configure course, format, and conditions for each week
           </p>
@@ -221,12 +221,12 @@ export default function LeagueWeekSettingsPage() {
           {weeks.map((weekNumber) => {
             const week = weekSettings[weekNumber];
             return (
-              <div key={weekNumber} className="bg-white rounded-lg shadow p-6">
+              <div key={weekNumber} className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                 <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-xl font-bold text-gray-900">
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                     Week {weekNumber}
                   </h2>
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-gray-600 dark:text-gray-300">
                     {week.matches.length} match{week.matches.length !== 1 ? 'es' : ''}
                   </span>
                 </div>
@@ -236,7 +236,7 @@ export default function LeagueWeekSettingsPage() {
                   <p className="text-sm font-semibold text-gray-700 mb-2">Matches:</p>
                   <div className="space-y-1">
                     {week.matches.map((match) => (
-                      <div key={match.id} className="text-sm text-gray-600">
+                      <div key={match.id} className="text-sm text-gray-600 dark:text-gray-300">
                         • {match.team1.name} vs {match.team2.name} - {new Date(match.match_date).toLocaleDateString()}
                       </div>
                     ))}

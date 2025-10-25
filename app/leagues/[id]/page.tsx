@@ -114,8 +114,8 @@ export default async function LeagueDetailPage({
     .order('created_at', { ascending: false });
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <header className="bg-white dark:bg-gray-800 shadow">
         <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex gap-4 text-sm mb-2">
             <Link href="/dashboard" className="text-blue-600 hover:text-blue-800">
@@ -132,7 +132,7 @@ export default async function LeagueDetailPage({
           </div>
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">{league.name}</h1>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{league.name}</h1>
               {league.description && (
                 <p className="text-gray-600 mt-1">{league.description}</p>
               )}
@@ -144,7 +144,7 @@ export default async function LeagueDetailPage({
                     ? 'bg-green-100 text-green-800'
                     : league.status === 'upcoming'
                     ? 'bg-blue-100 text-blue-800'
-                    : 'bg-gray-100 text-gray-800'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-800'
                 }`}
               >
                 {league.status}
@@ -156,7 +156,7 @@ export default async function LeagueDetailPage({
               )}
             </div>
           </div>
-          <div className="mt-4 flex gap-6 text-sm text-gray-600">
+          <div className="mt-4 flex gap-6 text-sm text-gray-600 dark:text-gray-300">
             <span>
               <strong>Start:</strong> {new Date(league.start_date).toLocaleDateString()}
             </span>
@@ -249,7 +249,7 @@ export default async function LeagueDetailPage({
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <h3 className="font-bold text-gray-900">{announcement.title}</h3>
+                        <h3 className="font-bold text-gray-900 dark:text-white">{announcement.title}</h3>
                         {announcement.pinned && (
                           <span className="px-2 py-0.5 text-xs font-semibold bg-yellow-200 text-yellow-800 rounded">
                             PINNED
@@ -275,7 +275,7 @@ export default async function LeagueDetailPage({
 
         <div className="grid lg:grid-cols-2 gap-6">
           {/* Teams Section */}
-          <section className="bg-white rounded-lg shadow p-6">
+          <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <h2 className="text-xl font-bold text-gray-900 mb-4">
               Teams ({leagueTeams?.length || 0})
             </h2>
@@ -284,7 +284,7 @@ export default async function LeagueDetailPage({
             ) : (
               <div className="space-y-4">
                 {leagueTeams.map((lt: any) => (
-                  <div key={lt.id} className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <div key={lt.id} className="p-4 bg-gray-50 rounded-lg border border-gray-200 dark:border-gray-700">
                     <div className="flex justify-between items-start mb-3">
                       <div>
                         <Link
@@ -294,7 +294,7 @@ export default async function LeagueDetailPage({
                           {lt.team.name}
                         </Link>
                         {!lt.team.is_active && (
-                          <span className="ml-2 text-xs text-gray-500">(Inactive)</span>
+                          <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">(Inactive)</span>
                         )}
                       </div>
                       {isAdmin && (
@@ -331,7 +331,7 @@ export default async function LeagueDetailPage({
           </section>
 
           {/* Members Section */}
-          <section className="bg-white rounded-lg shadow p-6">
+          <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <h2 className="text-xl font-bold text-gray-900 mb-4">
               Members ({members?.length || 0})
             </h2>
@@ -345,10 +345,10 @@ export default async function LeagueDetailPage({
                     className="flex justify-between items-center p-3 bg-gray-50 rounded-lg"
                   >
                     <div>
-                      <div className="font-semibold text-gray-900">
+                      <div className="font-semibold text-gray-900 dark:text-white">
                         {member.user?.display_name || member.user?.name || member.user?.email}
                       </div>
-                      <div className="text-sm text-gray-500">{member.user?.email}</div>
+                      <div className="text-sm text-gray-500 dark:text-gray-400">{member.user?.email}</div>
                     </div>
                     <span className="px-2 py-1 text-xs font-semibold bg-blue-50 text-blue-700 rounded">
                       {member.role.replace('_', ' ')}
@@ -398,7 +398,7 @@ export default async function LeagueDetailPage({
                     <div key={weekNum} className="border-l-4 border-blue-500 pl-4">
                       <div className="flex items-center justify-between mb-3">
                         <div>
-                          <h3 className="text-lg font-bold text-gray-900">
+                          <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                             Week {weekNum}
                             {allCompleted && (
                               <span className="ml-2 px-2 py-0.5 text-xs font-semibold bg-green-100 text-green-800 rounded">
@@ -421,7 +421,7 @@ export default async function LeagueDetailPage({
                             {course && ` • ${course.name}`}
                           </div>
                         </div>
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm text-gray-500 dark:text-gray-400">
                           {weekMatches.length} {weekMatches.length === 1 ? 'match' : 'matches'}
                         </div>
                       </div>
@@ -431,7 +431,7 @@ export default async function LeagueDetailPage({
                           <Link
                             key={match.id}
                             href={`/matches/${match.id}`}
-                            className="block p-3 bg-gray-50 rounded-lg hover:bg-gray-100 border border-gray-200"
+                            className="block p-3 bg-gray-50 rounded-lg hover:bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-700"
                           >
                             <div className="flex justify-between items-start mb-2">
                               <div className="font-semibold text-gray-900 text-sm">
@@ -443,7 +443,7 @@ export default async function LeagueDetailPage({
                                     ? 'bg-green-100 text-green-800'
                                     : match.status === 'in_progress'
                                     ? 'bg-yellow-100 text-yellow-800'
-                                    : 'bg-gray-100 text-gray-700'
+                                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700'
                                 }`}
                               >
                                 {match.status === 'scheduled' ? 'Scheduled' :
@@ -451,7 +451,7 @@ export default async function LeagueDetailPage({
                               </span>
                             </div>
                             {match.status === 'completed' && match.team1_points !== null && (
-                              <div className="text-sm font-bold text-gray-900">
+                              <div className="text-sm font-bold text-gray-900 dark:text-white">
                                 {match.team1_points} - {match.team2_points}
                               </div>
                             )}

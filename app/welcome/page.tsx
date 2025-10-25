@@ -92,14 +92,14 @@ export default function WelcomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center px-4">
       <div className="max-w-2xl w-full">
-        <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 md:p-12">
           {/* Header */}
           <div className="text-center mb-8">
             <div className="text-6xl mb-4">⛳</div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
               Welcome to Golf League!
             </h1>
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-300">
               Let's set up your profile to get started
             </p>
           </div>
@@ -175,8 +175,8 @@ export default function WelcomePage() {
                     className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"
                   />
                   <div className="ml-3">
-                    <span className="text-sm font-medium text-gray-900">Show my email to other users</span>
-                    <p className="text-xs text-gray-500">
+                    <span className="text-sm font-medium text-gray-900 dark:text-white">Show my email to other users</span>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                       League admins can always see your email
                     </p>
                   </div>
@@ -190,7 +190,7 @@ export default function WelcomePage() {
                     className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"
                   />
                   <div className="ml-3">
-                    <span className="text-sm font-medium text-gray-900">Show my phone to other users</span>
+                    <span className="text-sm font-medium text-gray-900 dark:text-white">Show my phone to other users</span>
                   </div>
                 </label>
               </div>
@@ -209,7 +209,7 @@ export default function WelcomePage() {
                 type="button"
                 onClick={handleSkip}
                 disabled={isSubmitting}
-                className="w-full px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 rounded-lg hover:bg-gray-200 dark:bg-gray-700 font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Skip optional fields
               </button>

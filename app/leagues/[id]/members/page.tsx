@@ -139,14 +139,14 @@ export default function ManageLeagueMembersPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-xl text-gray-600">Loading members...</div>
+        <div className="text-xl text-gray-600 dark:text-gray-300">Loading members...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <header className="bg-white dark:bg-gray-800 shadow">
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
           <Link
             href={`/leagues/${leagueId}`}
@@ -154,7 +154,7 @@ export default function ManageLeagueMembersPage() {
           >
             ← Back to League
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900">Manage League Members</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Manage League Members</h1>
         </div>
       </header>
 
@@ -172,7 +172,7 @@ export default function ManageLeagueMembersPage() {
         )}
 
         {/* Add Member Form */}
-        <div className="bg-white rounded-lg shadow p-6 mb-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
           <h2 className="text-xl font-bold text-gray-900 mb-4">Add New Member</h2>
           <form onSubmit={handleAddMember} className="space-y-4">
             <div>
@@ -217,7 +217,7 @@ export default function ManageLeagueMembersPage() {
         </div>
 
         {/* Current Members */}
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <h2 className="text-xl font-bold text-gray-900 mb-4">
             Current Members ({members.length})
           </h2>
@@ -231,10 +231,10 @@ export default function ManageLeagueMembersPage() {
                   className="flex justify-between items-center p-4 bg-gray-50 rounded-lg"
                 >
                   <div className="flex-1">
-                    <div className="font-semibold text-gray-900">
+                    <div className="font-semibold text-gray-900 dark:text-white">
                       {member.user?.display_name || member.user?.name || member.user?.email}
                     </div>
-                    <div className="text-sm text-gray-500">{member.user?.email}</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">{member.user?.email}</div>
                   </div>
                   <div className="flex items-center gap-2">
                     <select

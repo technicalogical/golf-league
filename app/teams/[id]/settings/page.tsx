@@ -83,7 +83,7 @@ export default function TeamSettingsPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-xl text-gray-600">Loading...</div>
+        <div className="text-xl text-gray-600 dark:text-gray-300">Loading...</div>
       </div>
     );
   }
@@ -102,8 +102,8 @@ export default function TeamSettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <header className="bg-white dark:bg-gray-800 shadow">
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
           <Link
             href={`/teams/${teamId}`}
@@ -111,14 +111,14 @@ export default function TeamSettingsPage() {
           >
             ← Back to Team
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900">Team Settings</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Team Settings</h1>
           <p className="text-gray-600 mt-1">{team.name}</p>
         </div>
       </header>
 
       <main className="max-w-2xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <h2 className="text-xl font-bold text-gray-900 mb-4">Join Settings</h2>
 
             <div className="space-y-4">
@@ -130,7 +130,7 @@ export default function TeamSettingsPage() {
                   className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"
                 />
                 <div className="ml-3">
-                  <span className="text-sm font-semibold text-gray-900">Open Team</span>
+                  <span className="text-sm font-semibold text-gray-900 dark:text-white">Open Team</span>
                   <p className="text-xs text-gray-500 mt-1">
                     Allow anyone to join your team without an invite code
                   </p>
@@ -176,7 +176,7 @@ export default function TeamSettingsPage() {
             </button>
             <Link
               href={`/teams/${teamId}`}
-              className="flex-1 px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold text-center"
+              className="flex-1 px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold text-center"
             >
               Cancel
             </Link>

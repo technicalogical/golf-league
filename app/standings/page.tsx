@@ -85,7 +85,7 @@ export default function StandingsPage() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900">League Standings</h1>
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white">League Standings</h1>
           <p className="text-gray-600 mt-2">
             Current season rankings and statistics
           </p>
@@ -139,9 +139,9 @@ export default function StandingsPage() {
 
         {/* Team Standings */}
         {view === 'teams' && (
-          <div className="bg-white rounded-lg shadow overflow-hidden">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
             <table className="w-full">
-              <thead className="bg-gray-100 border-b-2 border-gray-300">
+              <thead className="bg-gray-100 dark:bg-gray-700 border-b-2 border-gray-300 dark:border-gray-600">
                 <tr>
                   <th className="p-4 text-left font-semibold">Rank</th>
                   <th className="p-4 text-left font-semibold">Team</th>
@@ -165,7 +165,7 @@ export default function StandingsPage() {
                         className={`inline-flex items-center justify-center w-8 h-8 rounded-full ${
                           index === 0
                             ? 'bg-yellow-400 text-yellow-900 font-bold'
-                            : 'bg-gray-200 text-gray-700'
+                            : 'bg-gray-200 dark:bg-gray-700 text-gray-700'
                         }`}
                       >
                         {index + 1}
@@ -191,7 +191,7 @@ export default function StandingsPage() {
                     <td className="p-4 text-center text-red-600">
                       {team.losses}
                     </td>
-                    <td className="p-4 text-center text-gray-600">
+                    <td className="p-4 text-center text-gray-600 dark:text-gray-300">
                       {team.ties}
                     </td>
                   </tr>
@@ -199,7 +199,7 @@ export default function StandingsPage() {
               </tbody>
             </table>
             {teamStandings.length === 0 && (
-              <div className="p-8 text-center text-gray-500">
+              <div className="p-8 text-center text-gray-500 dark:text-gray-400">
                 No team data available yet
               </div>
             )}
@@ -208,9 +208,9 @@ export default function StandingsPage() {
 
         {/* Player Standings */}
         {view === 'players' && (
-          <div className="bg-white rounded-lg shadow overflow-hidden">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
             <table className="w-full">
-              <thead className="bg-gray-100 border-b-2 border-gray-300">
+              <thead className="bg-gray-100 dark:bg-gray-700 border-b-2 border-gray-300 dark:border-gray-600">
                 <tr>
                   <th className="p-4 text-left font-semibold">Rank</th>
                   <th className="p-4 text-left font-semibold">Player</th>
@@ -235,7 +235,7 @@ export default function StandingsPage() {
                         className={`inline-flex items-center justify-center w-8 h-8 rounded-full ${
                           index === 0
                             ? 'bg-yellow-400 text-yellow-900 font-bold'
-                            : 'bg-gray-200 text-gray-700'
+                            : 'bg-gray-200 dark:bg-gray-700 text-gray-700'
                         }`}
                       >
                         {index + 1}
@@ -251,7 +251,7 @@ export default function StandingsPage() {
                         )}
                       </div>
                     </td>
-                    <td className="p-4 text-gray-600">{player.team_name}</td>
+                    <td className="p-4 text-gray-600 dark:text-gray-300">{player.team_name}</td>
                     <td className="p-4 text-center">{player.handicap}</td>
                     <td className="p-4 text-center">{player.matches_played}</td>
                     <td className="p-4 text-center font-bold text-blue-600">
@@ -268,7 +268,7 @@ export default function StandingsPage() {
               </tbody>
             </table>
             {playerStandings.length === 0 && (
-              <div className="p-8 text-center text-gray-500">
+              <div className="p-8 text-center text-gray-500 dark:text-gray-400">
                 No player data available yet
               </div>
             )}
@@ -278,7 +278,7 @@ export default function StandingsPage() {
         {/* Legend */}
         <div className="mt-6 p-4 bg-white rounded-lg shadow">
           <h3 className="font-semibold text-gray-700 mb-2">Legend</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600 dark:text-gray-300">
             <div>
               <span className="font-semibold">GP:</span> Games Played
             </div>
@@ -313,7 +313,7 @@ export default function StandingsPage() {
           </Link>
           <Link
             href="/dashboard"
-            className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-semibold"
+            className="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 rounded-lg hover:bg-gray-300 font-semibold"
           >
             Dashboard
           </Link>

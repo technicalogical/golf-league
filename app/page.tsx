@@ -16,32 +16,32 @@ export default async function Home() {
           <h1 className="text-6xl font-bold text-gray-900 mb-4">
             Indoor Golf League
           </h1>
-          <p className="text-xl text-gray-600">
+          <p className="text-xl text-gray-600 dark:text-gray-300">
             Track scores, manage teams, and view standings for your indoor golf league
           </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6 mb-12">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
             <div className="text-4xl mb-4">⛳</div>
             <h3 className="text-xl font-semibold mb-2">Scorecard Entry</h3>
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-300">
               Easy hole-by-hole score entry with automatic handicap calculation
             </p>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-lg">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
             <div className="text-4xl mb-4">🏆</div>
             <h3 className="text-xl font-semibold mb-2">Live Standings</h3>
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-300">
               Real-time team and player rankings updated after each match
             </p>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-lg">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
             <div className="text-4xl mb-4">📊</div>
             <h3 className="text-xl font-semibold mb-2">Match Results</h3>
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-300">
               Detailed match breakdowns with head-to-head scoring
             </p>
           </div>
@@ -59,19 +59,19 @@ export default async function Home() {
             </form>
             <Link
               href="/standings"
-              className="px-8 py-4 bg-white text-gray-700 rounded-lg hover:bg-gray-50 font-semibold text-lg shadow-lg border border-gray-200"
+              className="px-8 py-4 bg-white text-gray-700 rounded-lg hover:bg-gray-50 font-semibold text-lg shadow-lg border border-gray-200 dark:border-gray-700"
             >
               View Standings
             </Link>
           </div>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
             First time? Sign in to create your account
           </p>
         </div>
 
-        <div className="mt-16 pt-8 border-t border-gray-300">
+        <div className="mt-16 pt-8 border-t border-gray-300 dark:border-gray-600">
           <h2 className="text-2xl font-bold mb-4">How It Works</h2>
-          <div className="text-left max-w-2xl mx-auto space-y-3 text-gray-700">
+          <div className="text-left max-w-2xl mx-auto space-y-3 text-gray-700 dark:text-gray-200">
             <p>
               <strong>Team Format:</strong> 2 players per team compete in head-to-head matchups
             </p>

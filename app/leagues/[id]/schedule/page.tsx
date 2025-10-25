@@ -406,24 +406,24 @@ export default function GenerateSchedulePage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-xl text-gray-600">Loading...</div>
+        <div className="text-xl text-gray-600 dark:text-gray-300">Loading...</div>
       </div>
     );
   }
 
   if (teams.length < 2) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <header className="bg-white shadow">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <header className="bg-white dark:bg-gray-800 shadow">
           <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
             <Link href={`/leagues/${leagueId}`} className="text-blue-600 hover:text-blue-800 text-sm mb-2 block">
               ← Back to League
             </Link>
-            <h1 className="text-2xl font-bold text-gray-900">Generate Schedule</h1>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Generate Schedule</h1>
           </div>
         </header>
         <main className="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-lg shadow p-6 text-center">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center">
             <p className="text-gray-600 mb-4">
               You need at least 2 teams in the league to generate a schedule.
             </p>
@@ -446,13 +446,13 @@ export default function GenerateSchedulePage() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <header className="bg-white dark:bg-gray-800 shadow">
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
           <Link href={`/leagues/${leagueId}`} className="text-blue-600 hover:text-blue-800 text-sm mb-2 block">
             ← Back to League
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900">Generate Schedule</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Generate Schedule</h1>
 
           {/* Step Indicator */}
           <div className="mt-4 flex items-center gap-4">
@@ -488,7 +488,7 @@ export default function GenerateSchedulePage() {
 
         {/* Step 1: Generate Pairings */}
         {currentStep === 1 && (
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <h2 className="text-xl font-bold text-gray-900 mb-6">Step 1: Generate Match Pairings</h2>
 
             <div className="space-y-6">
@@ -512,8 +512,8 @@ export default function GenerateSchedulePage() {
                       className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500 mt-1"
                     />
                     <div className="ml-3">
-                      <span className="text-sm font-semibold text-gray-900">Random Matchups</span>
-                      <p className="text-xs text-gray-500">
+                      <span className="text-sm font-semibold text-gray-900 dark:text-white">Random Matchups</span>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
                         Randomly pair teams each week. Great for flexible schedules and odd numbers of teams.
                       </p>
                     </div>
@@ -527,8 +527,8 @@ export default function GenerateSchedulePage() {
                       className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500 mt-1"
                     />
                     <div className="ml-3">
-                      <span className="text-sm font-semibold text-gray-900">Round-Robin</span>
-                      <p className="text-xs text-gray-500">
+                      <span className="text-sm font-semibold text-gray-900 dark:text-white">Round-Robin</span>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
                         Each team plays every other team once. Requires specific number of weeks.
                       </p>
                     </div>
@@ -616,12 +616,12 @@ export default function GenerateSchedulePage() {
         {/* Step 2: Configure Weeks */}
         {currentStep === 2 && (
           <>
-            <div className="bg-white rounded-lg shadow p-6 mb-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold text-gray-900">Step 2: Configure Week Details</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Step 2: Configure Week Details</h2>
                 <button
                   onClick={() => setCurrentStep(1)}
-                  className="text-sm text-gray-600 hover:text-gray-900"
+                  className="text-sm text-gray-600 hover:text-gray-900 dark:text-white"
                 >
                   ← Back to Step 1
                 </button>
@@ -809,7 +809,7 @@ export default function GenerateSchedulePage() {
                                 />
                               </div>
 
-                              <div className="text-xs text-gray-600">
+                              <div className="text-xs text-gray-600 dark:text-gray-300">
                                 <strong>Matches ({weekMatches.length}):</strong>{' '}
                                 {weekMatches.length > 0 ? (
                                   weekMatches.map((m, i) => (

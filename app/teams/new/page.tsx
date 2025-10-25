@@ -46,20 +46,20 @@ export default function NewTeamPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <header className="bg-white shadow">
+      <header className="bg-white dark:bg-gray-800 shadow">
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
           <Link href="/teams" className="text-blue-600 hover:text-blue-800 text-sm mb-2 block">
             ← Back to Teams
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900">Create New Team</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Create New Team</h1>
         </div>
       </header>
 
       {/* Main Content */}
       <main className="max-w-2xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-800 rounded-lg p-4">
@@ -129,7 +129,7 @@ export default function NewTeamPage() {
                   className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"
                 />
                 <div className="ml-3">
-                  <span className="text-sm font-semibold text-gray-900">Open Team</span>
+                  <span className="text-sm font-semibold text-gray-900 dark:text-white">Open Team</span>
                   <p className="text-xs text-gray-500 mt-1">
                     Allow anyone to join your team without an invite code (you can change this later)
                   </p>
@@ -147,7 +147,7 @@ export default function NewTeamPage() {
               </button>
               <Link
                 href="/teams"
-                className="flex-1 px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold text-center"
+                className="flex-1 px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold text-center"
               >
                 Cancel
               </Link>

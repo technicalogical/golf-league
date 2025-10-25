@@ -138,14 +138,14 @@ export default function AnnouncementsManagementPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-xl text-gray-600">Loading...</div>
+        <div className="text-xl text-gray-600 dark:text-gray-300">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <header className="bg-white dark:bg-gray-800 shadow">
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
           <Link
             href={`/leagues/${leagueId}`}
@@ -153,13 +153,13 @@ export default function AnnouncementsManagementPage() {
           >
             ← Back to League
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900">Manage Announcements</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Manage Announcements</h1>
         </div>
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         {/* Create/Edit Form */}
-        <div className="bg-white rounded-lg shadow p-6 mb-8">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8">
           <h2 className="text-xl font-bold text-gray-900 mb-4">
             {editingId ? 'Edit Announcement' : 'Create New Announcement'}
           </h2>
@@ -204,8 +204,8 @@ export default function AnnouncementsManagementPage() {
                   className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                 />
                 <div className="ml-3">
-                  <span className="text-sm font-semibold text-gray-900">Pin this announcement</span>
-                  <p className="text-xs text-gray-500">
+                  <span className="text-sm font-semibold text-gray-900 dark:text-white">Pin this announcement</span>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
                     Pinned announcements appear at the top
                   </p>
                 </div>
@@ -235,7 +235,7 @@ export default function AnnouncementsManagementPage() {
                 <button
                   type="button"
                   onClick={handleCancelEdit}
-                  className="px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold"
+                  className="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold"
                 >
                   Cancel
                 </button>
@@ -245,7 +245,7 @@ export default function AnnouncementsManagementPage() {
         </div>
 
         {/* Existing Announcements */}
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <h2 className="text-xl font-bold text-gray-900 mb-4">
             Existing Announcements ({announcements.length})
           </h2>
@@ -268,7 +268,7 @@ export default function AnnouncementsManagementPage() {
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <h3 className="font-bold text-gray-900">{announcement.title}</h3>
+                        <h3 className="font-bold text-gray-900 dark:text-white">{announcement.title}</h3>
                         {announcement.pinned && (
                           <span className="px-2 py-0.5 text-xs font-semibold bg-yellow-200 text-yellow-800 rounded">
                             PINNED

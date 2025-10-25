@@ -86,12 +86,12 @@ export default async function LeaguesPage() {
   const otherLeagues = otherLeaguesWithCounts;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <header className="bg-white dark:bg-gray-800 shadow">
         <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
           <Breadcrumbs />
           <div className="flex justify-between items-center">
-            <h1 className="text-3xl font-bold text-gray-900">Leagues</h1>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Leagues</h1>
             <Link
               href="/leagues/new"
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold"
@@ -105,9 +105,9 @@ export default async function LeaguesPage() {
       <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         {/* My Leagues */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">My Leagues</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">My Leagues</h2>
           {myLeagues.length === 0 ? (
-            <div className="bg-white rounded-lg shadow p-6 text-center text-gray-500">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center text-gray-500 dark:text-gray-400">
               You are not a member of any leagues yet.
             </div>
           ) : (
@@ -116,26 +116,26 @@ export default async function LeaguesPage() {
                 <Link
                   key={league.id}
                   href={`/leagues/${league.id}/public`}
-                  className="block bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-6"
+                  className="block bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition-shadow p-6"
                 >
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-xl font-bold text-gray-900">{league.name}</h3>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">{league.name}</h3>
                     <StatusBadge status={league.status} size="sm" />
                   </div>
                   {league.description && (
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">{league.description}</p>
+                    <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-2">{league.description}</p>
                   )}
                   <div className="grid grid-cols-2 gap-2 mb-3 text-sm">
-                    <div className="flex items-center gap-2 text-gray-600">
+                    <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
                       <span className="text-lg">👥</span>
                       <span>{league.teamCount} {league.teamCount === 1 ? 'team' : 'teams'}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-gray-600">
+                    <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
                       <span className="text-lg">⛳</span>
                       <span>{league.matchCount} {league.matchCount === 1 ? 'match' : 'matches'}</span>
                     </div>
                   </div>
-                  <div className="flex justify-between items-center text-sm text-gray-500 pt-3 border-t border-gray-200">
+                  <div className="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400 pt-3 border-t border-gray-200 dark:border-gray-700">
                     <span>
                       {new Date(league.start_date).toLocaleDateString()}
                       {league.end_date && ` - ${new Date(league.end_date).toLocaleDateString()}`}
@@ -153,37 +153,37 @@ export default async function LeaguesPage() {
         {/* Other Leagues */}
         {otherLeagues.length > 0 && (
           <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Other Leagues</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Other Leagues</h2>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {otherLeagues.map((league: any) => (
                 <div
                   key={league.id}
-                  className="bg-white rounded-lg shadow p-6"
+                  className="bg-white dark:bg-gray-800 rounded-lg shadow p-6"
                 >
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-xl font-bold text-gray-900">{league.name}</h3>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">{league.name}</h3>
                     <StatusBadge status={league.status} size="sm" />
                   </div>
                   {league.description && (
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">{league.description}</p>
+                    <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-2">{league.description}</p>
                   )}
                   <div className="grid grid-cols-2 gap-2 mb-3 text-sm">
-                    <div className="flex items-center gap-2 text-gray-600">
+                    <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
                       <span className="text-lg">👥</span>
                       <span>{league.teamCount} {league.teamCount === 1 ? 'team' : 'teams'}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-gray-600">
+                    <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
                       <span className="text-lg">⛳</span>
                       <span>{league.matchCount} {league.matchCount === 1 ? 'match' : 'matches'}</span>
                     </div>
                   </div>
-                  <div className="text-sm text-gray-500 mb-4 pt-3 border-t border-gray-200">
+                  <div className="text-sm text-gray-500 dark:text-gray-400 mb-4 pt-3 border-t border-gray-200 dark:border-gray-700">
                     {new Date(league.start_date).toLocaleDateString()}
                     {league.end_date && ` - ${new Date(league.end_date).toLocaleDateString()}`}
                   </div>
                   <Link
                     href={`/leagues/${league.id}/public`}
-                    className="block text-center px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
+                    className="block text-center px-4 py-2 bg-gray-100 dark:bg-gray-700 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600"
                   >
                     View Profile
                   </Link>

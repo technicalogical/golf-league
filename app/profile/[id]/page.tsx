@@ -104,14 +104,14 @@ export default async function UserProfilePage({
   const displayName = profile.display_name || profile.name || profile.email;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <header className="bg-white dark:bg-gray-800 shadow">
         <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
           <Link href="/dashboard" className="text-blue-600 hover:text-blue-800 text-sm mb-2 block">
             ← Back to Dashboard
           </Link>
           <div className="flex items-center gap-6">
-            <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center text-3xl font-bold text-gray-600">
+            <div className="w-20 h-20 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-3xl font-bold text-gray-600 dark:text-gray-300">
               {profile.avatar_url ? (
                 <img
                   src={profile.avatar_url}
@@ -123,7 +123,7 @@ export default async function UserProfilePage({
               )}
             </div>
             <div className="flex-1">
-              <h1 className="text-3xl font-bold text-gray-900">{displayName}</h1>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{displayName}</h1>
               {profile.bio && (
                 <p className="text-gray-600 mt-1">{profile.bio}</p>
               )}
@@ -155,27 +155,27 @@ export default async function UserProfilePage({
           {/* Left Column - Stats */}
           <div className="space-y-6">
             {/* Stats Card */}
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
               <h2 className="text-xl font-bold text-gray-900 mb-4">Statistics</h2>
               <div className="space-y-4">
                 <div>
-                  <p className="text-sm text-gray-600">Total Rounds</p>
-                  <p className="text-2xl font-bold text-gray-900">{totalRounds}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">Total Rounds</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">{totalRounds}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Average Score</p>
-                  <p className="text-2xl font-bold text-gray-900">{avgScore}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">Average Score</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">{avgScore}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Total Points</p>
-                  <p className="text-2xl font-bold text-gray-900">{totalPoints}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">Total Points</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">{totalPoints}</p>
                 </div>
               </div>
             </div>
 
             {/* Teams Card */}
             {teamMemberships && teamMemberships.length > 0 && (
-              <div className="bg-white rounded-lg shadow p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                 <h2 className="text-xl font-bold text-gray-900 mb-4">
                   Teams ({teamMemberships.length})
                 </h2>
@@ -184,10 +184,10 @@ export default async function UserProfilePage({
                     <Link
                       key={tm.team.id}
                       href={`/teams/${tm.team.id}`}
-                      className="block p-3 bg-gray-50 rounded-lg hover:bg-gray-100"
+                      className="block p-3 bg-gray-50 rounded-lg hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-700"
                     >
                       <div className="flex items-center justify-between">
-                        <span className="font-semibold text-gray-900">{tm.team.name}</span>
+                        <span className="font-semibold text-gray-900 dark:text-white">{tm.team.name}</span>
                         {tm.is_captain && (
                           <span className="px-2 py-0.5 text-xs font-semibold bg-blue-100 text-blue-800 rounded">
                             Captain
@@ -202,7 +202,7 @@ export default async function UserProfilePage({
 
             {/* Contact Info (if visible) */}
             {(profile.show_email || profile.show_phone) && (
-              <div className="bg-white rounded-lg shadow p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                 <h2 className="text-xl font-bold text-gray-900 mb-4">Contact</h2>
                 <div className="space-y-3">
                   {profile.show_email && (
@@ -234,7 +234,7 @@ export default async function UserProfilePage({
 
           {/* Right Column - Round Results */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
               <h2 className="text-xl font-bold text-gray-900 mb-4">
                 Round Results ({scorecards.length})
               </h2>
@@ -246,11 +246,11 @@ export default async function UserProfilePage({
                     <Link
                       key={scorecard.id}
                       href={`/matches/${scorecard.match?.id}`}
-                      className="block p-4 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100"
+                      className="block p-4 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-700"
                     >
                       <div className="flex justify-between items-start mb-2">
                         <div className="flex-1">
-                          <div className="font-semibold text-gray-900">
+                          <div className="font-semibold text-gray-900 dark:text-white">
                             {scorecard.match?.team1?.name} vs {scorecard.match?.team2?.name}
                           </div>
                           <div className="text-sm text-gray-600 mt-1">
@@ -273,7 +273,7 @@ export default async function UserProfilePage({
                                 ? 'bg-green-100 text-green-800'
                                 : scorecard.match?.status === 'in_progress'
                                 ? 'bg-yellow-100 text-yellow-800'
-                                : 'bg-gray-100 text-gray-800'
+                                : 'bg-gray-100 dark:bg-gray-700 text-gray-800'
                             }`}
                           >
                             {scorecard.match?.status || 'scheduled'}
@@ -281,20 +281,20 @@ export default async function UserProfilePage({
                         </div>
                       </div>
                       {scorecard.match?.status === 'completed' && scorecard.total_score && (
-                        <div className="grid grid-cols-3 gap-4 mt-3 pt-3 border-t border-gray-200">
+                        <div className="grid grid-cols-3 gap-4 mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
                           <div>
-                            <p className="text-xs text-gray-600">Score</p>
-                            <p className="text-lg font-bold text-gray-900">{scorecard.total_score}</p>
+                            <p className="text-xs text-gray-600 dark:text-gray-300">Score</p>
+                            <p className="text-lg font-bold text-gray-900 dark:text-white">{scorecard.total_score}</p>
                           </div>
                           <div>
-                            <p className="text-xs text-gray-600">Handicap</p>
-                            <p className="text-lg font-bold text-gray-900">
+                            <p className="text-xs text-gray-600 dark:text-gray-300">Handicap</p>
+                            <p className="text-lg font-bold text-gray-900 dark:text-white">
                               {scorecard.handicap_at_time}
                             </p>
                           </div>
                           <div>
-                            <p className="text-xs text-gray-600">Points</p>
-                            <p className="text-lg font-bold text-gray-900">
+                            <p className="text-xs text-gray-600 dark:text-gray-300">Points</p>
+                            <p className="text-lg font-bold text-gray-900 dark:text-white">
                               {scorecard.points_earned}
                             </p>
                           </div>

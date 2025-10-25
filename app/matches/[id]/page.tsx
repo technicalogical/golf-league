@@ -77,15 +77,15 @@ export default async function MatchDetailPage({
   const canStartMatch = team1Players.length === 2 && team2Players.length === 2;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <header className="bg-white shadow">
+      <header className="bg-white dark:bg-gray-800 shadow">
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
           <Link href="/matches" className="text-blue-600 hover:text-blue-800 text-sm mb-2 block">
             ← Back to Matches
           </Link>
           <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold text-gray-900">Match Details</h1>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Match Details</h1>
             <span className={`px-3 py-1 text-sm rounded-full font-semibold ${statusColors[match.status as keyof typeof statusColors]}`}>
               {statusLabels[match.status as keyof typeof statusLabels]}
             </span>
@@ -99,14 +99,14 @@ export default async function MatchDetailPage({
           {/* Match Info */}
           <div className="lg:col-span-2 space-y-6">
             {/* Teams */}
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Teams</h2>
 
               <div className="space-y-6">
                 {/* Team 1 */}
                 <div>
                   <div className="flex justify-between items-center mb-3">
-                    <h3 className="text-lg font-semibold text-gray-900">{match.team1?.name}</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{match.team1?.name}</h3>
                     {match.status === 'completed' && match.team1_points !== null && (
                       <span className="text-3xl font-bold text-blue-600">{match.team1_points}</span>
                     )}
@@ -114,8 +114,8 @@ export default async function MatchDetailPage({
                   <div className="space-y-2">
                     {team1Players.map((player: any) => (
                       <div key={player.id} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                        <span className="font-medium text-gray-900">{player.name}</span>
-                        <span className="text-sm text-gray-600">Handicap: {player.handicap}</span>
+                        <span className="font-medium text-gray-900 dark:text-white">{player.name}</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-300">Handicap: {player.handicap}</span>
                       </div>
                     ))}
                     {team1Players.length === 0 && (
@@ -124,12 +124,12 @@ export default async function MatchDetailPage({
                   </div>
                 </div>
 
-                <div className="border-t border-gray-200"></div>
+                <div className="border-t border-gray-200 dark:border-gray-700"></div>
 
                 {/* Team 2 */}
                 <div>
                   <div className="flex justify-between items-center mb-3">
-                    <h3 className="text-lg font-semibold text-gray-900">{match.team2?.name}</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{match.team2?.name}</h3>
                     {match.status === 'completed' && match.team2_points !== null && (
                       <span className="text-3xl font-bold text-blue-600">{match.team2_points}</span>
                     )}
@@ -137,8 +137,8 @@ export default async function MatchDetailPage({
                   <div className="space-y-2">
                     {team2Players.map((player: any) => (
                       <div key={player.id} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                        <span className="font-medium text-gray-900">{player.name}</span>
-                        <span className="text-sm text-gray-600">Handicap: {player.handicap}</span>
+                        <span className="font-medium text-gray-900 dark:text-white">{player.name}</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-300">Handicap: {player.handicap}</span>
                       </div>
                     ))}
                     {team2Players.length === 0 && (
@@ -149,7 +149,7 @@ export default async function MatchDetailPage({
               </div>
 
               {/* Action Buttons */}
-              <div className="mt-6 pt-6 border-t border-gray-200">
+              <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
                 {!canStartMatch && match.status === 'scheduled' && (
                   <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
                     <p className="text-sm text-yellow-800">
@@ -202,11 +202,11 @@ export default async function MatchDetailPage({
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Match Details */}
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Match Details</h2>
               <div className="space-y-3 text-sm">
                 <div>
-                  <span className="font-semibold text-gray-900">Date:</span>
+                  <span className="font-semibold text-gray-900 dark:text-white">Date:</span>
                   <div className="text-gray-600 mt-1">
                     {new Date(match.match_date).toLocaleDateString('en-US', {
                       weekday: 'long',
@@ -216,15 +216,15 @@ export default async function MatchDetailPage({
                     })}
                   </div>
                 </div>
-                <div className="pt-3 border-t border-gray-200">
-                  <span className="font-semibold text-gray-900">Course:</span>
+                <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
+                  <span className="font-semibold text-gray-900 dark:text-white">Course:</span>
                   <div className="text-gray-600 mt-1">{match.course?.name}</div>
                   <div className="text-gray-500 text-xs mt-1">
                     Par {match.course?.par} • {match.course?.location}
                   </div>
                 </div>
-                <div className="pt-3 border-t border-gray-200">
-                  <span className="font-semibold text-gray-900">Status:</span>
+                <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
+                  <span className="font-semibold text-gray-900 dark:text-white">Status:</span>
                   <div className="mt-1">
                     <span className={`inline-block px-2 py-1 text-xs rounded-full font-semibold ${statusColors[match.status as keyof typeof statusColors]}`}>
                       {statusLabels[match.status as keyof typeof statusLabels]}

@@ -68,16 +68,16 @@ export default async function LeagueMatchesPage({
   const completed = matches?.filter(m => m.status === 'completed') || [];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <header className="bg-white shadow">
+      <header className="bg-white dark:bg-gray-800 shadow">
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
           <Link href="/matches" className="text-blue-600 hover:text-blue-800 text-sm mb-2 block">
             ← Back to League Selection
           </Link>
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">{league.name}</h1>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{league.name}</h1>
               <p className="text-gray-600 mt-1">Your team's matches</p>
             </div>
             <span
@@ -86,7 +86,7 @@ export default async function LeagueMatchesPage({
                   ? 'bg-green-100 text-green-800'
                   : league.status === 'upcoming'
                   ? 'bg-blue-100 text-blue-800'
-                  : 'bg-gray-100 text-gray-800'
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-800'
               }`}
             >
               {league.status}
@@ -135,7 +135,7 @@ export default async function LeagueMatchesPage({
 
         {/* Empty State */}
         {!matches || matches.length === 0 ? (
-          <div className="bg-white rounded-lg shadow p-12 text-center">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-12 text-center">
             <div className="text-6xl mb-4">🏌️</div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">No Matches</h2>
             <p className="text-gray-600 mb-6">
@@ -170,7 +170,7 @@ function MatchCard({ match }: { match: any }) {
   return (
     <Link
       href={`/matches/${match.id}`}
-      className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-6"
+      className="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition-shadow p-6"
     >
       <div className="flex justify-between items-start mb-4">
         <div>
@@ -182,7 +182,7 @@ function MatchCard({ match }: { match: any }) {
               year: 'numeric',
             }) : 'Date TBD'}
           </div>
-          <div className="text-xs text-gray-500">{match.course?.name || 'Course TBD'}</div>
+          <div className="text-xs text-gray-500 dark:text-gray-400">{match.course?.name || 'Course TBD'}</div>
         </div>
         <span className={`px-2 py-1 text-xs rounded-full font-semibold ${statusColors[match.status as keyof typeof statusColors]}`}>
           {statusLabels[match.status as keyof typeof statusLabels]}
@@ -191,21 +191,21 @@ function MatchCard({ match }: { match: any }) {
 
       <div className="space-y-2">
         <div className="flex justify-between items-center">
-          <span className="font-semibold text-gray-900">{match.team1?.name || 'Team 1'}</span>
+          <span className="font-semibold text-gray-900 dark:text-white">{match.team1?.name || 'Team 1'}</span>
           {match.status === 'completed' && match.team1_points !== null && (
             <span className="text-2xl font-bold text-blue-600">{match.team1_points}</span>
           )}
         </div>
-        <div className="border-t border-gray-200"></div>
+        <div className="border-t border-gray-200 dark:border-gray-700"></div>
         <div className="flex justify-between items-center">
-          <span className="font-semibold text-gray-900">{match.team2?.name || 'Team 2'}</span>
+          <span className="font-semibold text-gray-900 dark:text-white">{match.team2?.name || 'Team 2'}</span>
           {match.status === 'completed' && match.team2_points !== null && (
             <span className="text-2xl font-bold text-blue-600">{match.team2_points}</span>
           )}
         </div>
       </div>
 
-      <div className="mt-4 pt-4 border-t border-gray-200">
+      <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
         {match.status === 'scheduled' && (
           <span className="text-blue-600 hover:text-blue-800 text-sm font-semibold">
             Start Match →

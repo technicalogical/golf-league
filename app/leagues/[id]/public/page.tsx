@@ -120,12 +120,12 @@ export default async function LeaguePublicPage({
   const statusColors = {
     upcoming: 'bg-blue-100 text-blue-800',
     active: 'bg-green-100 text-green-800',
-    completed: 'bg-gray-100 text-gray-800',
-    archived: 'bg-gray-100 text-gray-600',
+    completed: 'bg-gray-100 dark:bg-gray-700 text-gray-800',
+    archived: 'bg-gray-100 dark:bg-gray-700 text-gray-600',
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Hero Section */}
       <div className="bg-gradient-to-br from-blue-600 to-green-600 text-white">
         <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
@@ -170,7 +170,7 @@ export default async function LeaguePublicPage({
           <div className="lg:col-span-2 space-y-8">
             {/* Announcements */}
             {announcements && announcements.length > 0 && (
-              <div className="bg-white rounded-lg shadow p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">Announcements</h2>
                 <div className="space-y-4">
                   {announcements.map((announcement: any) => (
@@ -185,7 +185,7 @@ export default async function LeaguePublicPage({
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
-                            <h3 className="font-bold text-gray-900">{announcement.title}</h3>
+                            <h3 className="font-bold text-gray-900 dark:text-white">{announcement.title}</h3>
                             {announcement.pinned && (
                               <span className="px-2 py-0.5 text-xs font-semibold bg-yellow-200 text-yellow-800 rounded">
                                 PINNED
@@ -210,21 +210,21 @@ export default async function LeaguePublicPage({
 
             {/* League Information */}
             {league.league_info && (
-              <div className="bg-white rounded-lg shadow p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">About the League</h2>
                 <div className="prose prose-blue max-w-none">
-                  <p className="whitespace-pre-wrap text-gray-700">{league.league_info}</p>
+                  <p className="whitespace-pre-wrap text-gray-700 dark:text-gray-200">{league.league_info}</p>
                 </div>
               </div>
             )}
 
             {/* Season Details */}
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Season Details</h2>
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Start Date</p>
-                  <p className="font-semibold text-gray-900">
+                  <p className="font-semibold text-gray-900 dark:text-white">
                     {new Date(league.start_date).toLocaleDateString('en-US', {
                       month: 'long',
                       day: 'numeric',
@@ -235,7 +235,7 @@ export default async function LeaguePublicPage({
                 {league.end_date && (
                   <div>
                     <p className="text-sm text-gray-600 mb-1">End Date</p>
-                    <p className="font-semibold text-gray-900">
+                    <p className="font-semibold text-gray-900 dark:text-white">
                       {new Date(league.end_date).toLocaleDateString('en-US', {
                         month: 'long',
                         day: 'numeric',
@@ -247,13 +247,13 @@ export default async function LeaguePublicPage({
                 {league.day_of_week && (
                   <div>
                     <p className="text-sm text-gray-600 mb-1">League Day</p>
-                    <p className="font-semibold text-gray-900">{league.day_of_week}</p>
+                    <p className="font-semibold text-gray-900 dark:text-white">{league.day_of_week}</p>
                   </div>
                 )}
                 {league.time_of_day && (
                   <div>
                     <p className="text-sm text-gray-600 mb-1">League Time</p>
-                    <p className="font-semibold text-gray-900">
+                    <p className="font-semibold text-gray-900 dark:text-white">
                       {new Date(`2000-01-01T${league.time_of_day}`).toLocaleTimeString('en-US', {
                         hour: 'numeric',
                         minute: '2-digit',
@@ -267,7 +267,7 @@ export default async function LeaguePublicPage({
 
             {/* Teams */}
             {league.is_public && standings && standings.length > 0 && (
-              <div className="bg-white rounded-lg shadow p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">
                   Teams ({standings.length})
                 </h2>
@@ -275,7 +275,7 @@ export default async function LeaguePublicPage({
                   {standings.map((item: any) => (
                     <div
                       key={item.team.id}
-                      className="p-4 bg-gray-50 rounded-lg border border-gray-200"
+                      className="p-4 bg-gray-50 rounded-lg border border-gray-200 dark:border-gray-700"
                     >
                       <Link
                         href={`/teams/${item.team.id}`}
@@ -309,7 +309,7 @@ export default async function LeaguePublicPage({
 
             {/* Schedule */}
             {matches && matches.length > 0 && (
-              <div className="bg-white rounded-lg shadow p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">
                   Schedule ({matches.length} matches)
                 </h2>
@@ -341,7 +341,7 @@ export default async function LeaguePublicPage({
                         <div key={weekNum} className="border-l-4 border-blue-500 pl-4">
                           <div className="flex items-center justify-between mb-3">
                             <div>
-                              <h3 className="text-lg font-bold text-gray-900">
+                              <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                                 Week {weekNum}
                                 {allCompleted && (
                                   <span className="ml-2 px-2 py-0.5 text-xs font-semibold bg-green-100 text-green-800 rounded">
@@ -364,7 +364,7 @@ export default async function LeaguePublicPage({
                                 {course && ` • ${course.name}`}
                               </div>
                             </div>
-                            <div className="text-sm text-gray-500">
+                            <div className="text-sm text-gray-500 dark:text-gray-400">
                               {weekMatches.length} {weekMatches.length === 1 ? 'match' : 'matches'}
                             </div>
                           </div>
@@ -373,7 +373,7 @@ export default async function LeaguePublicPage({
                             {weekMatches.map((match: any) => (
                               <div
                                 key={match.id}
-                                className="block p-3 bg-gray-50 rounded-lg border border-gray-200"
+                                className="block p-3 bg-gray-50 rounded-lg border border-gray-200 dark:border-gray-700"
                               >
                                 <div className="flex justify-between items-start mb-2">
                                   <div className="font-semibold text-gray-900 text-sm">
@@ -385,7 +385,7 @@ export default async function LeaguePublicPage({
                                         ? 'bg-green-100 text-green-800'
                                         : match.status === 'in_progress'
                                         ? 'bg-yellow-100 text-yellow-800'
-                                        : 'bg-gray-100 text-gray-700'
+                                        : 'bg-gray-100 dark:bg-gray-700 text-gray-700'
                                     }`}
                                   >
                                     {match.status === 'scheduled' ? 'Scheduled' :
@@ -393,7 +393,7 @@ export default async function LeaguePublicPage({
                                   </span>
                                 </div>
                                 {match.status === 'completed' && match.team1_points !== null && (
-                                  <div className="text-sm font-bold text-gray-900">
+                                  <div className="text-sm font-bold text-gray-900 dark:text-white">
                                     {match.team1_points} - {match.team2_points}
                                   </div>
                                 )}
@@ -414,10 +414,10 @@ export default async function LeaguePublicPage({
 
             {/* Rules & Guidelines */}
             {league.custom_rules && (
-              <div className="bg-white rounded-lg shadow p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">Rules & Guidelines</h2>
                 <div className="prose prose-blue max-w-none">
-                  <p className="whitespace-pre-wrap text-gray-700">{league.custom_rules}</p>
+                  <p className="whitespace-pre-wrap text-gray-700 dark:text-gray-200">{league.custom_rules}</p>
                 </div>
               </div>
             )}
@@ -430,20 +430,20 @@ export default async function LeaguePublicPage({
               <div className="bg-yellow-50 border-2 border-yellow-400 rounded-lg shadow p-6">
                 <h3 className="text-xl font-bold text-gray-900 mb-3">Join Our League!</h3>
                 <div className="prose prose-sm max-w-none mb-4">
-                  <p className="whitespace-pre-wrap text-gray-700">{league.registration_info}</p>
+                  <p className="whitespace-pre-wrap text-gray-700 dark:text-gray-200">{league.registration_info}</p>
                 </div>
               </div>
             )}
 
             {/* Contact Information */}
             {(league.contact_name || league.contact_email || league.contact_phone) && (
-              <div className="bg-white rounded-lg shadow p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                 <h3 className="text-xl font-bold text-gray-900 mb-4">Contact Us</h3>
                 <div className="space-y-3">
                   {league.contact_name && (
                     <div>
                       <p className="text-sm text-gray-600 mb-1">Contact Person</p>
-                      <p className="font-semibold text-gray-900">{league.contact_name}</p>
+                      <p className="font-semibold text-gray-900 dark:text-white">{league.contact_name}</p>
                     </div>
                   )}
                   {league.contact_email && (
@@ -473,7 +473,7 @@ export default async function LeaguePublicPage({
             )}
 
             {/* Quick Links */}
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
               <h3 className="text-xl font-bold text-gray-900 mb-4">Quick Links</h3>
               <div className="space-y-2">
                 {isAdmin && (
@@ -524,7 +524,7 @@ export default async function LeaguePublicPage({
 
       {/* Footer */}
       <footer className="bg-white border-t border-gray-200 mt-12">
-        <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8 text-center text-gray-600">
+        <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8 text-center text-gray-600 dark:text-gray-300">
           <p>© {new Date().getFullYear()} {league.name}. All rights reserved.</p>
         </div>
       </footer>

@@ -124,15 +124,15 @@ export default function MatchHistoryPage() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-4xl font-bold text-gray-900">Match History</h1>
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-white">Match History</h1>
             <Link
               href="/dashboard"
-              className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-semibold"
+              className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 rounded-lg hover:bg-gray-300 font-semibold"
             >
               ← Dashboard
             </Link>
           </div>
-          <p className="text-gray-600">
+          <p className="text-gray-600 dark:text-gray-300">
             View all completed matches and their results
           </p>
         </div>
@@ -187,14 +187,14 @@ export default function MatchHistoryPage() {
         </div>
 
         {/* Results Count */}
-        <div className="mb-4 text-sm text-gray-600">
+        <div className="mb-4 text-sm text-gray-600 dark:text-gray-300">
           Showing {filteredMatches.length} of {matches.length} completed matches
         </div>
 
         {/* Matches List */}
         <div className="space-y-4">
           {filteredMatches.length === 0 ? (
-            <div className="bg-white rounded-lg shadow p-8 text-center text-gray-500">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-8 text-center text-gray-500 dark:text-gray-400">
               No matches found with the selected filters
             </div>
           ) : (
@@ -208,7 +208,7 @@ export default function MatchHistoryPage() {
                 >
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     {/* Date and League */}
-                    <div className="text-sm text-gray-600">
+                    <div className="text-sm text-gray-600 dark:text-gray-300">
                       <div className="font-semibold">
                         {new Date(match.match_date).toLocaleDateString('en-US', {
                           weekday: 'long',
@@ -239,7 +239,7 @@ export default function MatchHistoryPage() {
                         </div>
 
                         {/* Score */}
-                        <div className="px-6 py-2 bg-gray-100 rounded-lg font-bold text-xl">
+                        <div className="px-6 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg font-bold text-xl">
                           {match.team1_points !== null ? match.team1_points : '-'}{' '}
                           <span className="text-gray-400">-</span>{' '}
                           {match.team2_points !== null ? match.team2_points : '-'}

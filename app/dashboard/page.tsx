@@ -316,7 +316,7 @@ export default async function DashboardPage() {
                       <span className={`px-2 py-1 rounded font-semibold ${
                         team.is_active
                           ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
-                          : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'
+                          : 'bg-gray-100 dark:bg-gray-700 dark:bg-gray-700 text-gray-800 dark:text-gray-200'
                       }`}>
                         {team.is_active ? 'Active' : 'Inactive'}
                       </span>
@@ -439,7 +439,7 @@ export default async function DashboardPage() {
                         <span className={`px-2 py-1 rounded text-xs font-semibold ${
                           league.status === 'active' ? 'bg-green-100 text-green-800' :
                           league.status === 'upcoming' ? 'bg-blue-100 text-blue-800' :
-                          'bg-gray-100 text-gray-800'
+                          'bg-gray-100 dark:bg-gray-700 text-gray-800'
                         }`}>
                           {league.status}
                         </span>
@@ -462,7 +462,7 @@ export default async function DashboardPage() {
                 <div className="text-center">
                   <Link
                     href="/leagues"
-                    className="inline-block px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold"
+                    className="inline-block px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold"
                   >
                     Browse All Leagues
                   </Link>
@@ -628,7 +628,7 @@ export default async function DashboardPage() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                 <div className="text-4xl mb-2">📆</div>
                 <p>No upcoming matches scheduled</p>
                 <p className="text-sm mt-1">Check back later for new matches</p>
@@ -660,7 +660,7 @@ export default async function DashboardPage() {
                       </div>
                     </div>
                     <div className="flex justify-between items-center text-xs mt-2">
-                      <span className="text-gray-500">
+                      <span className="text-gray-500 dark:text-gray-400">
                         {announcement.league.name}
                       </span>
                       <span className="text-gray-400">
@@ -674,7 +674,7 @@ export default async function DashboardPage() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                 <div className="text-4xl mb-2">📭</div>
                 <p>No recent announcements</p>
                 <p className="text-sm mt-1">League admins will post updates here</p>

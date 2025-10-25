@@ -42,8 +42,8 @@ export default function JoinTeamPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <header className="bg-white dark:bg-gray-800 shadow">
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
           <Link
             href="/dashboard"
@@ -51,12 +51,12 @@ export default function JoinTeamPage() {
           >
             ← Back to Dashboard
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900">Join a Team</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Join a Team</h1>
         </div>
       </header>
 
       <main className="max-w-2xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <p className="text-gray-700 mb-6">
             Enter the invite code provided by your team captain to join their team.
           </p>
@@ -97,7 +97,7 @@ export default function JoinTeamPage() {
               </button>
               <Link
                 href="/dashboard"
-                className="flex-1 px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold text-center"
+                className="flex-1 px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold text-center"
               >
                 Cancel
               </Link>

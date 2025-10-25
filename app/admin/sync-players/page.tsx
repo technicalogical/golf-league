@@ -33,13 +33,13 @@ export default function SyncPlayersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <header className="bg-white dark:bg-gray-800 shadow">
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
           <Link href="/dashboard" className="text-blue-600 hover:text-blue-800 text-sm mb-2 block">
             ← Back to Dashboard
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900">Sync Players & League Members</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Sync Players & League Members</h1>
           <p className="text-gray-600 mt-1">
             Creates missing player records and league memberships for team members
           </p>
@@ -47,7 +47,7 @@ export default function SyncPlayersPage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">What this does:</h2>
           <ul className="list-disc list-inside space-y-2 text-sm text-gray-700 mb-6">
             <li>

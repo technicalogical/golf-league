@@ -127,20 +127,20 @@ export default function NewMatchPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-gray-600">Loading...</div>
+        <div className="text-gray-600 dark:text-gray-300">Loading...</div>
       </div>
     );
   }
 
   if (teams.length < 2) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <header className="bg-white shadow">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <header className="bg-white dark:bg-gray-800 shadow">
           <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
             <Link href="/matches" className="text-blue-600 hover:text-blue-800 text-sm mb-2 block">
               ← Back to Matches
             </Link>
-            <h1 className="text-2xl font-bold text-gray-900">Schedule New Match</h1>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Schedule New Match</h1>
           </div>
         </header>
         <main className="max-w-2xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
@@ -164,13 +164,13 @@ export default function NewMatchPage() {
 
   if (courses.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <header className="bg-white shadow">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <header className="bg-white dark:bg-gray-800 shadow">
           <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
             <Link href="/matches" className="text-blue-600 hover:text-blue-800 text-sm mb-2 block">
               ← Back to Matches
             </Link>
-            <h1 className="text-2xl font-bold text-gray-900">Schedule New Match</h1>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Schedule New Match</h1>
           </div>
         </header>
         <main className="max-w-2xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
@@ -187,20 +187,20 @@ export default function NewMatchPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <header className="bg-white shadow">
+      <header className="bg-white dark:bg-gray-800 shadow">
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
           <Link href="/matches" className="text-blue-600 hover:text-blue-800 text-sm mb-2 block">
             ← Back to Matches
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900">Schedule New Match</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Schedule New Match</h1>
         </div>
       </header>
 
       {/* Main Content */}
       <main className="max-w-2xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-800 rounded-lg p-4">
@@ -366,7 +366,7 @@ export default function NewMatchPage() {
               </button>
               <Link
                 href="/matches"
-                className="flex-1 px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold text-center"
+                className="flex-1 px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold text-center"
               >
                 Cancel
               </Link>

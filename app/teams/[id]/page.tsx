@@ -121,16 +121,16 @@ export default async function TeamDetailPage({
   const isCaptain = team.captain_id === userId;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <header className="bg-white shadow">
+      <header className="bg-white dark:bg-gray-800 shadow">
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
           <Link href="/dashboard" className="text-blue-600 hover:text-blue-800 text-sm mb-2 block">
             ← Back to Dashboard
           </Link>
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">{team.name}</h1>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{team.name}</h1>
               <p className="text-sm text-gray-600 mt-1">
                 Captain: {team.captain?.display_name || team.captain?.name || 'Unknown'}
                 {isCaptain && <span className="ml-2 text-blue-600">(You)</span>}
@@ -141,7 +141,7 @@ export default async function TeamDetailPage({
                 Active
               </span>
             ) : (
-              <span className="px-3 py-1 bg-gray-100 text-gray-600 text-sm rounded-full font-semibold">
+              <span className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 text-sm rounded-full font-semibold">
                 Inactive
               </span>
             )}
@@ -154,9 +154,9 @@ export default async function TeamDetailPage({
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Team Members */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold text-gray-900">
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                   Team Members ({members?.length || 0} / {team.max_members})
                 </h2>
               </div>
@@ -169,7 +169,7 @@ export default async function TeamDetailPage({
               />
 
               {(!membersWithStats || membersWithStats.length === 0) && (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                   <div className="text-4xl mb-2">👥</div>
                   <p>No members yet. Share the invite code to add teammates.</p>
                 </div>
@@ -181,7 +181,7 @@ export default async function TeamDetailPage({
           <div className="space-y-6">
             {/* Team Settings (Captain Only) */}
             {isCaptain && (
-              <div className="bg-white rounded-lg shadow p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Captain Controls</h3>
                 <Link
                   href={`/teams/${team.id}/settings`}
@@ -203,22 +203,22 @@ export default async function TeamDetailPage({
             )}
 
             {/* Team Info */}
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Team Info</h3>
               <div className="space-y-3">
                 <div>
-                  <p className="text-sm text-gray-600">Max Members</p>
-                  <p className="font-semibold text-gray-900">{team.max_members}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">Max Members</p>
+                  <p className="font-semibold text-gray-900 dark:text-white">{team.max_members}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Available Spots</p>
-                  <p className="font-semibold text-gray-900">
+                  <p className="text-sm text-gray-600 dark:text-gray-300">Available Spots</p>
+                  <p className="font-semibold text-gray-900 dark:text-white">
                     {team.max_members - (members?.length || 0)}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Created</p>
-                  <p className="font-semibold text-gray-900">
+                  <p className="text-sm text-gray-600 dark:text-gray-300">Created</p>
+                  <p className="font-semibold text-gray-900 dark:text-white">
                     {new Date(team.created_at).toLocaleDateString()}
                   </p>
                 </div>
@@ -227,7 +227,7 @@ export default async function TeamDetailPage({
 
             {/* Actions */}
             {!isCaptain && (
-              <div className="bg-white rounded-lg shadow p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Actions</h3>
                 <LeaveTeamButton teamId={team.id} />
               </div>

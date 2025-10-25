@@ -89,20 +89,20 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-xl text-gray-600">Loading profile...</div>
+        <div className="text-xl text-gray-600 dark:text-gray-300">Loading profile...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <header className="bg-white dark:bg-gray-800 shadow">
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
           <Link href="/dashboard" className="text-blue-600 hover:text-blue-800 text-sm mb-2 block">
             ← Back to Dashboard
           </Link>
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900">Edit My Profile</h1>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Edit My Profile</h1>
             {profile && (
               <Link
                 href={`/profile/${encodeURIComponent(profile.id)}`}
@@ -128,11 +128,11 @@ export default function ProfilePage() {
           </div>
         )}
 
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Profile Picture */}
             <div className="flex items-center gap-6">
-              <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center text-3xl font-bold text-gray-600">
+              <div className="w-24 h-24 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-3xl font-bold text-gray-600 dark:text-gray-300">
                 {profile?.avatar_url ? (
                   <img
                     src={profile.avatar_url}
@@ -144,10 +144,10 @@ export default function ProfilePage() {
                 )}
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                   {displayName || profile?.name}
                 </h3>
-                <p className="text-sm text-gray-500">{profile?.email}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{profile?.email}</p>
               </div>
             </div>
 
@@ -212,8 +212,8 @@ export default function ProfilePage() {
                     className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"
                   />
                   <div className="ml-3">
-                    <span className="text-sm font-semibold text-gray-900">Show email to other users</span>
-                    <p className="text-xs text-gray-500">
+                    <span className="text-sm font-semibold text-gray-900 dark:text-white">Show email to other users</span>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                       By default, your email is hidden from other users. League admins can always see your email.
                     </p>
                   </div>
@@ -227,8 +227,8 @@ export default function ProfilePage() {
                     className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"
                   />
                   <div className="ml-3">
-                    <span className="text-sm font-semibold text-gray-900">Show phone number to other users</span>
-                    <p className="text-xs text-gray-500">
+                    <span className="text-sm font-semibold text-gray-900 dark:text-white">Show phone number to other users</span>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                       Allow other league members to see your phone number
                     </p>
                   </div>
@@ -247,7 +247,7 @@ export default function ProfilePage() {
               </button>
               <Link
                 href="/dashboard"
-                className="flex-1 px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold text-center"
+                className="flex-1 px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold text-center"
               >
                 Cancel
               </Link>
