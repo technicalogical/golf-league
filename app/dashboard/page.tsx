@@ -236,15 +236,15 @@ export default async function DashboardPage() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         {/* Welcome Section with Quick Overview */}
         <div className="grid md:grid-cols-3 gap-6 mb-10">
           {/* Welcome Card */}
-          <div className="md:col-span-2 bg-white rounded-lg shadow p-8">
-            <h1 className="text-4xl font-bold text-gray-900 mb-3">Welcome, {displayName}!</h1>
-            <p className="text-gray-600 text-lg max-w-2xl">
+          <div className="md:col-span-2 bg-white dark:bg-gray-800 rounded-lg shadow p-8">
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-3">Welcome, {displayName}!</h1>
+            <p className="text-gray-600 dark:text-gray-300 text-lg max-w-2xl">
               Manage your golf league, enter scores, and track your standings.
             </p>
           </div>
@@ -291,7 +291,7 @@ export default async function DashboardPage() {
         {/* My Teams Section */}
         {allUserTeams && allUserTeams.length > 0 && (
           <div className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">My Teams</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">My Teams</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {allUserTeams.map((teamMembership: any) => {
                 const team = teamMembership.team;
@@ -301,22 +301,22 @@ export default async function DashboardPage() {
                   <Link
                     key={teamMembership.id}
                     href={`/teams/${team.id}`}
-                    className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-5"
+                    className="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition-shadow p-5"
                   >
                     <div className="flex items-start justify-between mb-3">
-                      <h4 className="text-lg font-bold text-gray-900">{team.name}</h4>
+                      <h4 className="text-lg font-bold text-gray-900 dark:text-white">{team.name}</h4>
                       {isCaptain && (
-                        <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded text-xs font-semibold">
+                        <span className="px-2 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded text-xs font-semibold">
                           Captain
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center justify-between text-sm text-gray-600">
+                    <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-300">
                       <span>Status:</span>
                       <span className={`px-2 py-1 rounded font-semibold ${
                         team.is_active
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-gray-100 text-gray-800'
+                          ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
+                          : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'
                       }`}>
                         {team.is_active ? 'Active' : 'Inactive'}
                       </span>
@@ -331,14 +331,14 @@ export default async function DashboardPage() {
         {/* My Leagues */}
         {leaguesWithTeams && leaguesWithTeams.length > 0 && (
           <div className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">My Leagues</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">My Leagues</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {leaguesWithTeams.map((membership: any) => {
                 const league = membership.league;
                 const isAdmin = membership.role === 'admin';
 
                 return (
-                  <div key={membership.id} className="bg-white rounded-lg shadow overflow-hidden">
+                  <div key={membership.id} className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
                     {/* League Header */}
                     <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-4 text-white">
                       <div className="flex items-start justify-between">
@@ -391,9 +391,9 @@ export default async function DashboardPage() {
                               <Link
                                 key={teamMembership.id}
                                 href={`/teams/${teamMembership.team.id}`}
-                                className="group inline-flex items-center gap-2 px-3 py-1.5 border border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all text-sm"
+                                className="group inline-flex items-center gap-2 px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-gray-700 transition-all text-sm"
                               >
-                                <span className="font-medium text-gray-900 group-hover:text-blue-600">
+                                <span className="font-medium text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400">
                                   {teamMembership.team.name}
                                 </span>
                                 {isCaptain && (
@@ -420,22 +420,22 @@ export default async function DashboardPage() {
 
         {leaguesWithTeams && leaguesWithTeams.length === 0 && (
           <div className="mb-8">
-            <div className="bg-white rounded-lg shadow p-8 text-center mb-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-8 text-center mb-6">
               <div className="text-4xl mb-4">🏌️</div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No Leagues Yet</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No Leagues Yet</h3>
+              <p className="text-gray-600 dark:text-gray-300">
                 You're not a member of any leagues. Check out these featured leagues!
               </p>
             </div>
 
             {featuredLeagues.length > 0 && (
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Featured Public Leagues</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Featured Public Leagues</h3>
                 <div className="grid md:grid-cols-3 gap-4 mb-6">
                   {featuredLeagues.map((league: any) => (
-                    <div key={league.id} className="bg-white rounded-lg shadow p-5 hover:shadow-lg transition-shadow">
+                    <div key={league.id} className="bg-white dark:bg-gray-800 rounded-lg shadow p-5 hover:shadow-lg transition-shadow">
                       <div className="flex items-start justify-between mb-3">
-                        <h4 className="font-bold text-gray-900">{league.name}</h4>
+                        <h4 className="font-bold text-gray-900 dark:text-white">{league.name}</h4>
                         <span className={`px-2 py-1 rounded text-xs font-semibold ${
                           league.status === 'active' ? 'bg-green-100 text-green-800' :
                           league.status === 'upcoming' ? 'bg-blue-100 text-blue-800' :
@@ -445,9 +445,9 @@ export default async function DashboardPage() {
                         </span>
                       </div>
                       {league.description && (
-                        <p className="text-sm text-gray-600 mb-3 line-clamp-2">{league.description}</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-3 line-clamp-2">{league.description}</p>
                       )}
-                      <div className="text-xs text-gray-500 mb-4">
+                      <div className="text-xs text-gray-500 dark:text-gray-400 mb-4">
                         {league.teamCount} {league.teamCount === 1 ? 'team' : 'teams'} registered
                       </div>
                       <Link
@@ -485,7 +485,7 @@ export default async function DashboardPage() {
 
         {/* Quick Actions - Grouped by Priority */}
         <div className="mb-10">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Quick Actions</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Quick Actions</h2>
 
           {/* Primary Actions - Most Frequently Used */}
           <div className="grid md:grid-cols-2 gap-6 mb-6">
@@ -516,44 +516,44 @@ export default async function DashboardPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
             <Link
               href="/leagues"
-              className="bg-white p-5 rounded-lg shadow hover:shadow-lg transition-shadow group"
+              className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow hover:shadow-lg transition-shadow group"
             >
               <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">🏅</div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-1">Leagues</h3>
-              <p className="text-sm text-gray-600">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">Leagues</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-300">
                 Manage leagues
               </p>
             </Link>
 
             <Link
               href="/teams/browse"
-              className="bg-white p-5 rounded-lg shadow hover:shadow-lg transition-shadow group"
+              className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow hover:shadow-lg transition-shadow group"
             >
               <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">🔍</div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-1">Browse Teams</h3>
-              <p className="text-sm text-gray-600">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">Browse Teams</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-300">
                 Find open teams
               </p>
             </Link>
 
             <Link
               href="/teams/new"
-              className="bg-white p-5 rounded-lg shadow hover:shadow-lg transition-shadow group"
+              className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow hover:shadow-lg transition-shadow group"
             >
               <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">👥</div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-1">Create Team</h3>
-              <p className="text-sm text-gray-600">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">Create Team</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-300">
                 Start a new team
               </p>
             </Link>
 
             <Link
               href="/teams/join"
-              className="bg-white p-5 rounded-lg shadow hover:shadow-lg transition-shadow group"
+              className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow hover:shadow-lg transition-shadow group"
             >
               <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">🤝</div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-1">Join with Code</h3>
-              <p className="text-sm text-gray-600">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">Join with Code</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-300">
                 Enter invite code
               </p>
             </Link>
@@ -563,22 +563,22 @@ export default async function DashboardPage() {
           <div className="grid md:grid-cols-2 gap-4">
             <Link
               href="/matches/history"
-              className="bg-white p-5 rounded-lg shadow hover:shadow-lg transition-shadow group"
+              className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow hover:shadow-lg transition-shadow group"
             >
               <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">📊</div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-1">Match History</h3>
-              <p className="text-sm text-gray-600">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">Match History</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-300">
                 View completed matches and details
               </p>
             </Link>
 
             <Link
               href="/profile/edit"
-              className="bg-white p-5 rounded-lg shadow hover:shadow-lg transition-shadow group"
+              className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow hover:shadow-lg transition-shadow group"
             >
               <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">👤</div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-1">Your Profile</h3>
-              <p className="text-sm text-gray-600">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">Your Profile</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-300">
                 View and edit your profile
               </p>
             </Link>
@@ -587,11 +587,11 @@ export default async function DashboardPage() {
 
         {/* Recent Activity - Upcoming Matches & Announcements */}
         <div className="mt-12 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Recent Activity</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Recent Activity</h2>
           <div className="grid md:grid-cols-2 gap-6">
             {/* Upcoming Matches */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-5 flex items-center gap-2">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-5 flex items-center gap-2">
                 <span className="text-2xl">📅</span> Upcoming Matches
               </h3>
             {upcomingMatches.length > 0 ? (
@@ -600,15 +600,15 @@ export default async function DashboardPage() {
                   <Link
                     key={match.id}
                     href={`/matches/${match.id}`}
-                    className="block p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all"
+                    className="block p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-gray-700 transition-all"
                   >
                     <div className="flex justify-between items-start mb-2">
                       <div className="flex-1">
-                        <div className="font-semibold text-gray-900">
+                        <div className="font-semibold text-gray-900 dark:text-white">
                           {match.team1?.name} vs {match.team2?.name}
                         </div>
                         {match.league && (
-                          <div className="text-sm text-gray-600 mt-1">
+                          <div className="text-sm text-gray-600 dark:text-gray-300 mt-1">
                             {match.league.name}
                           </div>
                         )}
@@ -637,8 +637,8 @@ export default async function DashboardPage() {
           </div>
 
             {/* Recent Announcements */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-5 flex items-center gap-2">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-5 flex items-center gap-2">
                 <span className="text-2xl">📢</span> League Announcements
               </h3>
             {recentAnnouncements.length > 0 ? (
@@ -647,14 +647,14 @@ export default async function DashboardPage() {
                   <Link
                     key={announcement.id}
                     href={`/leagues/${announcement.league.id}`}
-                    className="block p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all"
+                    className="block p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-gray-700 transition-all"
                   >
                     <div className="flex justify-between items-start mb-2">
                       <div className="flex-1">
                         <div className="font-semibold text-gray-900 line-clamp-1">
                           {announcement.title}
                         </div>
-                        <div className="text-sm text-gray-600 mt-1 line-clamp-2">
+                        <div className="text-sm text-gray-600 dark:text-gray-300 mt-1 line-clamp-2">
                           {announcement.content}
                         </div>
                       </div>

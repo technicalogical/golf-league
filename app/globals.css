@@ -20,26 +20,53 @@
 }
 
 body {
-  background: var(--background);
-  color: #111827; /* text-gray-900 - ensure dark text everywhere */
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Make all headings dark and readable */
-h1, h2, h3, h4, h5, h6 {
-  color: #111827; /* text-gray-900 */
+/* Light mode styles */
+body {
+  background: #ffffff;
+  color: #111827;
 }
 
-/* Override for explicit gray classes if needed */
-.text-gray-600 {
-  color: #4b5563;
+/* Dark mode styles */
+body.dark {
+  background: #111827;
+  color: #f3f4f6;
+}
+
+/* Make all headings dark and readable in light mode, light in dark mode */
+h1, h2, h3, h4, h5, h6 {
+  color: #111827;
+}
+
+body.dark h1,
+body.dark h2,
+body.dark h3,
+body.dark h4,
+body.dark h5,
+body.dark h6 {
+  color: #f9fafb;
 }
 
 /* Make form inputs readable */
 input, textarea, select {
-  color: #111827; /* text-gray-900 - dark text */
+  color: #111827;
+}
+
+body.dark input,
+body.dark textarea,
+body.dark select {
+  color: #f3f4f6;
+  background-color: #374151;
+  border-color: #4b5563;
 }
 
 input::placeholder, textarea::placeholder {
-  color: #9ca3af; /* text-gray-400 - lighter placeholder */
+  color: #9ca3af;
+}
+
+body.dark input::placeholder,
+body.dark textarea::placeholder {
+  color: #6b7280;
 }
