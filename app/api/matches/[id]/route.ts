@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { requireAuth } from '@/lib/auth';
+import { requireAuth, getSession } from '@/lib/auth';
 import { supabaseAdmin } from '@/lib/supabase-server';
 
 export async function GET(
@@ -36,7 +36,7 @@ export async function GET(
     // Fetch team 1 players
     const { data: team1Players } = await supabaseAdmin
       .from('players')
-      .select('id, name, handicap')
+      .select('id, name, handicap, user_id')
       .eq('team_id', match.team1_id)
       .eq('is_active', true)
       .order('handicap');
@@ -44,7 +44,7 @@ export async function GET(
     // Fetch team 2 players
     const { data: team2Players } = await supabaseAdmin
       .from('players')
-      .select('id, name, handicap')
+      .select('id, name, handicap, user_id')
       .eq('team_id', match.team2_id)
       .eq('is_active', true)
       .order('handicap');
@@ -85,10 +85,36 @@ export async function GET(
     // Build response with sorted holes and players
     const holes = (match.course?.holes || []).sort((a: any, b: any) => a.hole_number - b.hole_number);
 
-    const players = [
-      ...(team1Players || []).map((p) => ({ ...p, team_name: team1?.name || 'Team 1' })),
-      ...(team2Players || []).map((p) => ({ ...p, team_name: team2?.name || 'Team 2' })),
-    ];
+    // Get current user session to determine team ordering
+    let userId: string | undefined;
+    try {
+      const session = await getSession();
+      userId = session?.user?.sub;
+    } catch (error) {
+      // Continue without user context
+      userId = undefined;
+    }
+
+    // Determine if current user is on team2 (to reorder teams)
+    let userIsOnTeam2 = false;
+    if (userId && team2Players) {
+      userIsOnTeam2 = team2Players.some((p) => p.user_id === userId);
+    }
+
+    // Reorder teams so current user's team appears first
+    let players;
+    if (userIsOnTeam2) {
+      players = [
+        ...(team2Players || []).map((p) => ({ ...p, team_name: team2?.name || 'Team 2' })),
+        ...(team1Players || []).map((p) => ({ ...p, team_name: team1?.name || 'Team 1' })),
+      ];
+    } else {
+      // Default: team1 first (either user is on team1 or not logged in)
+      players = [
+        ...(team1Players || []).map((p) => ({ ...p, team_name: team1?.name || 'Team 1' })),
+        ...(team2Players || []).map((p) => ({ ...p, team_name: team2?.name || 'Team 2' })),
+      ];
+    }
 
     return NextResponse.json({
       match,
