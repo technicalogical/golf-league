@@ -210,26 +210,28 @@ export default function ScorecardPage() {
 
         {/* Scorecard Table */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full text-sm table-fixed md:table-auto">
             <thead className="sticky top-0 z-10 bg-gray-100 dark:bg-gray-700 border-b-2 border-gray-300 dark:border-gray-600 shadow-sm">
               <tr>
-                <th className="p-3 text-left font-semibold sticky left-0 bg-gray-100 dark:bg-gray-700">Hole</th>
-                <th className="p-3 text-center font-semibold">Yards</th>
-                <th className="p-3 text-center font-semibold">Par</th>
-                <th className="p-3 text-center font-semibold">HCP</th>
+                <th className="p-3 text-left font-semibold sticky left-0 bg-gray-100 dark:bg-gray-700 w-12">Hole</th>
+                <th className="p-3 text-center font-semibold w-16">Yards</th>
+                <th className="p-3 text-center font-semibold w-12">Par</th>
+                <th className="p-3 text-center font-semibold w-12">HCP</th>
                 {players.map((player, index) => {
                   const isTeam1 = index < 2;
                   return (
                     <th
                       key={player.id}
-                      className={`p-3 text-center font-semibold ${
+                      className={`p-2 md:p-3 text-center font-semibold ${
                         isTeam1
                           ? 'bg-blue-50 dark:bg-blue-900/20'
                           : 'bg-green-50 dark:bg-green-900/20'
                       }`}
                     >
-                      <div className="font-bold">{player.name}</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400 font-normal">
+                      <div className="font-bold text-xs md:text-sm truncate" title={player.name}>
+                        {player.name}
+                      </div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400 font-normal whitespace-nowrap">
                         HCP: {player.handicap}
                       </div>
                     </th>
@@ -240,10 +242,10 @@ export default function ScorecardPage() {
             <tbody>
               {holes.map((hole) => (
                 <tr key={hole.id} className="border-b dark:border-gray-700">
-                  <td className="p-3 font-bold text-gray-900 dark:text-white sticky left-0 bg-white dark:bg-gray-800">{hole.hole_number}</td>
-                  <td className="p-3 text-center text-sm text-gray-600 dark:text-gray-300">{getYardage(hole)}</td>
-                  <td className="p-3 text-center font-semibold text-gray-900 dark:text-white">{hole.par}</td>
-                  <td className="p-3 text-center text-sm text-gray-600 dark:text-gray-300">
+                  <td className="p-2 md:p-3 font-bold text-gray-900 dark:text-white sticky left-0 bg-white dark:bg-gray-800">{hole.hole_number}</td>
+                  <td className="p-2 md:p-3 text-center text-xs md:text-sm text-gray-600 dark:text-gray-300">{getYardage(hole)}</td>
+                  <td className="p-2 md:p-3 text-center font-semibold text-gray-900 dark:text-white">{hole.par}</td>
+                  <td className="p-2 md:p-3 text-center text-xs md:text-sm text-gray-600 dark:text-gray-300">
                     {hole.handicap_index}
                   </td>
                   {players.map((player, index) => {
@@ -252,7 +254,7 @@ export default function ScorecardPage() {
                     return (
                       <td
                         key={player.id}
-                        className={`p-3 ${
+                        className={`p-2 md:p-3 ${
                           isTeam1
                             ? 'bg-blue-50/50 dark:bg-blue-900/10'
                             : 'bg-green-50/50 dark:bg-green-900/10'
@@ -267,7 +269,7 @@ export default function ScorecardPage() {
                               e.target.value ? parseInt(e.target.value) : ''
                             )
                           }
-                          className="w-full px-2 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-center focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-semibold"
+                          className="w-full px-2 py-1.5 md:py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md text-center focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-semibold"
                         >
                           <option value="">-</option>
                           {Array.from({ length: maxScore }, (_, i) => i + 1).map((score) => (
@@ -283,7 +285,7 @@ export default function ScorecardPage() {
               ))}
               {/* Totals Row */}
               <tr className="bg-gray-100 dark:bg-gray-700 font-bold text-gray-900 dark:text-white border-t-2 border-gray-300 dark:border-gray-600">
-                <td className="p-4 sticky left-0 bg-gray-100 dark:bg-gray-700" colSpan={4}>
+                <td className="p-3 md:p-4 sticky left-0 bg-gray-100 dark:bg-gray-700" colSpan={4}>
                   TOTAL
                 </td>
                 {players.map((player, index) => {
@@ -291,7 +293,7 @@ export default function ScorecardPage() {
                   return (
                     <td
                       key={player.id}
-                      className={`p-4 text-center text-lg ${
+                      className={`p-3 md:p-4 text-center text-base md:text-lg ${
                         isTeam1
                           ? 'bg-blue-100 dark:bg-blue-900/30'
                           : 'bg-green-100 dark:bg-green-900/30'
