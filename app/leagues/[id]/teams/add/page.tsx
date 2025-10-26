@@ -89,7 +89,7 @@ export default function AddTeamsToLeaguePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-xl text-gray-600 dark:text-gray-300">Loading teams...</div>
       </div>
     );
@@ -121,10 +121,10 @@ export default function AddTeamsToLeaguePage() {
 
           {availableTeams.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-gray-600 mb-4">All active teams are already in this league.</p>
+              <p className="text-gray-600 dark:text-gray-400 mb-4">All active teams are already in this league.</p>
               <Link
                 href={`/leagues/${leagueId}`}
-                className="text-blue-600 hover:text-blue-800"
+                className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
               >
                 ← Back to League
               </Link>
@@ -132,7 +132,7 @@ export default function AddTeamsToLeaguePage() {
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-3">
+                <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-3">
                   Select Teams ({selectedTeams.length} selected)
                 </label>
                 <div className="space-y-2 max-h-96 overflow-y-auto">
@@ -141,8 +141,8 @@ export default function AddTeamsToLeaguePage() {
                       key={team.id}
                       className={`flex items-center p-4 border rounded-lg cursor-pointer transition ${
                         selectedTeams.includes(team.id)
-                          ? 'bg-blue-50 border-blue-500'
-                          : 'bg-white border-gray-300 hover:bg-gray-50'
+                          ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-500 dark:border-blue-600'
+                          : 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
                       }`}
                     >
                       <input
@@ -151,7 +151,7 @@ export default function AddTeamsToLeaguePage() {
                         onChange={() => toggleTeam(team.id)}
                         className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                       />
-                      <span className="ml-3 text-gray-900 font-medium">{team.name}</span>
+                      <span className="ml-3 text-gray-900 dark:text-white font-medium">{team.name}</span>
                     </label>
                   ))}
                 </div>
@@ -167,7 +167,7 @@ export default function AddTeamsToLeaguePage() {
                 </button>
                 <Link
                   href={`/leagues/${leagueId}`}
-                  className="flex-1 px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold text-center"
+                  className="flex-1 px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 font-semibold text-center"
                 >
                   Cancel
                 </Link>
