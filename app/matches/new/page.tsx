@@ -126,7 +126,7 @@ export default function NewMatchPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-gray-600 dark:text-gray-300">Loading...</div>
       </div>
     );
@@ -144,10 +144,10 @@ export default function NewMatchPage() {
           </div>
         </header>
         <main className="max-w-2xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+          <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-900 rounded-lg p-6 text-center">
             <div className="text-4xl mb-4">⚠️</div>
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Not Enough Teams</h2>
-            <p className="text-gray-700 mb-4">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Not Enough Teams</h2>
+            <p className="text-gray-700 dark:text-gray-300 mb-4">
               You need at least 2 active teams to schedule a match.
             </p>
             <Link
@@ -174,10 +174,10 @@ export default function NewMatchPage() {
           </div>
         </header>
         <main className="max-w-2xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+          <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-900 rounded-lg p-6 text-center">
             <div className="text-4xl mb-4">⚠️</div>
-            <h2 className="text-xl font-bold text-gray-900 mb-2">No Courses Available</h2>
-            <p className="text-gray-700 mb-4">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No Courses Available</h2>
+            <p className="text-gray-700 dark:text-gray-300 mb-4">
               You need to run the database migrations to seed courses.
             </p>
           </div>
@@ -209,7 +209,7 @@ export default function NewMatchPage() {
             )}
 
             <div>
-              <label htmlFor="team1" className="block text-sm font-semibold text-gray-900 mb-2">
+              <label htmlFor="team1" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                 Team 1 *
               </label>
               <select
@@ -217,7 +217,7 @@ export default function NewMatchPage() {
                 value={team1Id}
                 onChange={(e) => setTeam1Id(e.target.value)}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               >
                 <option value="">Select team...</option>
                 {teams.map((team) => (
@@ -229,7 +229,7 @@ export default function NewMatchPage() {
             </div>
 
             <div>
-              <label htmlFor="team2" className="block text-sm font-semibold text-gray-900 mb-2">
+              <label htmlFor="team2" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                 Team 2 *
               </label>
               <select
@@ -237,7 +237,7 @@ export default function NewMatchPage() {
                 value={team2Id}
                 onChange={(e) => setTeam2Id(e.target.value)}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               >
                 <option value="">Select team...</option>
                 {teams.map((team) => (
@@ -249,7 +249,7 @@ export default function NewMatchPage() {
             </div>
 
             <div>
-              <label htmlFor="course" className="block text-sm font-semibold text-gray-900 mb-2">
+              <label htmlFor="course" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                 Course *
               </label>
               <select
@@ -257,7 +257,7 @@ export default function NewMatchPage() {
                 value={courseId}
                 onChange={(e) => setCourseId(e.target.value)}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               >
                 <option value="">Select course...</option>
                 {courses.map((course) => (
@@ -269,7 +269,7 @@ export default function NewMatchPage() {
             </div>
 
             <div>
-              <label htmlFor="match_date" className="block text-sm font-semibold text-gray-900 mb-2">
+              <label htmlFor="match_date" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                 Match Date *
               </label>
               <input
@@ -278,20 +278,20 @@ export default function NewMatchPage() {
                 value={matchDate}
                 onChange={(e) => setMatchDate(e.target.value)}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               />
             </div>
 
             {leagues.length > 0 && (
               <div>
-                <label htmlFor="league" className="block text-sm font-semibold text-gray-900 mb-2">
+                <label htmlFor="league" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                   League (Optional)
                 </label>
                 <select
                   id="league"
                   value={leagueId}
                   onChange={(e) => setLeagueId(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
                   <option value="">None (Friendly Match)</option>
                   {leagues.map((league) => (
@@ -304,7 +304,7 @@ export default function NewMatchPage() {
             )}
 
             <div>
-              <label htmlFor="holes_to_play" className="block text-sm font-semibold text-gray-900 mb-2">
+              <label htmlFor="holes_to_play" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                 Holes to Play *
               </label>
               <select
@@ -312,7 +312,7 @@ export default function NewMatchPage() {
                 value={holesToPlay}
                 onChange={(e) => setHolesToPlay(parseInt(e.target.value))}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               >
                 <option value="18">18 Holes</option>
                 <option value="9">9 Holes</option>
@@ -321,7 +321,7 @@ export default function NewMatchPage() {
 
             {holesToPlay === 9 && (
               <div>
-                <label htmlFor="nine_selection" className="block text-sm font-semibold text-gray-900 mb-2">
+                <label htmlFor="nine_selection" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                   Which Nine? *
                 </label>
                 <select
@@ -329,7 +329,7 @@ export default function NewMatchPage() {
                   value={nineSelection}
                   onChange={(e) => setNineSelection(e.target.value)}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
                   <option value="front">Front 9 (Holes 1-9)</option>
                   <option value="back">Back 9 (Holes 10-18)</option>
@@ -338,7 +338,7 @@ export default function NewMatchPage() {
             )}
 
             <div>
-              <label htmlFor="tee_selection" className="block text-sm font-semibold text-gray-900 mb-2">
+              <label htmlFor="tee_selection" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                 Tee Selection *
               </label>
               <select
@@ -346,7 +346,7 @@ export default function NewMatchPage() {
                 value={teeSelection}
                 onChange={(e) => setTeeSelection(e.target.value)}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               >
                 <option value="Black">Black Tees</option>
                 <option value="Gold">Gold Tees</option>
@@ -366,7 +366,7 @@ export default function NewMatchPage() {
               </button>
               <Link
                 href="/matches"
-                className="flex-1 px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold text-center"
+                className="flex-1 px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 font-semibold text-center"
               >
                 Cancel
               </Link>

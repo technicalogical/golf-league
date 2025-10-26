@@ -40,7 +40,7 @@ export default function SyncPlayersPage() {
             ← Back to Dashboard
           </Link>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Sync Players & League Members</h1>
-          <p className="text-gray-600 mt-1">
+          <p className="text-gray-600 dark:text-gray-300 mt-1">
             Creates missing player records and league memberships for team members
           </p>
         </div>
@@ -48,8 +48,8 @@ export default function SyncPlayersPage() {
 
       <main className="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">What this does:</h2>
-          <ul className="list-disc list-inside space-y-2 text-sm text-gray-700 mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">What this does:</h2>
+          <ul className="list-disc list-inside space-y-2 text-sm text-gray-700 dark:text-gray-300 mb-6">
             <li>
               Creates <strong>player</strong> records for team members who don't have one
             </li>

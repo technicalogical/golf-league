@@ -115,7 +115,7 @@ export default function WelcomePage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Display Name */}
             <div>
-              <label htmlFor="display_name" className="block text-sm font-semibold text-gray-900 mb-2">
+              <label htmlFor="display_name" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                 Display Name <span className="text-red-600">*</span>
               </label>
               <input
@@ -125,17 +125,17 @@ export default function WelcomePage() {
                 onChange={(e) => setDisplayName(e.target.value)}
                 placeholder="How should we call you?"
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               />
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 This name will be displayed throughout the site
               </p>
             </div>
 
             {/* Bio */}
             <div>
-              <label htmlFor="bio" className="block text-sm font-semibold text-gray-900 mb-2">
-                Bio <span className="text-gray-400 font-normal">(Optional)</span>
+              <label htmlFor="bio" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                Bio <span className="text-gray-400 dark:text-gray-500 font-normal">(Optional)</span>
               </label>
               <textarea
                 id="bio"
@@ -143,14 +143,14 @@ export default function WelcomePage() {
                 onChange={(e) => setBio(e.target.value)}
                 placeholder="Tell us a little about yourself..."
                 rows={3}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               />
             </div>
 
             {/* Phone */}
             <div>
-              <label htmlFor="phone" className="block text-sm font-semibold text-gray-900 mb-2">
-                Phone Number <span className="text-gray-400 font-normal">(Optional)</span>
+              <label htmlFor="phone" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                Phone Number <span className="text-gray-400 dark:text-gray-500 font-normal">(Optional)</span>
               </label>
               <input
                 type="tel"
@@ -158,7 +158,7 @@ export default function WelcomePage() {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="(555) 123-4567"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               />
             </div>
 
@@ -215,7 +215,7 @@ export default function WelcomePage() {
               </button>
             </div>
 
-            <p className="text-xs text-center text-gray-500 mt-4">
+            <p className="text-xs text-center text-gray-500 dark:text-gray-400 mt-4">
               You can always update your profile later from the dashboard
             </p>
           </form>

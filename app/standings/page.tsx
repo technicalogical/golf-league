@@ -74,19 +74,19 @@ export default function StandingsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-xl">Loading standings...</div>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-xl text-gray-900 dark:text-white">Loading standings...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white">League Standings</h1>
-          <p className="text-gray-600 mt-2">
+          <p className="text-gray-600 dark:text-gray-300 mt-2">
             Current season rankings and statistics
           </p>
         </div>
@@ -94,14 +94,14 @@ export default function StandingsPage() {
         {/* League Filter */}
         {leagues.length > 0 && (
           <div className="mb-6">
-            <label htmlFor="league" className="block text-sm font-semibold text-gray-900 mb-2">
+            <label htmlFor="league" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
               Filter by League
             </label>
             <select
               id="league"
               value={selectedLeagueId}
               onChange={(e) => setSelectedLeagueId(e.target.value)}
-              className="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+              className="w-full md:w-64 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
             >
               <option value="all">All Matches</option>
               {leagues.map((league) => (
@@ -120,7 +120,7 @@ export default function StandingsPage() {
             className={`px-6 py-3 rounded-lg font-semibold transition-colors ${
               view === 'teams'
                 ? 'bg-blue-600 text-white'
-                : 'bg-white text-gray-700 hover:bg-gray-100'
+                : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600'
             }`}
           >
             Team Standings
@@ -130,7 +130,7 @@ export default function StandingsPage() {
             className={`px-6 py-3 rounded-lg font-semibold transition-colors ${
               view === 'players'
                 ? 'bg-blue-600 text-white'
-                : 'bg-white text-gray-700 hover:bg-gray-100'
+                : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600'
             }`}
           >
             Player Standings
@@ -156,8 +156,8 @@ export default function StandingsPage() {
                 {teamStandings.map((team, index) => (
                   <tr
                     key={team.team_id}
-                    className={`border-b hover:bg-gray-50 ${
-                      index === 0 ? 'bg-yellow-50' : ''
+                    className={`border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 ${
+                      index === 0 ? 'bg-yellow-50 dark:bg-yellow-900/20' : ''
                     }`}
                   >
                     <td className="p-4">
@@ -165,7 +165,7 @@ export default function StandingsPage() {
                         className={`inline-flex items-center justify-center w-8 h-8 rounded-full ${
                           index === 0
                             ? 'bg-yellow-400 text-yellow-900 font-bold'
-                            : 'bg-gray-200 dark:bg-gray-700 text-gray-700'
+                            : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
                         }`}
                       >
                         {index + 1}
@@ -226,8 +226,8 @@ export default function StandingsPage() {
                 {playerStandings.map((player, index) => (
                   <tr
                     key={player.player_id}
-                    className={`border-b hover:bg-gray-50 ${
-                      index === 0 ? 'bg-yellow-50' : ''
+                    className={`border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 ${
+                      index === 0 ? 'bg-yellow-50 dark:bg-yellow-900/20' : ''
                     }`}
                   >
                     <td className="p-4">
@@ -235,7 +235,7 @@ export default function StandingsPage() {
                         className={`inline-flex items-center justify-center w-8 h-8 rounded-full ${
                           index === 0
                             ? 'bg-yellow-400 text-yellow-900 font-bold'
-                            : 'bg-gray-200 dark:bg-gray-700 text-gray-700'
+                            : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
                         }`}
                       >
                         {index + 1}
@@ -276,8 +276,8 @@ export default function StandingsPage() {
         )}
 
         {/* Legend */}
-        <div className="mt-6 p-4 bg-white rounded-lg shadow">
-          <h3 className="font-semibold text-gray-700 mb-2">Legend</h3>
+        <div className="mt-6 p-4 bg-white dark:bg-gray-800 rounded-lg shadow">
+          <h3 className="font-semibold text-gray-700 dark:text-white mb-2">Legend</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600 dark:text-gray-300">
             <div>
               <span className="font-semibold">GP:</span> Games Played
@@ -313,7 +313,7 @@ export default function StandingsPage() {
           </Link>
           <Link
             href="/dashboard"
-            className="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 rounded-lg hover:bg-gray-300 font-semibold"
+            className="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 font-semibold"
           >
             Dashboard
           </Link>

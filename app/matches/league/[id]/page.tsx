@@ -78,7 +78,7 @@ export default async function LeagueMatchesPage({
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{league.name}</h1>
-              <p className="text-gray-600 mt-1">Your team's matches</p>
+              <p className="text-gray-600 dark:text-gray-300 mt-1">Your team's matches</p>
             </div>
             <span
               className={`px-3 py-1 text-sm font-semibold rounded ${
@@ -137,8 +137,8 @@ export default async function LeagueMatchesPage({
         {!matches || matches.length === 0 ? (
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-12 text-center">
             <div className="text-6xl mb-4">🏌️</div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">No Matches</h2>
-            <p className="text-gray-600 mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">No Matches</h2>
+            <p className="text-gray-600 dark:text-gray-300 mb-6">
               Your team doesn't have any matches scheduled in this league yet.
             </p>
             <Link

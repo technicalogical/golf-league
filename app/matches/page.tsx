@@ -52,7 +52,7 @@ export default async function MatchesPage() {
             ← Back to Dashboard
           </Link>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Enter Scores</h1>
-          <p className="text-gray-600 mt-1">Select a league to view your matches</p>
+          <p className="text-gray-600 dark:text-gray-300 mt-1">Select a league to view your matches</p>
         </div>
       </header>
 
@@ -61,8 +61,8 @@ export default async function MatchesPage() {
         {leagues.length === 0 ? (
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-12 text-center">
             <div className="text-6xl mb-4">🏌️</div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">No Active Leagues</h2>
-            <p className="text-gray-600 mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">No Active Leagues</h2>
+            <p className="text-gray-600 dark:text-gray-300 mb-6">
               You're not currently part of any team in an active league.
             </p>
             <Link
