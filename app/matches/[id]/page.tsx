@@ -49,9 +49,9 @@ export default async function MatchDetailPage({
 
   if (error || !match) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Match Not Found</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Match Not Found</h1>
           <Link href="/matches" className="text-blue-600 hover:text-blue-800">
             ← Back to Matches
           </Link>
@@ -100,7 +100,7 @@ export default async function MatchDetailPage({
           <div className="lg:col-span-2 space-y-6">
             {/* Teams */}
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Teams</h2>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Teams</h2>
 
               <div className="space-y-6">
                 {/* Team 1 */}
@@ -113,13 +113,13 @@ export default async function MatchDetailPage({
                   </div>
                   <div className="space-y-2">
                     {team1Players.map((player: any) => (
-                      <div key={player.id} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                      <div key={player.id} className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                         <span className="font-medium text-gray-900 dark:text-white">{player.name}</span>
                         <span className="text-sm text-gray-600 dark:text-gray-300">Handicap: {player.handicap}</span>
                       </div>
                     ))}
                     {team1Players.length === 0 && (
-                      <p className="text-gray-500 text-sm">No players assigned</p>
+                      <p className="text-gray-500 dark:text-gray-400 text-sm">No players assigned</p>
                     )}
                   </div>
                 </div>
@@ -136,13 +136,13 @@ export default async function MatchDetailPage({
                   </div>
                   <div className="space-y-2">
                     {team2Players.map((player: any) => (
-                      <div key={player.id} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                      <div key={player.id} className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                         <span className="font-medium text-gray-900 dark:text-white">{player.name}</span>
                         <span className="text-sm text-gray-600 dark:text-gray-300">Handicap: {player.handicap}</span>
                       </div>
                     ))}
                     {team2Players.length === 0 && (
-                      <p className="text-gray-500 text-sm">No players assigned</p>
+                      <p className="text-gray-500 dark:text-gray-400 text-sm">No players assigned</p>
                     )}
                   </div>
                 </div>
@@ -151,8 +151,8 @@ export default async function MatchDetailPage({
               {/* Action Buttons */}
               <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
                 {!canStartMatch && match.status === 'scheduled' && (
-                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
-                    <p className="text-sm text-yellow-800">
+                  <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-900 rounded-lg p-4 mb-4">
+                    <p className="text-sm text-yellow-800 dark:text-yellow-200">
                       Both teams must have exactly 2 players before the match can start.
                     </p>
                   </div>
@@ -203,11 +203,11 @@ export default async function MatchDetailPage({
           <div className="space-y-6">
             {/* Match Details */}
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Match Details</h2>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Match Details</h2>
               <div className="space-y-3 text-sm">
                 <div>
                   <span className="font-semibold text-gray-900 dark:text-white">Date:</span>
-                  <div className="text-gray-600 mt-1">
+                  <div className="text-gray-600 dark:text-gray-300 mt-1">
                     {new Date(match.match_date).toLocaleDateString('en-US', {
                       weekday: 'long',
                       year: 'numeric',
@@ -218,8 +218,8 @@ export default async function MatchDetailPage({
                 </div>
                 <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
                   <span className="font-semibold text-gray-900 dark:text-white">Course:</span>
-                  <div className="text-gray-600 mt-1">{match.course?.name}</div>
-                  <div className="text-gray-500 text-xs mt-1">
+                  <div className="text-gray-600 dark:text-gray-300 mt-1">{match.course?.name}</div>
+                  <div className="text-gray-500 dark:text-gray-400 text-xs mt-1">
                     Par {match.course?.par} • {match.course?.location}
                   </div>
                 </div>

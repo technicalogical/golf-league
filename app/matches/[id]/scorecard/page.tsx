@@ -155,8 +155,8 @@ export default function ScorecardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-xl">Loading match data...</div>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-xl text-gray-900 dark:text-white">Loading match data...</div>
       </div>
     );
   }
@@ -165,11 +165,11 @@ export default function ScorecardPage() {
   const team2Players = players.filter((p, i) => i >= 2);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
       <div className="max-w-7xl mx-auto">
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Scorecard Entry</h1>
-          <p className="text-gray-600 mt-2">
+          <p className="text-gray-600 dark:text-gray-300 mt-2">
             Enter scores for all players. Net scores calculated automatically.
           </p>
           {match && (
@@ -188,13 +188,13 @@ export default function ScorecardPage() {
 
         {/* Team Headers */}
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <div className="bg-blue-100 p-4 rounded-lg">
-            <h2 className="text-xl font-bold text-blue-900">
+          <div className="bg-blue-100 dark:bg-blue-900/30 p-4 rounded-lg">
+            <h2 className="text-xl font-bold text-blue-900 dark:text-blue-200">
               {team1Players[0]?.team_name || 'Team 1'}
             </h2>
           </div>
-          <div className="bg-green-100 p-4 rounded-lg">
-            <h2 className="text-xl font-bold text-green-900">
+          <div className="bg-green-100 dark:bg-green-900/30 p-4 rounded-lg">
+            <h2 className="text-xl font-bold text-green-900 dark:text-green-200">
               {team2Players[0]?.team_name || 'Team 2'}
             </h2>
           </div>
@@ -212,7 +212,7 @@ export default function ScorecardPage() {
                 {players.map((player) => (
                   <th key={player.id} className="p-3 text-center font-semibold">
                     <div>{player.name}</div>
-                    <div className="text-xs text-gray-500 font-normal">
+                    <div className="text-xs text-gray-500 dark:text-gray-400 font-normal">
                       HCP: {player.handicap}
                     </div>
                   </th>
@@ -221,10 +221,10 @@ export default function ScorecardPage() {
             </thead>
             <tbody>
               {holes.map((hole) => (
-                <tr key={hole.id} className="border-b hover:bg-gray-50">
-                  <td className="p-3 font-semibold">{hole.hole_number}</td>
+                <tr key={hole.id} className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
+                  <td className="p-3 font-semibold text-gray-900 dark:text-white">{hole.hole_number}</td>
                   <td className="p-3 text-center text-sm text-gray-600 dark:text-gray-300">{getYardage(hole)}</td>
-                  <td className="p-3 text-center">{hole.par}</td>
+                  <td className="p-3 text-center text-gray-900 dark:text-white">{hole.par}</td>
                   <td className="p-3 text-center text-sm text-gray-600 dark:text-gray-300">
                     {hole.handicap_index}
                   </td>
@@ -241,7 +241,7 @@ export default function ScorecardPage() {
                               e.target.value ? parseInt(e.target.value) : ''
                             )
                           }
-                          className="w-16 px-2 py-1 border rounded text-center focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                          className="w-16 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded text-center focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                         >
                           <option value="">-</option>
                           {Array.from({ length: maxScore }, (_, i) => i + 1).map((score) => (
@@ -256,7 +256,7 @@ export default function ScorecardPage() {
                 </tr>
               ))}
               {/* Totals Row */}
-              <tr className="bg-gray-100 dark:bg-gray-700 font-bold">
+              <tr className="bg-gray-100 dark:bg-gray-700 font-bold text-gray-900 dark:text-white">
                 <td className="p-3" colSpan={4}>
                   TOTAL
                 </td>
@@ -274,7 +274,7 @@ export default function ScorecardPage() {
         <div className="mt-6 flex justify-between items-center">
           <button
             onClick={() => router.back()}
-            className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50"
+            className="px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200"
           >
             Cancel
           </button>
