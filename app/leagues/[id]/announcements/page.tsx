@@ -160,13 +160,13 @@ export default function AnnouncementsManagementPage() {
       <main className="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         {/* Create/Edit Form */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
             {editingId ? 'Edit Announcement' : 'Create New Announcement'}
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="title" className="block text-sm font-semibold text-gray-900 mb-2">
+              <label htmlFor="title" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                 Title *
               </label>
               <input
@@ -181,7 +181,7 @@ export default function AnnouncementsManagementPage() {
             </div>
 
             <div>
-              <label htmlFor="content" className="block text-sm font-semibold text-gray-900 mb-2">
+              <label htmlFor="content" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                 Content *
               </label>
               <textarea
@@ -235,7 +235,7 @@ export default function AnnouncementsManagementPage() {
                 <button
                   type="button"
                   onClick={handleCancelEdit}
-                  className="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold"
+                  className="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 font-semibold"
                 >
                   Cancel
                 </button>
@@ -246,7 +246,7 @@ export default function AnnouncementsManagementPage() {
 
         {/* Existing Announcements */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
             Existing Announcements ({announcements.length})
           </h2>
 
@@ -261,8 +261,8 @@ export default function AnnouncementsManagementPage() {
                   key={announcement.id}
                   className={`p-4 rounded-lg border ${
                     announcement.pinned
-                      ? 'bg-yellow-50 border-yellow-300'
-                      : 'bg-gray-50 border-gray-200'
+                      ? 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-300 dark:border-yellow-700'
+                      : 'bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600'
                   }`}
                 >
                   <div className="flex items-start justify-between mb-2">
@@ -275,7 +275,7 @@ export default function AnnouncementsManagementPage() {
                           </span>
                         )}
                       </div>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                         Posted by {announcement.author?.display_name || announcement.author?.name || 'Unknown'} on{' '}
                         {new Date(announcement.created_at).toLocaleDateString('en-US', {
                           month: 'long',
@@ -287,19 +287,19 @@ export default function AnnouncementsManagementPage() {
                     <div className="flex gap-2 ml-4">
                       <button
                         onClick={() => handleEdit(announcement)}
-                        className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded hover:bg-blue-200 font-medium"
+                        className="px-3 py-1 text-sm bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 rounded hover:bg-blue-200 dark:hover:bg-blue-900/60 font-medium"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => handleDelete(announcement.id)}
-                        className="px-3 py-1 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200 font-medium"
+                        className="px-3 py-1 text-sm bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 rounded hover:bg-red-200 dark:hover:bg-red-900/60 font-medium"
                       >
                         Delete
                       </button>
                     </div>
                   </div>
-                  <p className="text-gray-700 whitespace-pre-wrap">{announcement.content}</p>
+                  <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{announcement.content}</p>
                 </div>
               ))}
             </div>

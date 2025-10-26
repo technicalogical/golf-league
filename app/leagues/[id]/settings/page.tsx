@@ -187,11 +187,11 @@ export default function LeagueSettingsPage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Information */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Basic Information</h2>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Basic Information</h2>
 
             <div className="space-y-4">
               <div>
-                <label htmlFor="name" className="block text-sm font-semibold text-gray-900 mb-2">
+                <label htmlFor="name" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                   League Name *
                 </label>
                 <input
@@ -205,7 +205,7 @@ export default function LeagueSettingsPage() {
               </div>
 
               <div>
-                <label htmlFor="description" className="block text-sm font-semibold text-gray-900 mb-2">
+                <label htmlFor="description" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                   Short Description
                 </label>
                 <textarea
@@ -218,7 +218,7 @@ export default function LeagueSettingsPage() {
               </div>
 
               <div>
-                <label htmlFor="status" className="block text-sm font-semibold text-gray-900 mb-2">
+                <label htmlFor="status" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                   League Status *
                 </label>
                 <select
@@ -238,7 +238,7 @@ export default function LeagueSettingsPage() {
 
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="leagueDay" className="block text-sm font-semibold text-gray-900 mb-2">
+                  <label htmlFor="leagueDay" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                     League Day
                   </label>
                   <select
@@ -259,7 +259,7 @@ export default function LeagueSettingsPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="leagueTime" className="block text-sm font-semibold text-gray-900 mb-2">
+                  <label htmlFor="leagueTime" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                     League Time
                   </label>
                   <input
@@ -276,7 +276,7 @@ export default function LeagueSettingsPage() {
 
           {/* Visibility Settings */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Visibility Settings</h2>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Visibility Settings</h2>
 
             <div className="space-y-4">
               <label className="flex items-start cursor-pointer">
@@ -314,11 +314,11 @@ export default function LeagueSettingsPage() {
           {/* Landing Page Content */}
           {landingPageEnabled && (
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Landing Page Content</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Landing Page Content</h2>
 
               <div className="space-y-4">
                 <div>
-                  <label htmlFor="league_info" className="block text-sm font-semibold text-gray-900 mb-2">
+                  <label htmlFor="league_info" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                     League Information
                   </label>
                   <textarea
@@ -332,7 +332,7 @@ export default function LeagueSettingsPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="custom_rules" className="block text-sm font-semibold text-gray-900 mb-2">
+                  <label htmlFor="custom_rules" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                     League Rules & Guidelines
                   </label>
                   <textarea
@@ -351,11 +351,11 @@ export default function LeagueSettingsPage() {
           {/* Contact Information */}
           {landingPageEnabled && (
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Contact Information</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Contact Information</h2>
 
               <div className="space-y-4">
                 <div>
-                  <label htmlFor="contact_name" className="block text-sm font-semibold text-gray-900 mb-2">
+                  <label htmlFor="contact_name" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                     Contact Name
                   </label>
                   <input
@@ -368,7 +368,7 @@ export default function LeagueSettingsPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="contact_email" className="block text-sm font-semibold text-gray-900 mb-2">
+                  <label htmlFor="contact_email" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                     Contact Email
                   </label>
                   <input
@@ -381,7 +381,7 @@ export default function LeagueSettingsPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="contact_phone" className="block text-sm font-semibold text-gray-900 mb-2">
+                  <label htmlFor="contact_phone" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                     Contact Phone
                   </label>
                   <input
@@ -399,7 +399,7 @@ export default function LeagueSettingsPage() {
           {/* Registration Settings */}
           {landingPageEnabled && (
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Registration</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Registration</h2>
 
               <div className="space-y-4">
                 <label className="flex items-start cursor-pointer">
@@ -418,7 +418,7 @@ export default function LeagueSettingsPage() {
                 </label>
 
                 <div>
-                  <label htmlFor="registration_info" className="block text-sm font-semibold text-gray-900 mb-2">
+                  <label htmlFor="registration_info" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                     Registration Instructions
                   </label>
                   <textarea
@@ -457,7 +457,7 @@ export default function LeagueSettingsPage() {
             </button>
             <Link
               href={`/leagues/${leagueId}`}
-              className="flex-1 px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold text-center"
+              className="flex-1 px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 font-semibold text-center"
             >
               Cancel
             </Link>
@@ -478,9 +478,9 @@ export default function LeagueSettingsPage() {
         </form>
 
         {/* Danger Zone */}
-        <div className="mt-8 bg-red-50 border-2 border-red-200 rounded-lg p-6">
-          <h2 className="text-xl font-bold text-red-900 mb-2">Danger Zone</h2>
-          <p className="text-sm text-red-800 mb-4">
+        <div className="mt-8 bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-lg p-6">
+          <h2 className="text-xl font-bold text-red-900 dark:text-red-400 mb-2">Danger Zone</h2>
+          <p className="text-sm text-red-800 dark:text-red-300 mb-4">
             Once you delete a league, there is no going back. This will permanently delete the league,
             all associated teams, matches, and scores. This action cannot be undone.
           </p>
@@ -496,8 +496,8 @@ export default function LeagueSettingsPage() {
           ) : (
             <div className="space-y-4">
               <div>
-                <label htmlFor="deleteConfirm" className="block text-sm font-semibold text-red-900 mb-2">
-                  Type <span className="font-mono bg-red-100 px-1">{name}</span> to confirm deletion:
+                <label htmlFor="deleteConfirm" className="block text-sm font-semibold text-red-900 dark:text-red-400 mb-2">
+                  Type <span className="font-mono bg-red-100 dark:bg-red-900/40 px-1">{name}</span> to confirm deletion:
                 </label>
                 <input
                   type="text"
@@ -523,7 +523,7 @@ export default function LeagueSettingsPage() {
                     setShowDeleteConfirm(false);
                     setDeleteConfirmText('');
                   }}
-                  className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold"
+                  className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 font-semibold"
                 >
                   Cancel
                 </button>

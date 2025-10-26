@@ -173,10 +173,10 @@ export default function ManageLeagueMembersPage() {
 
         {/* Add Member Form */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Add New Member</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Add New Member</h2>
           <form onSubmit={handleAddMember} className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-semibold text-gray-900 mb-2">
+              <label htmlFor="email" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                 Email Address
               </label>
               <input
@@ -190,7 +190,7 @@ export default function ManageLeagueMembersPage() {
             </div>
 
             <div>
-              <label htmlFor="role" className="block text-sm font-semibold text-gray-900 mb-2">
+              <label htmlFor="role" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                 Role
               </label>
               <select
@@ -218,7 +218,7 @@ export default function ManageLeagueMembersPage() {
 
         {/* Current Members */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
             Current Members ({members.length})
           </h2>
           {members.length === 0 ? (
@@ -228,7 +228,7 @@ export default function ManageLeagueMembersPage() {
               {members.map((member) => (
                 <div
                   key={member.id}
-                  className="flex justify-between items-center p-4 bg-gray-50 rounded-lg"
+                  className="flex justify-between items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg"
                 >
                   <div className="flex-1">
                     <div className="font-semibold text-gray-900 dark:text-white">
