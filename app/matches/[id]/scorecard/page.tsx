@@ -213,10 +213,16 @@ export default function ScorecardPage() {
           <table className="w-full text-sm table-fixed md:table-auto">
             <thead className="sticky top-0 z-10 bg-gray-100 dark:bg-gray-700 border-b-2 border-gray-300 dark:border-gray-600 shadow-sm">
               <tr>
-                <th className="p-3 text-left font-semibold sticky left-0 bg-gray-100 dark:bg-gray-700 w-12">Hole</th>
-                <th className="p-3 text-center font-semibold w-16">Yards</th>
-                <th className="p-3 text-center font-semibold w-12">Par</th>
-                <th className="p-3 text-center font-semibold w-12">HCP</th>
+                <th className="p-2 md:p-3 text-left font-semibold sticky left-0 bg-gray-100 dark:bg-gray-700 w-10 md:w-12">
+                  <span className="hidden md:inline">Hole</span>
+                  <span className="md:hidden">#</span>
+                </th>
+                <th className="p-2 md:p-3 text-center font-semibold w-12 md:w-16">
+                  <span className="hidden md:inline">Yards</span>
+                  <span className="md:hidden">Yrd</span>
+                </th>
+                <th className="p-2 md:p-3 text-center font-semibold w-10 md:w-12">Par</th>
+                <th className="p-2 md:p-3 text-center font-semibold w-10 md:w-12">HCP</th>
                 {players.map((player, index) => {
                   const isTeam1 = index < 2;
                   return (
