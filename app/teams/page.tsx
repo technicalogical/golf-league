@@ -50,8 +50,8 @@ export default async function TeamsPage() {
         {!teams || teams.length === 0 ? (
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-12 text-center">
             <div className="text-6xl mb-4">🏌️</div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">No Teams Yet</h2>
-            <p className="text-gray-600 mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">No Teams Yet</h2>
+            <p className="text-gray-600 dark:text-gray-300 mb-6">
               Get started by creating your first team.
             </p>
             <Link

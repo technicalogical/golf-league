@@ -73,7 +73,7 @@ export default function TeamMembersList({
         return (
           <div
             key={member.id}
-            className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors"
+            className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
           >
             {/* Avatar */}
             <Link
@@ -84,10 +84,10 @@ export default function TeamMembersList({
                 <img
                   src={member.user.avatar_url}
                   alt={displayName}
-                  className="w-14 h-14 rounded-full object-cover border-2 border-gray-200 group-hover:border-blue-500 transition-colors"
+                  className="w-14 h-14 rounded-full object-cover border-2 border-gray-200 dark:border-gray-600 group-hover:border-blue-500 transition-colors"
                 />
               ) : (
-                <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-xl font-bold border-2 border-gray-200 group-hover:border-blue-700 group-hover:scale-105 transition-all">
+                <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-xl font-bold border-2 border-gray-200 dark:border-gray-600 group-hover:border-blue-700 group-hover:scale-105 transition-all">
                   {displayName[0].toUpperCase()}
                 </div>
               )}
@@ -96,14 +96,14 @@ export default function TeamMembersList({
             {/* Member Info */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <h4 className="font-semibold text-gray-900 truncate">{displayName}</h4>
+                <h4 className="font-semibold text-gray-900 dark:text-white truncate">{displayName}</h4>
                 {isCurrentUser && (
-                  <span className="px-2 py-0.5 text-xs font-semibold bg-blue-100 text-blue-800 rounded">
+                  <span className="px-2 py-0.5 text-xs font-semibold bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded">
                     You
                   </span>
                 )}
                 {member.is_captain && (
-                  <span className="px-2 py-0.5 text-xs font-semibold bg-yellow-100 text-yellow-800 rounded">
+                  <span className="px-2 py-0.5 text-xs font-semibold bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded">
                     Captain
                   </span>
                 )}
@@ -113,21 +113,21 @@ export default function TeamMembersList({
               <div className="flex items-center gap-4 mt-2 text-sm">
                 {member.stats.handicap !== null && (
                   <div className="flex items-center gap-1">
-                    <span className="text-gray-600">HCP:</span>
-                    <span className="font-semibold text-gray-900">{member.stats.handicap}</span>
+                    <span className="text-gray-600 dark:text-gray-400">HCP:</span>
+                    <span className="font-semibold text-gray-900 dark:text-white">{member.stats.handicap}</span>
                   </div>
                 )}
                 <div className="flex items-center gap-1">
-                  <span className="text-gray-600">Matches:</span>
-                  <span className="font-semibold text-gray-900">{member.stats.matches_played}</span>
+                  <span className="text-gray-600 dark:text-gray-400">Matches:</span>
+                  <span className="font-semibold text-gray-900 dark:text-white">{member.stats.matches_played}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <span className="text-gray-600">Points:</span>
-                  <span className="font-semibold text-blue-600">{member.stats.total_points.toFixed(1)}</span>
+                  <span className="text-gray-600 dark:text-gray-400">Points:</span>
+                  <span className="font-semibold text-blue-600 dark:text-blue-400">{member.stats.total_points.toFixed(1)}</span>
                 </div>
               </div>
 
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 Joined {new Date(member.joined_at).toLocaleDateString()}
               </p>
             </div>
@@ -137,7 +137,7 @@ export default function TeamMembersList({
               <button
                 onClick={() => handleRemoveMember(member.id, displayName)}
                 disabled={removing === member.id}
-                className="flex-shrink-0 px-3 py-1 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-shrink-0 px-3 py-1 text-sm bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200 rounded hover:bg-red-200 dark:hover:bg-red-800 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {removing === member.id ? 'Removing...' : 'Remove'}
               </button>

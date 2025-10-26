@@ -182,7 +182,7 @@ export default async function TeamDetailPage({
             {/* Team Settings (Captain Only) */}
             {isCaptain && (
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Captain Controls</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Captain Controls</h3>
                 <Link
                   href={`/teams/${team.id}/settings`}
                   className="block w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-semibold text-center mb-3"
@@ -204,7 +204,7 @@ export default async function TeamDetailPage({
 
             {/* Team Info */}
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Team Info</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Team Info</h3>
               <div className="space-y-3">
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-300">Max Members</p>
@@ -228,7 +228,7 @@ export default async function TeamDetailPage({
             {/* Actions */}
             {!isCaptain && (
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Actions</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Actions</h3>
                 <LeaveTeamButton teamId={team.id} />
               </div>
             )}

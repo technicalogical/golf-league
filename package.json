@@ -7,6 +7,9 @@
     "build": "next build --turbopack",
     "start": "next start -p 4000",
     "lint": "eslint",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
     "seed:users": "tsx scripts/seed-users.ts",
     "seed:league": "tsx scripts/seed-league.ts",
     "seed:matches": "tsx scripts/seed-matches.ts",
@@ -30,6 +33,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@faker-js/faker": "^10.1.0",
+    "@playwright/test": "^1.56.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
