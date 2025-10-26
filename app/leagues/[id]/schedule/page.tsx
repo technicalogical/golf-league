@@ -548,7 +548,7 @@ export default function GenerateSchedulePage() {
                     max="52"
                     value={numberOfWeeks}
                     onChange={(e) => setNumberOfWeeks(parseInt(e.target.value) || 1)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                   />
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                     With {teams.length} teams, you can have {Math.floor(teams.length / 2)} matches per week
@@ -566,7 +566,7 @@ export default function GenerateSchedulePage() {
                     id="startDate"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                   />
                 </div>
 
@@ -579,7 +579,7 @@ export default function GenerateSchedulePage() {
                     id="endDate"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                   />
                 </div>
               </div>
@@ -592,12 +592,12 @@ export default function GenerateSchedulePage() {
                   id="default_holes"
                   value={defaultHoles}
                   onChange={(e) => setDefaultHoles(parseInt(e.target.value))}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                 >
                   <option value="18">18 Holes</option>
                   <option value="9">9 Holes</option>
                 </select>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                   You can adjust course, tees, pins, and other settings per week in the next step
                 </p>
               </div>
@@ -627,13 +627,13 @@ export default function GenerateSchedulePage() {
                 </button>
               </div>
 
-              <p className="text-sm text-gray-600 mb-4">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                 Configure each week's details. You can skip weeks (holidays), mark playoff weeks, or change courses per week.
               </p>
 
               {scheduleType === 'random' && (
-                <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                  <p className="text-sm text-gray-700 mb-3">
+                <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg">
+                  <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">
                     After marking weeks as "Skip Week" or "Playoff Week", click the button below to regenerate matches only for regular play weeks.
                   </p>
                   <button
@@ -654,17 +654,17 @@ export default function GenerateSchedulePage() {
                       key={config.week_number}
                       className={`p-4 rounded-lg border-2 ${
                         config.is_skipped
-                          ? 'bg-gray-50 border-gray-300'
+                          ? 'bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600'
                           : config.is_playoff
-                          ? 'bg-yellow-50 border-yellow-400'
-                          : 'bg-white border-gray-200'
+                          ? 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-400 dark:border-yellow-700'
+                          : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700'
                       }`}
                     >
                       <div className="flex items-start gap-4">
                         <div className="flex-1 space-y-3">
                           <div className="flex items-center gap-4">
-                            <h3 className="font-bold text-gray-900 text-lg">Week {config.week_number}</h3>
-                            <label className="flex items-center text-sm">
+                            <h3 className="font-bold text-gray-900 dark:text-white text-lg">Week {config.week_number}</h3>
+                            <label className="flex items-center text-sm text-gray-900 dark:text-gray-300">
                               <input
                                 type="checkbox"
                                 checked={config.is_skipped}
@@ -674,7 +674,7 @@ export default function GenerateSchedulePage() {
                               Skip Week
                             </label>
                             {!config.is_skipped && (
-                              <label className="flex items-center text-sm">
+                              <label className="flex items-center text-sm text-gray-900 dark:text-gray-300">
                                 <input
                                   type="checkbox"
                                   checked={config.is_playoff}
@@ -690,24 +690,24 @@ export default function GenerateSchedulePage() {
                             <>
                               <div className="grid md:grid-cols-3 gap-3">
                                 <div>
-                                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
                                     Date
                                   </label>
                                   <input
                                     type="date"
                                     value={config.date}
                                     onChange={(e) => updateWeekConfig(config.week_number, 'date', e.target.value)}
-                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                                   />
                                 </div>
                                 <div>
-                                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
                                     Course
                                   </label>
                                   <select
                                     value={config.course_id}
                                     onChange={(e) => updateWeekConfig(config.week_number, 'course_id', e.target.value)}
-                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                                   >
                                     {courses.map((course) => (
                                       <option key={course.id} value={course.id}>
@@ -717,13 +717,13 @@ export default function GenerateSchedulePage() {
                                   </select>
                                 </div>
                                 <div>
-                                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
                                     Holes
                                   </label>
                                   <select
                                     value={config.holes_to_play}
                                     onChange={(e) => updateWeekConfig(config.week_number, 'holes_to_play', parseInt(e.target.value))}
-                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                                   >
                                     <option value="18">18 Holes</option>
                                     <option value="9">9 Holes</option>
@@ -734,13 +734,13 @@ export default function GenerateSchedulePage() {
                               <div className="grid md:grid-cols-4 gap-3">
                                 {config.holes_to_play === 9 && (
                                   <div>
-                                    <label className="block text-xs font-semibold text-gray-700 mb-1">
+                                    <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
                                       Which Nine
                                     </label>
                                     <select
                                       value={config.nine_selection}
                                       onChange={(e) => updateWeekConfig(config.week_number, 'nine_selection', e.target.value)}
-                                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                      className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                                     >
                                       <option value="front">Front 9</option>
                                       <option value="back">Back 9</option>
@@ -748,13 +748,13 @@ export default function GenerateSchedulePage() {
                                   </div>
                                 )}
                                 <div>
-                                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
                                     Tees
                                   </label>
                                   <select
                                     value={config.tee_selection}
                                     onChange={(e) => updateWeekConfig(config.week_number, 'tee_selection', e.target.value)}
-                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                                   >
                                     <option value="Black">Black</option>
                                     <option value="Gold">Gold</option>
@@ -764,13 +764,13 @@ export default function GenerateSchedulePage() {
                                   </select>
                                 </div>
                                 <div>
-                                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
                                     Pin Position
                                   </label>
                                   <select
                                     value={config.pin_position}
                                     onChange={(e) => updateWeekConfig(config.week_number, 'pin_position', e.target.value)}
-                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                                   >
                                     <option value="Novice">Novice</option>
                                     <option value="Intermediate">Intermediate</option>
@@ -778,13 +778,13 @@ export default function GenerateSchedulePage() {
                                   </select>
                                 </div>
                                 <div>
-                                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
                                     Stimp Rating
                                   </label>
                                   <select
                                     value={config.stimp_rating}
                                     onChange={(e) => updateWeekConfig(config.week_number, 'stimp_rating', e.target.value)}
-                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                                   >
                                     <option value="7">7 (Slow)</option>
                                     <option value="8">8</option>
@@ -797,7 +797,7 @@ export default function GenerateSchedulePage() {
                               </div>
 
                               <div>
-                                <label className="block text-xs font-semibold text-gray-700 mb-1">
+                                <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
                                   Notes (optional)
                                 </label>
                                 <input
@@ -805,7 +805,7 @@ export default function GenerateSchedulePage() {
                                   value={config.notes}
                                   onChange={(e) => updateWeekConfig(config.week_number, 'notes', e.target.value)}
                                   placeholder="e.g., Championship round, makeup week, etc."
-                                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                  className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                                 />
                               </div>
 
@@ -819,7 +819,7 @@ export default function GenerateSchedulePage() {
                                     </span>
                                   ))
                                 ) : (
-                                  <span className="text-gray-500 italic">
+                                  <span className="text-gray-500 dark:text-gray-400 italic">
                                     {config.is_playoff
                                       ? 'No regular matches (playoff week)'
                                       : 'No matches scheduled'}
@@ -830,7 +830,7 @@ export default function GenerateSchedulePage() {
                           )}
 
                           {config.is_skipped && (
-                            <p className="text-sm text-gray-500 italic">
+                            <p className="text-sm text-gray-500 dark:text-gray-400 italic">
                               This week will be skipped - no matches will be created
                             </p>
                           )}
