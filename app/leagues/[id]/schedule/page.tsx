@@ -489,17 +489,17 @@ export default function GenerateSchedulePage() {
         {/* Step 1: Generate Pairings */}
         {currentStep === 1 && (
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">Step 1: Generate Match Pairings</h2>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Step 1: Generate Match Pairings</h2>
 
             <div className="space-y-6">
               <div>
-                <p className="text-sm text-gray-600 mb-2">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
                   Teams in league: <strong>{teams.length}</strong>
                 </p>
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                   Schedule Type
                 </label>
                 <div className="space-y-2">
@@ -538,7 +538,7 @@ export default function GenerateSchedulePage() {
 
               {scheduleType === 'random' && (
                 <div>
-                  <label htmlFor="numberOfWeeks" className="block text-sm font-semibold text-gray-900 mb-2">
+                  <label htmlFor="numberOfWeeks" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                     Number of Weeks
                   </label>
                   <input
@@ -550,7 +550,7 @@ export default function GenerateSchedulePage() {
                     onChange={(e) => setNumberOfWeeks(parseInt(e.target.value) || 1)}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                     With {teams.length} teams, you can have {Math.floor(teams.length / 2)} matches per week
                   </p>
                 </div>
@@ -558,7 +558,7 @@ export default function GenerateSchedulePage() {
 
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="startDate" className="block text-sm font-semibold text-gray-900 mb-2">
+                  <label htmlFor="startDate" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                     Season Start Date
                   </label>
                   <input
@@ -571,7 +571,7 @@ export default function GenerateSchedulePage() {
                 </div>
 
                 <div>
-                  <label htmlFor="endDate" className="block text-sm font-semibold text-gray-900 mb-2">
+                  <label htmlFor="endDate" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                     Season End Date (Optional)
                   </label>
                   <input
@@ -585,7 +585,7 @@ export default function GenerateSchedulePage() {
               </div>
 
               <div>
-                <label htmlFor="default_holes" className="block text-sm font-semibold text-gray-900 mb-2">
+                <label htmlFor="default_holes" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                   Default Holes per Round
                 </label>
                 <select

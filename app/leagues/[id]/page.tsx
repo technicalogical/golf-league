@@ -232,8 +232,8 @@ export default async function LeagueDetailPage({
 
         {/* Announcements Section */}
         {announcements && announcements.length > 0 && (
-          <section className="mb-6 bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">
+          <section className="mb-6 bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
               Announcements ({announcements.length})
             </h2>
             <div className="space-y-4">
@@ -242,8 +242,8 @@ export default async function LeagueDetailPage({
                   key={announcement.id}
                   className={`p-4 rounded-lg border ${
                     announcement.pinned
-                      ? 'bg-yellow-50 border-yellow-300'
-                      : 'bg-gray-50 border-gray-200'
+                      ? 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-300 dark:border-yellow-700'
+                      : 'bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600'
                   }`}
                 >
                   <div className="flex items-start justify-between mb-2">
@@ -256,7 +256,7 @@ export default async function LeagueDetailPage({
                           </span>
                         )}
                       </div>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                         Posted by {announcement.author?.display_name || announcement.author?.name} on{' '}
                         {new Date(announcement.created_at).toLocaleDateString('en-US', {
                           month: 'long',
@@ -266,7 +266,7 @@ export default async function LeagueDetailPage({
                       </p>
                     </div>
                   </div>
-                  <p className="text-gray-700 whitespace-pre-wrap">{announcement.content}</p>
+                  <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{announcement.content}</p>
                 </div>
               ))}
             </div>
@@ -276,7 +276,7 @@ export default async function LeagueDetailPage({
         <div className="grid lg:grid-cols-2 gap-6">
           {/* Teams Section */}
           <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
               Teams ({leagueTeams?.length || 0})
             </h2>
             {!leagueTeams || leagueTeams.length === 0 ? (
@@ -284,12 +284,12 @@ export default async function LeagueDetailPage({
             ) : (
               <div className="space-y-4">
                 {leagueTeams.map((lt: any) => (
-                  <div key={lt.id} className="p-4 bg-gray-50 rounded-lg border border-gray-200 dark:border-gray-700">
+                  <div key={lt.id} className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-700">
                     <div className="flex justify-between items-start mb-3">
                       <div>
                         <Link
                           href={`/teams/${lt.team.id}`}
-                          className="text-lg font-semibold text-gray-900 hover:text-blue-600"
+                          className="text-lg font-semibold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400"
                         >
                           {lt.team.name}
                         </Link>
@@ -311,7 +311,7 @@ export default async function LeagueDetailPage({
                           <div key={tm.id} className="flex items-center justify-between text-sm">
                             <Link
                               href={`/profile/${tm.user.id}`}
-                              className="text-gray-700 hover:text-blue-600"
+                              className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
                             >
                               {tm.user.display_name || tm.user.name || tm.user.email}
                             </Link>
@@ -332,7 +332,7 @@ export default async function LeagueDetailPage({
 
           {/* Members Section */}
           <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
               Members ({members?.length || 0})
             </h2>
             {!members || members.length === 0 ? (
@@ -342,7 +342,7 @@ export default async function LeagueDetailPage({
                 {members.map((member: any) => (
                   <div
                     key={member.id}
-                    className="flex justify-between items-center p-3 bg-gray-50 rounded-lg"
+                    className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
                   >
                     <div>
                       <div className="font-semibold text-gray-900 dark:text-white">
@@ -361,8 +361,8 @@ export default async function LeagueDetailPage({
         </div>
 
         {/* Schedule Section */}
-        <section className="mt-6 bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">
+        <section className="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
             Schedule ({matches?.length || 0} matches)
           </h2>
           {!matches || matches.length === 0 ? (
@@ -411,7 +411,7 @@ export default async function LeagueDetailPage({
                               </span>
                             )}
                           </h3>
-                          <div className="text-sm text-gray-600 mt-1">
+                          <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                             {weekDate && new Date(weekDate).toLocaleDateString('en-US', {
                               weekday: 'long',
                               month: 'long',
@@ -431,10 +431,10 @@ export default async function LeagueDetailPage({
                           <Link
                             key={match.id}
                             href={`/matches/${match.id}`}
-                            className="block p-3 bg-gray-50 rounded-lg hover:bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-700"
+                            className="block p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-700"
                           >
                             <div className="flex justify-between items-start mb-2">
-                              <div className="font-semibold text-gray-900 text-sm">
+                              <div className="font-semibold text-gray-900 dark:text-white text-sm">
                                 {match.team1?.name} vs {match.team2?.name}
                               </div>
                               <span
@@ -455,7 +455,7 @@ export default async function LeagueDetailPage({
                                 {match.team1_points} - {match.team2_points}
                               </div>
                             )}
-                            <div className="text-xs text-gray-500 mt-1">
+                            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                               {match.holes_to_play === 9 && `9 Holes (${match.nine_selection === 'front' ? 'Front' : 'Back'}) • `}
                               {match.tee_selection} Tees
                             </div>
