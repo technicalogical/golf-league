@@ -112,14 +112,14 @@ export default function MatchHistoryPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-xl">Loading match history...</div>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-xl text-gray-900 dark:text-white">Loading match history...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -127,7 +127,7 @@ export default function MatchHistoryPage() {
             <h1 className="text-4xl font-bold text-gray-900 dark:text-white">Match History</h1>
             <Link
               href="/dashboard"
-              className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 rounded-lg hover:bg-gray-300 font-semibold"
+              className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 font-semibold"
             >
               ← Dashboard
             </Link>
@@ -143,7 +143,7 @@ export default function MatchHistoryPage() {
           <div>
             <label
               htmlFor="league"
-              className="block text-sm font-semibold text-gray-900 mb-2"
+              className="block text-sm font-semibold text-gray-900 dark:text-white mb-2"
             >
               Filter by League
             </label>
@@ -151,7 +151,7 @@ export default function MatchHistoryPage() {
               id="league"
               value={selectedLeague}
               onChange={(e) => setSelectedLeague(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
             >
               <option value="all">All Leagues</option>
               {leagues.map((league) => (
@@ -166,7 +166,7 @@ export default function MatchHistoryPage() {
           <div>
             <label
               htmlFor="team"
-              className="block text-sm font-semibold text-gray-900 mb-2"
+              className="block text-sm font-semibold text-gray-900 dark:text-white mb-2"
             >
               Filter by Team
             </label>
@@ -174,7 +174,7 @@ export default function MatchHistoryPage() {
               id="team"
               value={selectedTeam}
               onChange={(e) => setSelectedTeam(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
             >
               <option value="all">All Teams</option>
               {teams.map((team) => (
@@ -204,7 +204,7 @@ export default function MatchHistoryPage() {
                 <Link
                   key={match.id}
                   href={`/matches/${match.id}`}
-                  className="block bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-6"
+                  className="block bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition-shadow p-6"
                 >
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     {/* Date and League */}
@@ -218,7 +218,7 @@ export default function MatchHistoryPage() {
                         })}
                       </div>
                       {match.league && (
-                        <div className="text-xs text-gray-500 mt-1">
+                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                           {match.league.name}
                         </div>
                       )}
@@ -231,17 +231,17 @@ export default function MatchHistoryPage() {
                         <div
                           className={`flex-1 text-right ${
                             winner === 'team1'
-                              ? 'font-bold text-green-600'
-                              : 'text-gray-700'
+                              ? 'font-bold text-green-600 dark:text-green-400'
+                              : 'text-gray-700 dark:text-gray-300'
                           }`}
                         >
                           {match.team1.name}
                         </div>
 
                         {/* Score */}
-                        <div className="px-6 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg font-bold text-xl">
+                        <div className="px-6 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg font-bold text-xl text-gray-900 dark:text-white">
                           {match.team1_points !== null ? match.team1_points : '-'}{' '}
-                          <span className="text-gray-400">-</span>{' '}
+                          <span className="text-gray-400 dark:text-gray-500">-</span>{' '}
                           {match.team2_points !== null ? match.team2_points : '-'}
                         </div>
 
@@ -249,8 +249,8 @@ export default function MatchHistoryPage() {
                         <div
                           className={`flex-1 text-left ${
                             winner === 'team2'
-                              ? 'font-bold text-green-600'
-                              : 'text-gray-700'
+                              ? 'font-bold text-green-600 dark:text-green-400'
+                              : 'text-gray-700 dark:text-gray-300'
                           }`}
                         >
                           {match.team2.name}
@@ -258,7 +258,7 @@ export default function MatchHistoryPage() {
                       </div>
 
                       {/* Match Info */}
-                      <div className="text-xs text-gray-500 text-center mt-2">
+                      <div className="text-xs text-gray-500 dark:text-gray-400 text-center mt-2">
                         {match.holes_to_play === 9 ? '9 Holes' : '18 Holes'} •{' '}
                         {match.tee_selection} Tees
                         {match.course && ` • ${match.course.name}`}

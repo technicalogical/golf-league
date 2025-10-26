@@ -10,10 +10,10 @@ export default async function Home() {
     redirect('/dashboard');
   }
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
       <div className="max-w-4xl mx-auto text-center">
         <div className="mb-8">
-          <h1 className="text-6xl font-bold text-gray-900 mb-4">
+          <h1 className="text-6xl font-bold text-gray-900 dark:text-white mb-4">
             Indoor Golf League
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-300">
@@ -24,7 +24,7 @@ export default async function Home() {
         <div className="grid md:grid-cols-3 gap-6 mb-12">
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
             <div className="text-4xl mb-4">⛳</div>
-            <h3 className="text-xl font-semibold mb-2">Scorecard Entry</h3>
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Scorecard Entry</h3>
             <p className="text-gray-600 dark:text-gray-300">
               Easy hole-by-hole score entry with automatic handicap calculation
             </p>
@@ -32,7 +32,7 @@ export default async function Home() {
 
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
             <div className="text-4xl mb-4">🏆</div>
-            <h3 className="text-xl font-semibold mb-2">Live Standings</h3>
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Live Standings</h3>
             <p className="text-gray-600 dark:text-gray-300">
               Real-time team and player rankings updated after each match
             </p>
@@ -40,7 +40,7 @@ export default async function Home() {
 
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
             <div className="text-4xl mb-4">📊</div>
-            <h3 className="text-xl font-semibold mb-2">Match Results</h3>
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Match Results</h3>
             <p className="text-gray-600 dark:text-gray-300">
               Detailed match breakdowns with head-to-head scoring
             </p>
@@ -59,7 +59,7 @@ export default async function Home() {
             </form>
             <Link
               href="/standings"
-              className="px-8 py-4 bg-white text-gray-700 rounded-lg hover:bg-gray-50 font-semibold text-lg shadow-lg border border-gray-200 dark:border-gray-700"
+              className="px-8 py-4 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 font-semibold text-lg shadow-lg border border-gray-200 dark:border-gray-700"
             >
               View Standings
             </Link>
@@ -70,8 +70,8 @@ export default async function Home() {
         </div>
 
         <div className="mt-16 pt-8 border-t border-gray-300 dark:border-gray-600">
-          <h2 className="text-2xl font-bold mb-4">How It Works</h2>
-          <div className="text-left max-w-2xl mx-auto space-y-3 text-gray-700 dark:text-gray-200">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">How It Works</h2>
+          <div className="text-left max-w-2xl mx-auto space-y-3 text-gray-700 dark:text-gray-300">
             <p>
               <strong>Team Format:</strong> 2 players per team compete in head-to-head matchups
             </p>
