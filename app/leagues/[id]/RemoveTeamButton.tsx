@@ -2,6 +2,18 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 export default function RemoveTeamButton({
   leagueId,
@@ -14,12 +26,9 @@ export default function RemoveTeamButton({
 }) {
   const router = useRouter();
   const [isRemoving, setIsRemoving] = useState(false);
+  const [open, setOpen] = useState(false);
 
   async function handleRemove() {
-    if (!confirm(`Remove ${teamName} from this league? This will delete all their matches and scores.`)) {
-      return;
-    }
-
     setIsRemoving(true);
 
     try {
@@ -33,19 +42,46 @@ export default function RemoveTeamButton({
       }
 
       router.refresh();
+      setOpen(false);
     } catch (err: any) {
       alert(err.message);
       setIsRemoving(false);
+      setOpen(false);
     }
   }
 
   return (
-    <button
-      onClick={handleRemove}
-      disabled={isRemoving}
-      className="px-3 py-1 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-    >
-      {isRemoving ? 'Removing...' : 'Remove'}
-    </button>
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger asChild>
+        <Button
+          variant="destructive"
+          size="sm"
+          disabled={isRemoving}
+        >
+          {isRemoving ? 'Removing...' : 'Remove'}
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Remove Team from League</AlertDialogTitle>
+          <AlertDialogDescription>
+            Are you sure you want to remove <strong>{teamName}</strong> from this league? This will delete all their matches and scores.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={isRemoving}>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={(e) => {
+              e.preventDefault();
+              handleRemove();
+            }}
+            disabled={isRemoving}
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+          >
+            {isRemoving ? 'Removing...' : 'Remove Team'}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }

@@ -2,6 +2,18 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 export default function JoinOpenTeamButton({
   teamId,
@@ -12,12 +24,9 @@ export default function JoinOpenTeamButton({
 }) {
   const router = useRouter();
   const [isJoining, setIsJoining] = useState(false);
+  const [open, setOpen] = useState(false);
 
   async function handleJoin() {
-    if (!confirm(`Join ${teamName}?`)) {
-      return;
-    }
-
     setIsJoining(true);
 
     try {
@@ -35,16 +44,41 @@ export default function JoinOpenTeamButton({
     } catch (err: any) {
       alert(err.message);
       setIsJoining(false);
+      setOpen(false);
     }
   }
 
   return (
-    <button
-      onClick={handleJoin}
-      disabled={isJoining}
-      className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-    >
-      {isJoining ? 'Joining...' : 'Join Team'}
-    </button>
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger asChild>
+        <Button
+          variant="default"
+          className="w-full"
+          disabled={isJoining}
+        >
+          {isJoining ? 'Joining...' : 'Join Team'}
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Join {teamName}</AlertDialogTitle>
+          <AlertDialogDescription>
+            Are you sure you want to join this team? You can only be on one team at a time.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={isJoining}>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={(e) => {
+              e.preventDefault();
+              handleJoin();
+            }}
+            disabled={isJoining}
+          >
+            {isJoining ? 'Joining...' : 'Join Team'}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }

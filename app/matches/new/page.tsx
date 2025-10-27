@@ -3,6 +3,31 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+
+const formSchema = z.object({
+  team1_id: z.string().min(1, 'Team 1 is required'),
+  team2_id: z.string().min(1, 'Team 2 is required'),
+  course_id: z.string().min(1, 'Course is required'),
+  match_date: z.string().min(1, 'Match date is required'),
+  league_id: z.string().optional(),
+  holes_to_play: z.number().int().min(9).max(18),
+  nine_selection: z.string().optional(),
+  tee_selection: z.string().min(1, 'Tee selection is required'),
+}).refine((data) => data.team1_id !== data.team2_id, {
+  message: 'Please select two different teams',
+  path: ['team2_id'],
+});
+
+type FormData = z.infer<typeof formSchema>;
 
 interface Team {
   id: string;
@@ -28,17 +53,25 @@ export default function NewMatchPage() {
   const [teams, setTeams] = useState<Team[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [leagues, setLeagues] = useState<League[]>([]);
-  const [team1Id, setTeam1Id] = useState('');
-  const [team2Id, setTeam2Id] = useState('');
-  const [courseId, setCourseId] = useState('');
-  const [leagueId, setLeagueId] = useState('');
-  const [matchDate, setMatchDate] = useState('');
-  const [holesToPlay, setHolesToPlay] = useState<number>(18);
-  const [nineSelection, setNineSelection] = useState<string>('front');
-  const [teeSelection, setTeeSelection] = useState<string>('Blue');
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
+
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      team1_id: '',
+      team2_id: '',
+      course_id: '',
+      match_date: new Date().toISOString().split('T')[0],
+      league_id: '',
+      holes_to_play: 18,
+      nine_selection: 'front',
+      tee_selection: 'Blue',
+    },
+  });
+
+  const holesToPlay = form.watch('holes_to_play');
+  const team1Id = form.watch('team1_id');
 
   useEffect(() => {
     async function loadData() {
@@ -61,10 +94,6 @@ export default function NewMatchPage() {
           l.status === 'active' || l.status === 'upcoming'
         );
         setLeagues(activeLeagues);
-
-        // Set default date to today
-        const today = new Date().toISOString().split('T')[0];
-        setMatchDate(today);
       } catch (err) {
         console.error('Error loading data:', err);
         setError('Failed to load teams and courses');
@@ -76,22 +105,8 @@ export default function NewMatchPage() {
     loadData();
   }, []);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setIsSubmitting(true);
+  async function onSubmit(data: FormData) {
     setError('');
-
-    if (!team1Id || !team2Id || !courseId || !matchDate) {
-      setError('All fields are required');
-      setIsSubmitting(false);
-      return;
-    }
-
-    if (team1Id === team2Id) {
-      setError('Please select two different teams');
-      setIsSubmitting(false);
-      return;
-    }
 
     try {
       const response = await fetch('/api/matches', {
@@ -100,27 +115,26 @@ export default function NewMatchPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          team1_id: team1Id,
-          team2_id: team2Id,
-          course_id: courseId,
-          match_date: matchDate,
-          league_id: leagueId || null,
-          holes_to_play: holesToPlay,
-          nine_selection: holesToPlay === 9 ? nineSelection : null,
-          tee_selection: teeSelection,
+          team1_id: data.team1_id,
+          team2_id: data.team2_id,
+          course_id: data.course_id,
+          match_date: data.match_date,
+          league_id: data.league_id || null,
+          holes_to_play: data.holes_to_play,
+          nine_selection: data.holes_to_play === 9 ? data.nine_selection : null,
+          tee_selection: data.tee_selection,
         }),
       });
 
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || 'Failed to create match');
+        const responseData = await response.json();
+        throw new Error(responseData.error || 'Failed to create match');
       }
 
-      const data = await response.json();
-      router.push(`/matches/${data.id}`);
+      const responseData = await response.json();
+      router.push(`/matches/${responseData.id}`);
     } catch (err: any) {
       setError(err.message);
-      setIsSubmitting(false);
     }
   }
 
@@ -137,26 +151,31 @@ export default function NewMatchPage() {
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <header className="bg-white dark:bg-gray-800 shadow">
           <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
-            <Link href="/matches" className="text-blue-600 hover:text-blue-800 text-sm mb-2 block">
-              ← Back to Matches
-            </Link>
+            <Button variant="ghost" asChild className="mb-2">
+              <Link href="/matches">
+                ← Back to Matches
+              </Link>
+            </Button>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Schedule New Match</h1>
           </div>
         </header>
         <main className="max-w-2xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-          <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-900 rounded-lg p-6 text-center">
-            <div className="text-4xl mb-4">⚠️</div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Not Enough Teams</h2>
-            <p className="text-gray-700 dark:text-gray-300 mb-4">
-              You need at least 2 active teams to schedule a match.
-            </p>
-            <Link
-              href="/teams/new"
-              className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold"
-            >
-              Create Teams
-            </Link>
-          </div>
+          <Card className="bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-900 text-center">
+            <CardHeader>
+              <div className="text-4xl mb-4">⚠️</div>
+              <CardTitle>Not Enough Teams</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-700 dark:text-gray-300 mb-4">
+                You need at least 2 active teams to schedule a match.
+              </p>
+              <Button asChild>
+                <Link href="/teams/new">
+                  Create Teams
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
         </main>
       </div>
     );
@@ -167,20 +186,26 @@ export default function NewMatchPage() {
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <header className="bg-white dark:bg-gray-800 shadow">
           <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
-            <Link href="/matches" className="text-blue-600 hover:text-blue-800 text-sm mb-2 block">
-              ← Back to Matches
-            </Link>
+            <Button variant="ghost" asChild className="mb-2">
+              <Link href="/matches">
+                ← Back to Matches
+              </Link>
+            </Button>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Schedule New Match</h1>
           </div>
         </header>
         <main className="max-w-2xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-          <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-900 rounded-lg p-6 text-center">
-            <div className="text-4xl mb-4">⚠️</div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No Courses Available</h2>
-            <p className="text-gray-700 dark:text-gray-300 mb-4">
-              You need to run the database migrations to seed courses.
-            </p>
-          </div>
+          <Card className="bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-900 text-center">
+            <CardHeader>
+              <div className="text-4xl mb-4">⚠️</div>
+              <CardTitle>No Courses Available</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-700 dark:text-gray-300 mb-4">
+                You need to run the database migrations to seed courses.
+              </p>
+            </CardContent>
+          </Card>
         </main>
       </div>
     );
@@ -188,191 +213,249 @@ export default function NewMatchPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Header */}
       <header className="bg-white dark:bg-gray-800 shadow">
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
-          <Link href="/matches" className="text-blue-600 hover:text-blue-800 text-sm mb-2 block">
-            ← Back to Matches
-          </Link>
+          <Button variant="ghost" asChild className="mb-2">
+            <Link href="/matches">
+              ← Back to Matches
+            </Link>
+          </Button>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Schedule New Match</h1>
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-2xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {error && (
-              <div className="bg-red-50 border border-red-200 text-red-800 rounded-lg p-4">
-                {error}
-              </div>
-            )}
+        <Card>
+          <CardHeader>
+            <CardTitle>Match Details</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                {error && (
+                  <Alert variant="destructive">
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
+                )}
 
-            <div>
-              <label htmlFor="team1" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
-                Team 1 *
-              </label>
-              <select
-                id="team1"
-                value={team1Id}
-                onChange={(e) => setTeam1Id(e.target.value)}
-                required
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              >
-                <option value="">Select team...</option>
-                {teams.map((team) => (
-                  <option key={team.id} value={team.id}>
-                    {team.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+                <FormField
+                  control={form.control}
+                  name="team1_id"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Team 1 *</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select team..." />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {teams.map((team) => (
+                            <SelectItem key={team.id} value={team.id}>
+                              {team.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <div>
-              <label htmlFor="team2" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
-                Team 2 *
-              </label>
-              <select
-                id="team2"
-                value={team2Id}
-                onChange={(e) => setTeam2Id(e.target.value)}
-                required
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              >
-                <option value="">Select team...</option>
-                {teams.map((team) => (
-                  <option key={team.id} value={team.id} disabled={team.id === team1Id}>
-                    {team.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+                <FormField
+                  control={form.control}
+                  name="team2_id"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Team 2 *</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select team..." />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {teams.map((team) => (
+                            <SelectItem
+                              key={team.id}
+                              value={team.id}
+                              disabled={team.id === team1Id}
+                            >
+                              {team.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <div>
-              <label htmlFor="course" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
-                Course *
-              </label>
-              <select
-                id="course"
-                value={courseId}
-                onChange={(e) => setCourseId(e.target.value)}
-                required
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              >
-                <option value="">Select course...</option>
-                {courses.map((course) => (
-                  <option key={course.id} value={course.id}>
-                    {course.name} (Par {course.par}) - {course.location}
-                  </option>
-                ))}
-              </select>
-            </div>
+                <FormField
+                  control={form.control}
+                  name="course_id"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Course *</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select course..." />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {courses.map((course) => (
+                            <SelectItem key={course.id} value={course.id}>
+                              {course.name} (Par {course.par}) - {course.location}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <div>
-              <label htmlFor="match_date" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
-                Match Date *
-              </label>
-              <input
-                type="date"
-                id="match_date"
-                value={matchDate}
-                onChange={(e) => setMatchDate(e.target.value)}
-                required
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              />
-            </div>
+                <FormField
+                  control={form.control}
+                  name="match_date"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Match Date *</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            {leagues.length > 0 && (
-              <div>
-                <label htmlFor="league" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
-                  League (Optional)
-                </label>
-                <select
-                  id="league"
-                  value={leagueId}
-                  onChange={(e) => setLeagueId(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                >
-                  <option value="">None (Friendly Match)</option>
-                  {leagues.map((league) => (
-                    <option key={league.id} value={league.id}>
-                      {league.name} ({league.status})
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
+                {leagues.length > 0 && (
+                  <FormField
+                    control={form.control}
+                    name="league_id"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>League (Optional)</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="None (Friendly Match)" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="">None (Friendly Match)</SelectItem>
+                            {leagues.map((league) => (
+                              <SelectItem key={league.id} value={league.id}>
+                                {league.name} ({league.status})
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
 
-            <div>
-              <label htmlFor="holes_to_play" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
-                Holes to Play *
-              </label>
-              <select
-                id="holes_to_play"
-                value={holesToPlay}
-                onChange={(e) => setHolesToPlay(parseInt(e.target.value))}
-                required
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              >
-                <option value="18">18 Holes</option>
-                <option value="9">9 Holes</option>
-              </select>
-            </div>
+                <FormField
+                  control={form.control}
+                  name="holes_to_play"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Holes to Play *</FormLabel>
+                      <Select
+                        onValueChange={(value) => field.onChange(parseInt(value))}
+                        defaultValue={field.value.toString()}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="18">18 Holes</SelectItem>
+                          <SelectItem value="9">9 Holes</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            {holesToPlay === 9 && (
-              <div>
-                <label htmlFor="nine_selection" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
-                  Which Nine? *
-                </label>
-                <select
-                  id="nine_selection"
-                  value={nineSelection}
-                  onChange={(e) => setNineSelection(e.target.value)}
-                  required
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                >
-                  <option value="front">Front 9 (Holes 1-9)</option>
-                  <option value="back">Back 9 (Holes 10-18)</option>
-                </select>
-              </div>
-            )}
+                {holesToPlay === 9 && (
+                  <FormField
+                    control={form.control}
+                    name="nine_selection"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Which Nine? *</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="front">Front 9 (Holes 1-9)</SelectItem>
+                            <SelectItem value="back">Back 9 (Holes 10-18)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
 
-            <div>
-              <label htmlFor="tee_selection" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
-                Tee Selection *
-              </label>
-              <select
-                id="tee_selection"
-                value={teeSelection}
-                onChange={(e) => setTeeSelection(e.target.value)}
-                required
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              >
-                <option value="Black">Black Tees</option>
-                <option value="Gold">Gold Tees</option>
-                <option value="Blue">Blue Tees (Default)</option>
-                <option value="White">White Tees</option>
-                <option value="Red">Red Tees</option>
-              </select>
-            </div>
+                <FormField
+                  control={form.control}
+                  name="tee_selection"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tee Selection *</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Black">Black Tees</SelectItem>
+                          <SelectItem value="Gold">Gold Tees</SelectItem>
+                          <SelectItem value="Blue">Blue Tees (Default)</SelectItem>
+                          <SelectItem value="White">White Tees</SelectItem>
+                          <SelectItem value="Red">Red Tees</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <div className="flex gap-4 pt-4">
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSubmitting ? 'Scheduling...' : 'Schedule Match'}
-              </button>
-              <Link
-                href="/matches"
-                className="flex-1 px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 font-semibold text-center"
-              >
-                Cancel
-              </Link>
-            </div>
-          </form>
-        </div>
+                <div className="flex gap-4 pt-4">
+                  <Button
+                    type="submit"
+                    className="flex-1"
+                    disabled={form.formState.isSubmitting}
+                  >
+                    {form.formState.isSubmitting ? 'Scheduling...' : 'Schedule Match'}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    className="flex-1"
+                    asChild
+                  >
+                    <Link href="/matches">
+                      Cancel
+                    </Link>
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
       </main>
     </div>
   );

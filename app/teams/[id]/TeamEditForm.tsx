@@ -2,6 +2,22 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+
+const formSchema = z.object({
+  name: z.string().min(1, 'Team name is required'),
+  is_active: z.boolean(),
+});
+
+type FormData = z.infer<typeof formSchema>;
 
 interface Team {
   id: string;
@@ -11,15 +27,18 @@ interface Team {
 
 export default function TeamEditForm({ team }: { team: Team }) {
   const router = useRouter();
-  const [name, setName] = useState(team.name);
-  const [isActive, setIsActive] = useState(team.is_active);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setIsSubmitting(true);
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: team.name,
+      is_active: team.is_active,
+    },
+  });
+
+  async function onSubmit(data: FormData) {
     setError('');
     setSuccess(false);
 
@@ -30,22 +49,20 @@ export default function TeamEditForm({ team }: { team: Team }) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name,
-          is_active: isActive,
+          name: data.name,
+          is_active: data.is_active,
         }),
       });
 
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || 'Failed to update team');
+        const responseData = await response.json();
+        throw new Error(responseData.error || 'Failed to update team');
       }
 
       setSuccess(true);
       router.refresh();
     } catch (err: any) {
       setError(err.message);
-    } finally {
-      setIsSubmitting(false);
     }
   }
 
@@ -54,7 +71,6 @@ export default function TeamEditForm({ team }: { team: Team }) {
       return;
     }
 
-    setIsSubmitting(true);
     setError('');
 
     try {
@@ -63,74 +79,89 @@ export default function TeamEditForm({ team }: { team: Team }) {
       });
 
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || 'Failed to delete team');
+        const responseData = await response.json();
+        throw new Error(responseData.error || 'Failed to delete team');
       }
 
       router.push('/teams');
     } catch (err: any) {
       setError(err.message);
-      setIsSubmitting(false);
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      {error && (
-        <div className="bg-red-50 border border-red-200 text-red-800 rounded-lg p-3 text-sm">
-          {error}
-        </div>
-      )}
-      {success && (
-        <div className="bg-green-50 border border-green-200 text-green-800 rounded-lg p-3 text-sm">
-          Team updated successfully!
-        </div>
-      )}
+    <Card>
+      <CardHeader>
+        <CardTitle>Edit Team</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            {error && (
+              <Alert variant="destructive">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+            {success && (
+              <Alert>
+                <AlertDescription>Team updated successfully!</AlertDescription>
+              </Alert>
+            )}
 
-      <div>
-        <label htmlFor="name" className="block text-sm font-semibold text-gray-900 mb-2">
-          Team Name
-        </label>
-        <input
-          type="text"
-          id="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-        />
-      </div>
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Team Name *</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter team name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-      <div className="flex items-center gap-3">
-        <input
-          type="checkbox"
-          id="is_active"
-          checked={isActive}
-          onChange={(e) => setIsActive(e.target.checked)}
-          className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-        />
-        <label htmlFor="is_active" className="text-sm font-medium text-gray-900">
-          Active (can participate in matches)
-        </label>
-      </div>
+            <FormField
+              control={form.control}
+              name="is_active"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>
+                      Active (can participate in matches)
+                    </FormLabel>
+                  </div>
+                </FormItem>
+              )}
+            />
 
-      <div className="flex gap-3 pt-2">
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isSubmitting ? 'Saving...' : 'Save Changes'}
-        </button>
-        <button
-          type="button"
-          onClick={handleDelete}
-          disabled={isSubmitting}
-          className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Delete
-        </button>
-      </div>
-    </form>
+            <div className="flex gap-3 pt-2">
+              <Button
+                type="submit"
+                className="flex-1"
+                disabled={form.formState.isSubmitting}
+              >
+                {form.formState.isSubmitting ? 'Saving...' : 'Save Changes'}
+              </Button>
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={handleDelete}
+                disabled={form.formState.isSubmitting}
+              >
+                Delete
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
   );
 }

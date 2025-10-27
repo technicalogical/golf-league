@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { useTheme } from './ThemeProvider';
+import { Button } from '@/components/ui/button';
 
 interface NavigationProps {
   displayName: string;
@@ -45,31 +46,31 @@ export default function Navigation({ displayName }: NavigationProps) {
           {/* Navigation Links */}
           <nav className="hidden md:flex items-center gap-1">
             {navLinks.map((link) => (
-              <Link
+              <Button
                 key={link.href}
-                href={link.href}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                  isActive(link.href)
-                    ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white'
-                }`}
+                asChild
+                variant={isActive(link.href) ? "secondary" : "ghost"}
+                className={isActive(link.href) ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' : ''}
               >
-                <span className="mr-1.5">{link.icon}</span>
-                {link.label}
-              </Link>
+                <Link href={link.href}>
+                  <span className="mr-1.5">{link.icon}</span>
+                  {link.label}
+                </Link>
+              </Button>
             ))}
           </nav>
 
           {/* User Menu & Mobile Menu Button */}
           <div className="flex items-center gap-4">
             {/* Theme Toggle Button */}
-            <button
+            <Button
               onClick={toggleTheme}
-              className="p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              variant="ghost"
+              size="icon"
               aria-label="Toggle theme"
             >
               {theme === 'light' ? '🌙' : '☀️'}
-            </button>
+            </Button>
 
             <Link
               href="/profile/edit"
@@ -77,19 +78,22 @@ export default function Navigation({ displayName }: NavigationProps) {
             >
               {displayName}
             </Link>
+
             <form action="/api/auth/logout" method="get" className="hidden md:block">
-              <button
+              <Button
                 type="submit"
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-semibold transition-colors"
+                variant="destructive"
               >
                 Logout
-              </button>
+              </Button>
             </form>
 
             {/* Mobile Hamburger Menu Button */}
-            <button
+            <Button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              variant="ghost"
+              size="icon"
+              className="md:hidden"
               aria-label="Toggle menu"
               aria-expanded={mobileMenuOpen}
             >
@@ -102,7 +106,7 @@ export default function Navigation({ displayName }: NavigationProps) {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               )}
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -111,35 +115,42 @@ export default function Navigation({ displayName }: NavigationProps) {
           <div className="md:hidden py-4 border-t border-gray-200 dark:border-gray-700">
             <nav className="flex flex-col space-y-2">
               {navLinks.map((link) => (
-                <Link
+                <Button
                   key={link.href}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`px-4 py-3 rounded-lg font-medium transition-colors ${
-                    isActive(link.href)
-                      ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
-                  }`}
+                  asChild
+                  variant={isActive(link.href) ? "secondary" : "ghost"}
+                  className={`justify-start ${isActive(link.href) ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' : ''}`}
                 >
-                  <span className="mr-2">{link.icon}</span>
-                  {link.label}
-                </Link>
+                  <Link
+                    href={link.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <span className="mr-2">{link.icon}</span>
+                    {link.label}
+                  </Link>
+                </Button>
               ))}
-              <Link
-                href="/profile/edit"
-                onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-3 rounded-lg font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+              <Button
+                asChild
+                variant="ghost"
+                className="justify-start"
               >
-                <span className="mr-2">👤</span>
-                {displayName}
-              </Link>
+                <Link
+                  href="/profile/edit"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <span className="mr-2">👤</span>
+                  {displayName}
+                </Link>
+              </Button>
               <form action="/api/auth/logout" method="get">
-                <button
+                <Button
                   type="submit"
-                  className="w-full px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 font-semibold text-center transition-colors"
+                  variant="destructive"
+                  className="w-full"
                 >
                   Logout
-                </button>
+                </Button>
               </form>
             </nav>
           </div>

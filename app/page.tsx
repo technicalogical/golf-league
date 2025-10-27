@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { getSession } from '@/lib/auth';
 import { redirect } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default async function Home() {
   const session = await getSession();
@@ -22,56 +24,75 @@ export default async function Home() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-6 mb-12">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-            <div className="text-4xl mb-4">⛳</div>
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Scorecard Entry</h3>
-            <p className="text-gray-600 dark:text-gray-300">
-              Easy hole-by-hole score entry with automatic handicap calculation
-            </p>
-          </div>
+          <Card className="hover:shadow-xl transition-shadow">
+            <CardHeader>
+              <div className="text-4xl mb-4">⛳</div>
+              <CardTitle>Scorecard Entry</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground">
+                Easy hole-by-hole score entry with automatic handicap calculation
+              </p>
+            </CardContent>
+          </Card>
 
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-            <div className="text-4xl mb-4">🏆</div>
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Live Standings</h3>
-            <p className="text-gray-600 dark:text-gray-300">
-              Real-time team and player rankings updated after each match
-            </p>
-          </div>
+          <Card className="hover:shadow-xl transition-shadow">
+            <CardHeader>
+              <div className="text-4xl mb-4">🏆</div>
+              <CardTitle>Live Standings</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground">
+                Real-time team and player rankings updated after each match
+              </p>
+            </CardContent>
+          </Card>
 
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-            <div className="text-4xl mb-4">📊</div>
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Match Results</h3>
-            <p className="text-gray-600 dark:text-gray-300">
-              Detailed match breakdowns with head-to-head scoring
-            </p>
-          </div>
+          <Card className="hover:shadow-xl transition-shadow">
+            <CardHeader>
+              <div className="text-4xl mb-4">📊</div>
+              <CardTitle>Match Results</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground">
+                Detailed match breakdowns with head-to-head scoring
+              </p>
+            </CardContent>
+          </Card>
         </div>
 
         <div className="space-y-4">
           <div className="flex gap-4 justify-center flex-wrap">
             <form action="/api/auth/login" method="get">
-              <button
+              <Button
                 type="submit"
-                className="px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold text-lg shadow-lg cursor-pointer"
+                size="lg"
+                className="text-lg px-8 py-6"
               >
                 Sign In
-              </button>
+              </Button>
             </form>
-            <Link
-              href="/standings"
-              className="px-8 py-4 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 font-semibold text-lg shadow-lg border border-gray-200 dark:border-gray-700"
+            <Button
+              variant="outline"
+              size="lg"
+              className="text-lg px-8 py-6"
+              asChild
             >
-              View Standings
-            </Link>
+              <Link href="/standings">
+                View Standings
+              </Link>
+            </Button>
           </div>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm text-muted-foreground">
             First time? Sign in to create your account
           </p>
         </div>
 
-        <div className="mt-16 pt-8 border-t border-gray-300 dark:border-gray-600">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">How It Works</h2>
-          <div className="text-left max-w-2xl mx-auto space-y-3 text-gray-700 dark:text-gray-300">
+        <Card className="mt-16">
+          <CardHeader>
+            <CardTitle className="text-2xl">How It Works</CardTitle>
+          </CardHeader>
+          <CardContent className="text-left space-y-3">
             <p>
               <strong>Team Format:</strong> 2 players per team compete in head-to-head matchups
             </p>
@@ -85,8 +106,8 @@ export default async function Home() {
             <p>
               <strong>Handicaps:</strong> Can be updated throughout the season to reflect current skill level
             </p>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

@@ -2,16 +2,25 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 export default function LeaveTeamButton({ teamId }: { teamId: string }) {
   const router = useRouter();
   const [isLeaving, setIsLeaving] = useState(false);
+  const [open, setOpen] = useState(false);
 
   async function handleLeave() {
-    if (!confirm('Are you sure you want to leave this team?')) {
-      return;
-    }
-
     setIsLeaving(true);
 
     try {
@@ -29,17 +38,42 @@ export default function LeaveTeamButton({ teamId }: { teamId: string }) {
     } catch (err: any) {
       alert(err.message);
       setIsLeaving(false);
+      setOpen(false);
     }
   }
 
   return (
-    <button
-      type="button"
-      onClick={handleLeave}
-      disabled={isLeaving}
-      className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-    >
-      {isLeaving ? 'Leaving...' : 'Leave Team'}
-    </button>
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger asChild>
+        <Button
+          variant="destructive"
+          className="w-full"
+          disabled={isLeaving}
+        >
+          {isLeaving ? 'Leaving...' : 'Leave Team'}
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Leave Team</AlertDialogTitle>
+          <AlertDialogDescription>
+            Are you sure you want to leave this team? You will need a new invite code to rejoin.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={isLeaving}>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={(e) => {
+              e.preventDefault();
+              handleLeave();
+            }}
+            disabled={isLeaving}
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+          >
+            {isLeaving ? 'Leaving...' : 'Leave Team'}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }

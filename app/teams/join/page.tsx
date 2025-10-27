@@ -3,17 +3,35 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+
+const formSchema = z.object({
+  invite_code: z.string()
+    .length(8, 'Invite code must be exactly 8 characters')
+    .regex(/^[A-Z0-9]+$/, 'Invite code must contain only uppercase letters and numbers'),
+});
+
+type FormData = z.infer<typeof formSchema>;
 
 export default function JoinTeamPage() {
   const router = useRouter();
-
-  const [inviteCode, setInviteCode] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setIsSubmitting(true);
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      invite_code: '',
+    },
+  });
+
+  async function onSubmit(data: FormData) {
     setError('');
 
     try {
@@ -23,21 +41,19 @@ export default function JoinTeamPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          invite_code: inviteCode.trim().toUpperCase(),
+          invite_code: data.invite_code.trim().toUpperCase(),
         }),
       });
 
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || 'Failed to join team');
+        const responseData = await response.json();
+        throw new Error(responseData.error || 'Failed to join team');
       }
 
-      const data = await response.json();
-      router.push(`/teams/${data.team_id}`);
+      const responseData = await response.json();
+      router.push(`/teams/${responseData.team_id}`);
     } catch (err: any) {
       setError(err.message);
-    } finally {
-      setIsSubmitting(false);
     }
   }
 
@@ -45,78 +61,94 @@ export default function JoinTeamPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <header className="bg-white dark:bg-gray-800 shadow">
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
-          <Link
-            href="/dashboard"
-            className="text-blue-600 hover:text-blue-800 text-sm mb-2 block"
-          >
-            ← Back to Dashboard
-          </Link>
+          <Button variant="ghost" asChild className="mb-2">
+            <Link href="/dashboard">
+              ← Back to Dashboard
+            </Link>
+          </Button>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Join a Team</h1>
         </div>
       </header>
 
       <main className="max-w-2xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <p className="text-gray-700 mb-6">
-            Enter the invite code provided by your team captain to join their team.
-          </p>
+        <Card>
+          <CardHeader>
+            <CardTitle>Enter Invite Code</CardTitle>
+            <CardDescription>
+              Enter the invite code provided by your team captain to join their team.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                {error && (
+                  <Alert variant="destructive">
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
+                )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label htmlFor="inviteCode" className="block text-sm font-semibold text-gray-900 mb-2">
-                Invite Code *
-              </label>
-              <input
-                type="text"
-                id="inviteCode"
-                value={inviteCode}
-                onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
-                required
-                maxLength={8}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-2xl font-mono text-center uppercase"
-                placeholder="ABCD1234"
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                Enter the 8-character code (not case-sensitive)
-              </p>
-            </div>
+                <FormField
+                  control={form.control}
+                  name="invite_code"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Invite Code *</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="ABCD1234"
+                          maxLength={8}
+                          className="text-2xl font-mono text-center uppercase"
+                          {...field}
+                          onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Enter the 8-character code (not case-sensitive)
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            {error && (
-              <div className="bg-red-50 border border-red-200 text-red-800 rounded-lg p-4">
-                {error}
-              </div>
-            )}
+                <div className="flex gap-4 pt-4">
+                  <Button
+                    type="submit"
+                    className="flex-1"
+                    disabled={form.formState.isSubmitting}
+                  >
+                    {form.formState.isSubmitting ? 'Joining Team...' : 'Join Team'}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    className="flex-1"
+                    asChild
+                  >
+                    <Link href="/dashboard">
+                      Cancel
+                    </Link>
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
 
-            <div className="flex gap-4">
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSubmitting ? 'Joining Team...' : 'Join Team'}
-              </button>
-              <Link
-                href="/dashboard"
-                className="flex-1 px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold text-center"
-              >
-                Cancel
+        <Card className="mt-6 bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
+          <CardHeader>
+            <CardTitle className="text-blue-900 dark:text-blue-100">Don't have an invite code?</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-blue-800 dark:text-blue-200 mb-4">
+              You can create your own team or ask your team captain for their invite code.
+            </p>
+            <Button asChild>
+              <Link href="/teams/new">
+                Create New Team
               </Link>
-            </div>
-          </form>
-        </div>
-
-        <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <h3 className="font-semibold text-blue-900 mb-2">Don't have an invite code?</h3>
-          <p className="text-sm text-blue-800 mb-3">
-            You can create your own team or ask your team captain for their invite code.
-          </p>
-          <Link
-            href="/teams/new"
-            className="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold text-sm"
-          >
-            Create New Team
-          </Link>
-        </div>
+            </Button>
+          </CardContent>
+        </Card>
       </main>
     </div>
   );

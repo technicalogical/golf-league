@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Copy, Check } from 'lucide-react';
 
 export default function InviteCodeDisplay({ inviteCode }: { inviteCode: string }) {
   const [copied, setCopied] = useState(false);
@@ -27,12 +29,24 @@ export default function InviteCodeDisplay({ inviteCode }: { inviteCode: string }
             {inviteCode}
           </span>
         </div>
-        <button
+        <Button
           onClick={handleCopy}
-          className="px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold whitespace-nowrap"
+          variant={copied ? "secondary" : "default"}
+          size="lg"
+          className="whitespace-nowrap"
         >
-          {copied ? '✓ Copied!' : 'Copy'}
-        </button>
+          {copied ? (
+            <>
+              <Check className="h-4 w-4" />
+              Copied!
+            </>
+          ) : (
+            <>
+              <Copy className="h-4 w-4" />
+              Copy
+            </>
+          )}
+        </Button>
       </div>
       <p className="text-xs text-gray-600 mt-3">
         Teammates can use this code at <strong>/teams/join</strong>

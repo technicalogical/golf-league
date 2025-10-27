@@ -2,6 +2,10 @@ import { getSession } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { supabaseAdmin } from '@/lib/supabase-server';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 
 export default async function DashboardPage() {
   const session = await getSession();
@@ -25,7 +29,7 @@ export default async function DashboardPage() {
     redirect('/welcome');
   }
 
-  // Determine display name: prioritize profile display_name, fallback to name, then SSO name, then email
+  // Determine display name
   const displayName = profile?.display_name || profile?.name || user.name || user.email;
 
   // Fetch user's leagues with teams and announcement counts
@@ -48,95 +52,40 @@ export default async function DashboardPage() {
     .eq('user_id', userId)
     .order('created_at', { ascending: false });
 
-  // Get all teams user is a member of
-  const { data: allUserTeams } = await supabaseAdmin
-    .from('team_members')
-    .select(`
-      *,
-      team:teams(id, name, is_active, captain_id, max_members)
-    `)
-    .eq('user_id', userId);
-
-  // Get player data for stats
+  // Get player data for upcoming matches
   const { data: playerData } = await supabaseAdmin
     .from('players')
     .select('id, team_id')
     .eq('user_id', userId)
     .single();
 
-  // Get recent match data and upcoming matches
-  let lastScore = null;
-  let nextMatch = null;
-  let totalMatches = 0;
-  let upcomingMatches: any[] = [];
+  let upcomingMatch: any = null;
 
   if (playerData) {
-    // Get last completed match score
-    const { data: lastScorecard } = await supabaseAdmin
-      .from('scorecards')
-      .select(`
-        total_score,
-        match:matches!inner(match_date, status)
-      `)
-      .eq('player_id', playerData.id)
-      .eq('match.status', 'completed')
-      .order('match.match_date', { ascending: false })
-      .limit(1)
-      .single();
-
-    if (lastScorecard) {
-      lastScore = lastScorecard.total_score;
-    }
-
-    // Count total matches played
-    const { count } = await supabaseAdmin
-      .from('scorecards')
-      .select('*', { count: 'exact', head: true })
-      .eq('player_id', playerData.id)
-      .eq('match.status', 'completed');
-
-    totalMatches = count || 0;
-
-    // Get next upcoming match for user's team
-    const { data: upcomingMatch } = await supabaseAdmin
-      .from('matches')
-      .select('id, match_date, team1_id, team2_id')
-      .eq('status', 'scheduled')
-      .or(`team1_id.eq.${playerData.team_id},team2_id.eq.${playerData.team_id}`)
-      .gte('match_date', new Date().toISOString())
-      .order('match_date', { ascending: true })
-      .limit(1)
-      .single();
-
-    if (upcomingMatch) {
-      nextMatch = new Date(upcomingMatch.match_date).toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric'
-      });
-    }
-
-    // Get all upcoming matches for the user
-    const { data: allUpcomingMatches } = await supabaseAdmin
+    // Get next upcoming match
+    const { data: upcomingMatchData } = await supabaseAdmin
       .from('matches')
       .select(`
         id,
         match_date,
-        status,
+        team1_id,
+        team2_id,
         team1:teams!matches_team1_id_fkey(id, name),
         team2:teams!matches_team2_id_fkey(id, name),
+        course:courses(id, name),
         league:leagues(id, name)
       `)
       .eq('status', 'scheduled')
       .or(`team1_id.eq.${playerData.team_id},team2_id.eq.${playerData.team_id}`)
       .gte('match_date', new Date().toISOString())
       .order('match_date', { ascending: true })
-      .limit(5);
+      .limit(1)
+      .single();
 
-    upcomingMatches = allUpcomingMatches || [];
+    upcomingMatch = upcomingMatchData;
   }
 
-  // Get recent league announcements across all user's leagues
+  // Get recent league announcements
   const leagueIds = userLeagues?.map((l: any) => l.league.id) || [];
   let recentAnnouncements: any[] = [];
 
@@ -168,7 +117,6 @@ export default async function DashboardPage() {
       .order('created_at', { ascending: false })
       .limit(3);
 
-    // Get team counts for each league
     if (publicLeagues) {
       featuredLeagues = await Promise.all(
         publicLeagues.map(async (league) => {
@@ -186,7 +134,7 @@ export default async function DashboardPage() {
     }
   }
 
-  // For each league, get the user's teams
+  // For each league, get the user's teams, next match, and standings
   const leaguesWithTeams = await Promise.all(
     (userLeagues || []).map(async (membership: any) => {
       // Get teams in this league that the user is a member of
@@ -203,7 +151,6 @@ export default async function DashboardPage() {
         `)
         .eq('league_id', membership.league.id);
 
-      // Filter to only teams the user is a member of
       const teamIds = leagueTeams?.map((lt: any) => lt.teams.id) || [];
       const { data: userTeamMemberships } = await supabaseAdmin
         .from('team_members')
@@ -214,7 +161,45 @@ export default async function DashboardPage() {
         .eq('user_id', userId)
         .in('team_id', teamIds);
 
-      // Get unread announcement count (announcements created after user last viewed)
+      // Get user's team ID in this league
+      const userTeamInLeague = userTeamMemberships?.[0]?.team;
+
+      // Get next match for user's team in this league
+      let nextMatch = null;
+      if (userTeamInLeague) {
+        const { data: nextMatchData } = await supabaseAdmin
+          .from('matches')
+          .select(`
+            id,
+            match_date,
+            team1_id,
+            team2_id,
+            team1:teams!matches_team1_id_fkey(id, name),
+            team2:teams!matches_team2_id_fkey(id, name)
+          `)
+          .eq('league_id', membership.league.id)
+          .eq('status', 'scheduled')
+          .or(`team1_id.eq.${userTeamInLeague.id},team2_id.eq.${userTeamInLeague.id}`)
+          .gte('match_date', new Date().toISOString())
+          .order('match_date', { ascending: true })
+          .limit(1)
+          .single();
+
+        nextMatch = nextMatchData;
+      }
+
+      // Get team standings for this league
+      const { data: standings } = await supabaseAdmin
+        .from('team_standings')
+        .select('team_id, rank, points, wins, losses')
+        .eq('league_id', membership.league.id)
+        .order('rank', { ascending: true })
+        .limit(5);
+
+      // Get user's team standing
+      const userTeamStanding = standings?.find(s => s.team_id === userTeamInLeague?.id);
+
+      // Get unread announcement count
       const { data: profile } = await supabaseAdmin
         .from('profiles')
         .select('updated_at')
@@ -231,114 +216,123 @@ export default async function DashboardPage() {
         ...membership,
         teams: userTeamMemberships || [],
         unreadAnnouncements: unreadCount || 0,
+        nextMatch,
+        userTeamStanding,
+        userTeam: userTeamInLeague,
       };
     })
   );
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        {/* Welcome Section with Quick Overview */}
-        <div className="grid md:grid-cols-3 gap-6 mb-10">
-          {/* Welcome Card */}
-          <div className="md:col-span-2 bg-white dark:bg-gray-800 rounded-lg shadow p-8">
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-3">Welcome, {displayName}!</h1>
-            <p className="text-gray-600 dark:text-gray-300 text-lg max-w-2xl">
-              Manage your golf league, enter scores, and track your standings.
-            </p>
-          </div>
-
-          {/* Quick Overview Widget */}
-          <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg shadow-lg p-6 text-white">
-            <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-              <span>🏌️</span> Quick Overview
-            </h3>
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="text-blue-100">Teams:</span>
-                <span className="text-2xl font-bold">{allUserTeams?.length || 0}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-blue-100">Leagues:</span>
-                <span className="text-2xl font-bold">
-                  {leaguesWithTeams?.length || 0}
-                  {userLeagues && userLeagues.filter((l: any) => l.status === 'pending').length > 0 && (
-                    <span className="ml-2 text-sm text-yellow-300">
-                      ({userLeagues.filter((l: any) => l.status === 'pending').length} pending)
-                    </span>
-                  )}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-blue-100">Matches:</span>
-                <span className="text-2xl font-bold">{totalMatches}</span>
-              </div>
-              <div className="border-t border-blue-500 pt-3 mt-3">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-blue-100 text-sm">Next Match:</span>
-                  <span className="font-semibold text-sm">{nextMatch || '--'}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-blue-100 text-sm">Last Score:</span>
-                  <span className="font-semibold text-sm">{lastScore || '--'}</span>
-                </div>
-              </div>
-            </div>
-          </div>
+        {/* Compact Welcome */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Welcome, {displayName}!</h1>
         </div>
 
-        {/* My Teams Section */}
-        {allUserTeams && allUserTeams.length > 0 && (
-          <div className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">My Teams</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {allUserTeams.map((teamMembership: any) => {
-                const team = teamMembership.team;
-                const isCaptain = team.captain_id === userId;
+        {/* Primary CTA - Enter Scores */}
+        {upcomingMatch && playerData && (() => {
+          const matchDate = new Date(upcomingMatch.match_date);
+          const today = new Date();
+          const daysUntilMatch = Math.ceil((matchDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 
-                return (
-                  <Link
-                    key={teamMembership.id}
-                    href={`/teams/${team.id}`}
-                    className="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition-shadow p-5"
-                  >
-                    <div className="flex items-start justify-between mb-3">
-                      <h4 className="text-lg font-bold text-gray-900 dark:text-white">{team.name}</h4>
-                      {isCaptain && (
-                        <span className="px-2 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded text-xs font-semibold">
-                          Captain
-                        </span>
-                      )}
+          if (daysUntilMatch <= 7 && daysUntilMatch >= 0) {
+            const isToday = daysUntilMatch === 0;
+            const isTomorrow = daysUntilMatch === 1;
+
+            let dateLabel = '';
+            if (isToday) {
+              dateLabel = 'TODAY';
+            } else if (isTomorrow) {
+              dateLabel = 'TOMORROW';
+            } else {
+              dateLabel = `IN ${daysUntilMatch} DAYS`;
+            }
+
+            const timeString = matchDate.toLocaleTimeString('en-US', {
+              hour: 'numeric',
+              minute: '2-digit',
+              hour12: true
+            });
+
+            const userTeamId = playerData.team_id;
+            const opponentTeam = upcomingMatch.team1_id === userTeamId ? upcomingMatch.team2 : upcomingMatch.team1;
+            const userTeam = upcomingMatch.team1_id === userTeamId ? upcomingMatch.team1 : upcomingMatch.team2;
+
+            return (
+              <Card className={`mb-8 border-2 ${
+                isToday
+                  ? 'bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 border-red-500 dark:border-red-600'
+                  : 'bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-blue-500 dark:border-blue-600'
+              }`}>
+                <CardContent className="pt-6">
+                  <div className="flex items-start justify-between flex-wrap gap-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <span className="text-3xl">⚡</span>
+                        <div>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <Badge className={isToday ? 'bg-red-600 text-white' : 'bg-blue-600 text-white'}>
+                              {dateLabel}
+                            </Badge>
+                            <h3 className="text-xl font-bold">Upcoming Match</h3>
+                          </div>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {matchDate.toLocaleDateString('en-US', {
+                              weekday: 'long',
+                              month: 'long',
+                              day: 'numeric'
+                            })} at {timeString}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="ml-11 mt-3">
+                        <div className="flex items-center gap-3 flex-wrap mb-2">
+                          <span className="text-lg font-bold">{userTeam?.name}</span>
+                          <span className="text-muted-foreground font-semibold">vs</span>
+                          <span className="text-lg font-bold">{opponentTeam?.name}</span>
+                        </div>
+                        {upcomingMatch.course && (
+                          <p className="text-sm text-muted-foreground">
+                            📍 {upcomingMatch.course.name}
+                          </p>
+                        )}
+                      </div>
                     </div>
-                    <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-300">
-                      <span>Status:</span>
-                      <span className={`px-2 py-1 rounded font-semibold ${
-                        team.is_active
-                          ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
-                          : 'bg-gray-100 dark:bg-gray-700 dark:bg-gray-700 text-gray-800 dark:text-gray-200'
-                      }`}>
-                        {team.is_active ? 'Active' : 'Inactive'}
-                      </span>
+
+                    <div className="flex gap-3">
+                      <Button variant="outline" asChild>
+                        <Link href={`/matches/${upcomingMatch.id}`}>
+                          View Details
+                        </Link>
+                      </Button>
+                      <Button className={isToday ? 'bg-red-600 hover:bg-red-700' : ''} asChild>
+                        <Link href={`/matches/${upcomingMatch.id}/scorecard`}>
+                          Enter Scores
+                        </Link>
+                      </Button>
                     </div>
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
-        )}
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          }
+          return null;
+        })()}
 
         {/* My Leagues */}
         {leaguesWithTeams && leaguesWithTeams.length > 0 && (
-          <div className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">My Leagues</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">My Leagues</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {leaguesWithTeams.map((membership: any) => {
                 const league = membership.league;
                 const isAdmin = membership.role === 'admin';
 
                 return (
-                  <div key={membership.id} className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+                  <Card key={membership.id} className="overflow-hidden">
                     {/* League Header */}
                     <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-4 text-white">
                       <div className="flex items-start justify-between">
@@ -346,25 +340,18 @@ export default async function DashboardPage() {
                           <div className="flex items-center gap-2 mb-1">
                             <h4 className="text-lg font-bold">{league.name}</h4>
                             {membership.unreadAnnouncements > 0 && (
-                              <span className="flex items-center gap-1 px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full animate-pulse">
-                                <span className="w-1.5 h-1.5 bg-white rounded-full"></span>
+                              <Badge className="bg-red-500">
                                 {membership.unreadAnnouncements}
-                              </span>
+                              </Badge>
                             )}
                             {isAdmin && (
-                              <span className="px-2 py-0.5 bg-yellow-400 text-yellow-900 rounded text-xs font-bold">
-                                ADMIN
-                              </span>
+                              <Badge className="bg-yellow-400 text-yellow-900">ADMIN</Badge>
                             )}
                           </div>
-                          <div className="flex flex-wrap gap-3 text-xs">
-                            <span className={`px-1.5 py-0.5 rounded font-semibold ${
-                              league.status === 'active'
-                                ? 'bg-green-400 text-green-900'
-                                : 'bg-gray-400 text-gray-900'
-                            }`}>
+                          <div className="flex flex-wrap gap-2 text-xs">
+                            <Badge variant={league.status === 'active' ? 'default' : 'secondary'} className="bg-white/20">
                               {league.status}
-                            </span>
+                            </Badge>
                             {league.league_day && (
                               <span className="text-blue-100">
                                 {league.league_day}s{league.league_time && ` ${league.league_time.slice(0, 5)}`}
@@ -372,298 +359,232 @@ export default async function DashboardPage() {
                             )}
                           </div>
                         </div>
-                        <Link
-                          href={`/leagues/${league.id}`}
-                          className="ml-3 px-3 py-1.5 bg-white text-blue-700 rounded hover:bg-blue-50 font-semibold text-xs whitespace-nowrap transition-colors"
-                        >
-                          View →
-                        </Link>
+                        <Button variant="secondary" size="sm" asChild>
+                          <Link href={`/leagues/${league.id}`}>
+                            View
+                          </Link>
+                        </Button>
                       </div>
                     </div>
 
-                    {/* Teams Section */}
-                    <div className="p-3">
+                    <CardContent className="pt-4 space-y-3">
+                      {/* Teams */}
                       {membership.teams && membership.teams.length > 0 ? (
                         <div className="flex flex-wrap gap-2">
                           {membership.teams.map((teamMembership: any) => {
                             const isCaptain = teamMembership.team.captain_id === userId;
                             return (
-                              <Link
+                              <Badge
                                 key={teamMembership.id}
-                                href={`/teams/${teamMembership.team.id}`}
-                                className="group inline-flex items-center gap-2 px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-gray-700 transition-all text-sm"
+                                variant="outline"
+                                className="cursor-pointer hover:bg-blue-50"
+                                asChild
                               >
-                                <span className="font-medium text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                                <Link href={`/teams/${teamMembership.team.id}`}>
                                   {teamMembership.team.name}
-                                </span>
-                                {isCaptain && (
-                                  <span className="px-1.5 py-0.5 text-xs font-semibold bg-yellow-100 text-yellow-800 rounded">
-                                    Captain
-                                  </span>
-                                )}
-                              </Link>
+                                  {isCaptain && ' ⭐'}
+                                </Link>
+                              </Badge>
                             );
                           })}
                         </div>
                       ) : (
-                        <p className="text-gray-500 text-xs italic">
-                          No teams yet
-                        </p>
+                        <p className="text-sm text-muted-foreground italic">No teams yet</p>
                       )}
-                    </div>
-                  </div>
+
+                      {membership.userTeam && (
+                        <>
+                          <Separator />
+
+                          {/* Current Standing */}
+                          {membership.userTeamStanding && (
+                            <div className="flex items-center justify-between text-sm">
+                              <span className="text-muted-foreground">Current Standing:</span>
+                              <Badge variant="secondary" className="font-semibold">
+                                #{membership.userTeamStanding.rank} · {membership.userTeamStanding.points} pts
+                              </Badge>
+                            </div>
+                          )}
+
+                          {/* Next Match */}
+                          {membership.nextMatch && (() => {
+                            const match = membership.nextMatch;
+                            const matchDate = new Date(match.match_date);
+                            const opponentTeam = match.team1_id === membership.userTeam.id ? match.team2 : match.team1;
+
+                            return (
+                              <div className="space-y-2">
+                                <div className="text-xs text-muted-foreground">Next Match:</div>
+                                <div className="text-sm">
+                                  <div className="font-semibold mb-1">
+                                    vs {opponentTeam.name}
+                                  </div>
+                                  <div className="text-xs text-muted-foreground mb-2">
+                                    {matchDate.toLocaleDateString('en-US', {
+                                      month: 'short',
+                                      day: 'numeric',
+                                      hour: 'numeric',
+                                      minute: '2-digit'
+                                    })}
+                                  </div>
+                                  <Button size="sm" className="w-full" asChild>
+                                    <Link href={`/matches/${match.id}/scorecard`}>
+                                      Enter Scorecard
+                                    </Link>
+                                  </Button>
+                                </div>
+                              </div>
+                            );
+                          })()}
+
+                          {!membership.nextMatch && (
+                            <div className="text-xs text-muted-foreground italic">
+                              No upcoming matches
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </CardContent>
+                  </Card>
                 );
               })}
             </div>
           </div>
         )}
 
-        {leaguesWithTeams && leaguesWithTeams.length === 0 && (
-          <div className="mb-8">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-8 text-center mb-6">
-              <div className="text-4xl mb-4">🏌️</div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No Leagues Yet</h3>
-              <p className="text-gray-600 dark:text-gray-300">
-                You're not a member of any leagues. Check out these featured leagues!
-              </p>
-            </div>
-
-            {featuredLeagues.length > 0 && (
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Featured Public Leagues</h3>
-                <div className="grid md:grid-cols-3 gap-4 mb-6">
-                  {featuredLeagues.map((league: any) => (
-                    <div key={league.id} className="bg-white dark:bg-gray-800 rounded-lg shadow p-5 hover:shadow-lg transition-shadow">
-                      <div className="flex items-start justify-between mb-3">
-                        <h4 className="font-bold text-gray-900 dark:text-white">{league.name}</h4>
-                        <span className={`px-2 py-1 rounded text-xs font-semibold ${
-                          league.status === 'active' ? 'bg-green-100 text-green-800' :
-                          league.status === 'upcoming' ? 'bg-blue-100 text-blue-800' :
-                          'bg-gray-100 dark:bg-gray-700 text-gray-800'
-                        }`}>
+        {/* No Leagues State */}
+        {leaguesWithTeams && leaguesWithTeams.length === 0 && featuredLeagues.length > 0 && (
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle>Featured Public Leagues</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-3 gap-4">
+                {featuredLeagues.map((league: any) => (
+                  <Card key={league.id}>
+                    <CardHeader>
+                      <div className="flex items-start justify-between">
+                        <CardTitle className="text-base">{league.name}</CardTitle>
+                        <Badge variant={league.status === 'active' ? 'default' : 'secondary'}>
                           {league.status}
-                        </span>
+                        </Badge>
                       </div>
+                    </CardHeader>
+                    <CardContent>
                       {league.description && (
-                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-3 line-clamp-2">{league.description}</p>
+                        <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{league.description}</p>
                       )}
-                      <div className="text-xs text-gray-500 dark:text-gray-400 mb-4">
-                        {league.teamCount} {league.teamCount === 1 ? 'team' : 'teams'} registered
-                      </div>
-                      <Link
-                        href={`/leagues/${league.id}/public`}
-                        className="block w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold text-center text-sm"
-                      >
-                        View & Join
-                      </Link>
-                    </div>
-                  ))}
-                </div>
-                <div className="text-center">
-                  <Link
-                    href="/leagues"
-                    className="inline-block px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold"
-                  >
-                    Browse All Leagues
-                  </Link>
-                </div>
+                      <p className="text-xs text-muted-foreground mb-4">
+                        {league.teamCount} {league.teamCount === 1 ? 'team' : 'teams'}
+                      </p>
+                      <Button className="w-full" size="sm" asChild>
+                        <Link href={`/leagues/${league.id}/public`}>
+                          View & Join
+                        </Link>
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
-            )}
-
-            {featuredLeagues.length === 0 && (
-              <div className="text-center">
-                <Link
-                  href="/leagues"
-                  className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold"
-                >
-                  Browse Leagues
-                </Link>
-              </div>
-            )}
-          </div>
+            </CardContent>
+          </Card>
         )}
 
-        {/* Quick Actions - Grouped by Priority */}
-        <div className="mb-10">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Quick Actions</h2>
-
-          {/* Primary Actions - Most Frequently Used */}
-          <div className="grid md:grid-cols-2 gap-6 mb-6">
-            <Link
-              href="/matches"
-              className="bg-gradient-to-br from-green-500 to-green-600 p-8 rounded-lg shadow-lg hover:shadow-xl transition-all text-white group"
-            >
-              <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">⛳</div>
-              <h3 className="text-2xl font-bold mb-2">Enter Scores</h3>
-              <p className="text-green-100">
-                Record match results and calculate points
-              </p>
+        {/* Quick Actions - 2 columns on mobile, 4 on desktop */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Quick Actions</h2>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <Link href="/leagues">
+              <Card className="p-5 hover:shadow-xl hover:scale-105 transition-all duration-200 border-2 hover:border-purple-500 group text-center">
+                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">🏅</div>
+                <CardTitle className="text-base mb-1">Leagues</CardTitle>
+                <p className="text-xs text-muted-foreground">Manage leagues</p>
+              </Card>
             </Link>
 
-            <Link
-              href="/standings"
-              className="bg-gradient-to-br from-yellow-500 to-yellow-600 p-8 rounded-lg shadow-lg hover:shadow-xl transition-all text-white group"
-            >
-              <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">🏆</div>
-              <h3 className="text-2xl font-bold mb-2">View Standings</h3>
-              <p className="text-yellow-100">
-                Check team and player rankings
-              </p>
-            </Link>
-          </div>
-
-          {/* Secondary Actions - League & Team Management */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-            <Link
-              href="/leagues"
-              className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow hover:shadow-lg transition-shadow group"
-            >
-              <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">🏅</div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">Leagues</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
-                Manage leagues
-              </p>
+            <Link href="/teams/browse">
+              <Card className="p-5 hover:shadow-xl hover:scale-105 transition-all duration-200 border-2 hover:border-blue-500 group text-center">
+                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">🔍</div>
+                <CardTitle className="text-base mb-1">Browse Teams</CardTitle>
+                <p className="text-xs text-muted-foreground">Find open teams</p>
+              </Card>
             </Link>
 
-            <Link
-              href="/teams/browse"
-              className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow hover:shadow-lg transition-shadow group"
-            >
-              <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">🔍</div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">Browse Teams</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
-                Find open teams
-              </p>
+            <Link href="/teams/new">
+              <Card className="p-5 hover:shadow-xl hover:scale-105 transition-all duration-200 border-2 hover:border-green-500 group text-center">
+                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">👥</div>
+                <CardTitle className="text-base mb-1">Create Team</CardTitle>
+                <p className="text-xs text-muted-foreground">Start a new team</p>
+              </Card>
             </Link>
 
-            <Link
-              href="/teams/new"
-              className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow hover:shadow-lg transition-shadow group"
-            >
-              <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">👥</div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">Create Team</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
-                Start a new team
-              </p>
+            <Link href="/teams/join">
+              <Card className="p-5 hover:shadow-xl hover:scale-105 transition-all duration-200 border-2 hover:border-orange-500 group text-center">
+                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">🤝</div>
+                <CardTitle className="text-base mb-1">Join with Code</CardTitle>
+                <p className="text-xs text-muted-foreground">Enter invite code</p>
+              </Card>
             </Link>
 
-            <Link
-              href="/teams/join"
-              className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow hover:shadow-lg transition-shadow group"
-            >
-              <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">🤝</div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">Join with Code</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
-                Enter invite code
-              </p>
-            </Link>
-          </div>
-
-          {/* Tertiary Actions - Information & History */}
-          <div className="grid md:grid-cols-2 gap-4">
-            <Link
-              href="/matches/history"
-              className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow hover:shadow-lg transition-shadow group"
-            >
-              <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">📊</div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">Match History</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
-                View completed matches and details
-              </p>
+            <Link href="/standings">
+              <Card className="p-5 hover:shadow-xl hover:scale-105 transition-all duration-200 border-2 hover:border-yellow-500 group text-center">
+                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">🏆</div>
+                <CardTitle className="text-base mb-1">Standings</CardTitle>
+                <p className="text-xs text-muted-foreground">View rankings</p>
+              </Card>
             </Link>
 
-            <Link
-              href="/profile/edit"
-              className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow hover:shadow-lg transition-shadow group"
-            >
-              <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">👤</div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">Your Profile</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
-                View and edit your profile
-              </p>
+            <Link href="/matches">
+              <Card className="p-5 hover:shadow-xl hover:scale-105 transition-all duration-200 border-2 hover:border-green-500 group text-center">
+                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">⛳</div>
+                <CardTitle className="text-base mb-1">Matches</CardTitle>
+                <p className="text-xs text-muted-foreground">View all matches</p>
+              </Card>
+            </Link>
+
+            <Link href="/matches/history">
+              <Card className="p-5 hover:shadow-xl hover:scale-105 transition-all duration-200 border-2 hover:border-indigo-500 group text-center">
+                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">📊</div>
+                <CardTitle className="text-base mb-1">Match History</CardTitle>
+                <p className="text-xs text-muted-foreground">View completed</p>
+              </Card>
+            </Link>
+
+            <Link href="/profile/edit">
+              <Card className="p-5 hover:shadow-xl hover:scale-105 transition-all duration-200 border-2 hover:border-gray-500 group text-center">
+                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">👤</div>
+                <CardTitle className="text-base mb-1">Your Profile</CardTitle>
+                <p className="text-xs text-muted-foreground">Edit profile</p>
+              </Card>
             </Link>
           </div>
         </div>
 
-        {/* Recent Activity - Upcoming Matches & Announcements */}
-        <div className="mt-12 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Recent Activity</h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* Upcoming Matches */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-5 flex items-center gap-2">
-                <span className="text-2xl">📅</span> Upcoming Matches
-              </h3>
-            {upcomingMatches.length > 0 ? (
-              <div className="space-y-3">
-                {upcomingMatches.map((match: any) => (
-                  <Link
-                    key={match.id}
-                    href={`/matches/${match.id}`}
-                    className="block p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-gray-700 transition-all"
-                  >
-                    <div className="flex justify-between items-start mb-2">
-                      <div className="flex-1">
-                        <div className="font-semibold text-gray-900 dark:text-white">
-                          {match.team1?.name} vs {match.team2?.name}
-                        </div>
-                        {match.league && (
-                          <div className="text-sm text-gray-600 dark:text-gray-300 mt-1">
-                            {match.league.name}
-                          </div>
-                        )}
-                      </div>
-                      <div className="text-xs text-gray-500 text-right">
-                        {new Date(match.match_date).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric'
-                        })}
-                      </div>
-                    </div>
-                    <div className="text-xs text-blue-600 font-medium">
-                      View Details →
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                <div className="text-4xl mb-2">📆</div>
-                <p>No upcoming matches scheduled</p>
-                <p className="text-sm mt-1">Check back later for new matches</p>
-              </div>
-            )}
-          </div>
-
-            {/* Recent Announcements */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-5 flex items-center gap-2">
+        {/* Recent Announcements */}
+        {recentAnnouncements.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
                 <span className="text-2xl">📢</span> League Announcements
-              </h3>
-            {recentAnnouncements.length > 0 ? (
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
               <div className="space-y-3">
                 {recentAnnouncements.map((announcement: any) => (
                   <Link
                     key={announcement.id}
                     href={`/leagues/${announcement.league.id}`}
-                    className="block p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-gray-700 transition-all"
+                    className="block p-4 border rounded-lg hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-gray-700 transition-all"
                   >
                     <div className="flex justify-between items-start mb-2">
                       <div className="flex-1">
-                        <div className="font-semibold text-gray-900 line-clamp-1">
-                          {announcement.title}
-                        </div>
-                        <div className="text-sm text-gray-600 dark:text-gray-300 mt-1 line-clamp-2">
-                          {announcement.content}
-                        </div>
+                        <div className="font-semibold line-clamp-1">{announcement.title}</div>
+                        <div className="text-sm text-muted-foreground mt-1 line-clamp-2">{announcement.content}</div>
                       </div>
                     </div>
                     <div className="flex justify-between items-center text-xs mt-2">
-                      <span className="text-gray-500 dark:text-gray-400">
-                        {announcement.league.name}
-                      </span>
-                      <span className="text-gray-400">
+                      <span className="text-muted-foreground">{announcement.league.name}</span>
+                      <span className="text-muted-foreground">
                         {new Date(announcement.created_at).toLocaleDateString('en-US', {
                           month: 'short',
                           day: 'numeric'
@@ -673,16 +594,9 @@ export default async function DashboardPage() {
                   </Link>
                 ))}
               </div>
-            ) : (
-              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                <div className="text-4xl mb-2">📭</div>
-                <p>No recent announcements</p>
-                <p className="text-sm mt-1">League admins will post updates here</p>
-              </div>
-            )}
-            </div>
-          </div>
-        </div>
+            </CardContent>
+          </Card>
+        )}
       </main>
     </div>
   );

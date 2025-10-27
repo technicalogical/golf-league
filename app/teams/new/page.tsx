@@ -3,19 +3,42 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+
+const formSchema = z.object({
+  name: z.string().min(3, 'Team name must be at least 3 characters').max(50),
+  description: z.string().optional(),
+  max_members: z.number().min(2).max(6),
+  open_to_join: z.boolean(),
+});
+
+type FormData = z.infer<typeof formSchema>;
 
 export default function NewTeamPage() {
   const router = useRouter();
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [maxMembers, setMaxMembers] = useState(2);
-  const [openToJoin, setOpenToJoin] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setIsSubmitting(true);
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: '',
+      description: '',
+      max_members: 2,
+      open_to_join: false,
+    },
+  });
+
+  async function onSubmit(data: FormData) {
     setError('');
 
     try {
@@ -24,146 +47,172 @@ export default function NewTeamPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          name,
-          description,
-          max_members: maxMembers,
-          open_to_join: openToJoin,
-        }),
+        body: JSON.stringify(data),
       });
 
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || 'Failed to create team');
+        const responseData = await response.json();
+        throw new Error(responseData.error || 'Failed to create team');
       }
 
-      const data = await response.json();
-      router.push(`/teams/${data.id}`);
+      const responseData = await response.json();
+      router.push(`/teams/${responseData.id}`);
     } catch (err: any) {
       setError(err.message);
-      setIsSubmitting(false);
     }
   }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Header */}
       <header className="bg-white dark:bg-gray-800 shadow">
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
-          <Link href="/teams" className="text-blue-600 hover:text-blue-800 text-sm mb-2 block">
-            ← Back to Teams
-          </Link>
+          <Button variant="ghost" asChild className="mb-2">
+            <Link href="/teams">
+              ← Back to Teams
+            </Link>
+          </Button>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Create New Team</h1>
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-2xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {error && (
-              <div className="bg-red-50 border border-red-200 text-red-800 rounded-lg p-4">
-                {error}
-              </div>
-            )}
+        <Card>
+          <CardHeader>
+            <CardTitle>Team Details</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                {error && (
+                  <Alert variant="destructive">
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
+                )}
 
-            <div>
-              <label htmlFor="name" className="block text-sm font-semibold text-gray-900 mb-2">
-                Team Name *
-              </label>
-              <input
-                type="text"
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Enter your team name..."
-              />
-            </div>
-
-            <div>
-              <label htmlFor="description" className="block text-sm font-semibold text-gray-900 mb-2">
-                Team Description (Optional)
-              </label>
-              <textarea
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                rows={3}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Tell others about your team..."
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                Help others understand your team's style, goals, or personality
-              </p>
-            </div>
-
-            <div>
-              <label htmlFor="maxMembers" className="block text-sm font-semibold text-gray-900 mb-2">
-                Maximum Team Members
-              </label>
-              <select
-                id="maxMembers"
-                value={maxMembers}
-                onChange={(e) => setMaxMembers(Number(e.target.value))}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value={2}>2 Members</option>
-                <option value={3}>3 Members</option>
-                <option value={4}>4 Members</option>
-                <option value={5}>5 Members</option>
-                <option value={6}>6 Members</option>
-              </select>
-              <p className="text-xs text-gray-500 mt-1">
-                Choose how many players can be on your team
-              </p>
-            </div>
-
-            <div className="border-t border-gray-200 pt-4">
-              <label className="flex items-start cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={openToJoin}
-                  onChange={(e) => setOpenToJoin(e.target.checked)}
-                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Team Name *</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter your team name..." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-                <div className="ml-3">
-                  <span className="text-sm font-semibold text-gray-900 dark:text-white">Open Team</span>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Allow anyone to join your team without an invite code (you can change this later)
-                  </p>
+
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Team Description (Optional)</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Tell others about your team..."
+                          rows={3}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Help others understand your team's style, goals, or personality
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="max_members"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Maximum Team Members</FormLabel>
+                      <Select
+                        onValueChange={(value) => field.onChange(Number(value))}
+                        defaultValue={String(field.value)}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select max members" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="2">2 Members</SelectItem>
+                          <SelectItem value="3">3 Members</SelectItem>
+                          <SelectItem value="4">4 Members</SelectItem>
+                          <SelectItem value="5">5 Members</SelectItem>
+                          <SelectItem value="6">6 Members</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormDescription>
+                        Choose how many players can be on your team
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="open_to_join"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>
+                          Open Team
+                        </FormLabel>
+                        <FormDescription>
+                          Allow anyone to join your team without an invite code (you can change this later)
+                        </FormDescription>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+
+                <div className="flex gap-4 pt-4">
+                  <Button
+                    type="submit"
+                    className="flex-1"
+                    disabled={form.formState.isSubmitting}
+                  >
+                    {form.formState.isSubmitting ? 'Creating...' : 'Create Team'}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    className="flex-1"
+                    asChild
+                  >
+                    <Link href="/teams">
+                      Cancel
+                    </Link>
+                  </Button>
                 </div>
-              </label>
-            </div>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
 
-            <div className="flex gap-4 pt-4">
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSubmitting ? 'Creating...' : 'Create Team'}
-              </button>
-              <Link
-                href="/teams"
-                className="flex-1 px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold text-center"
-              >
-                Cancel
-              </Link>
-            </div>
-          </form>
-        </div>
-
-        <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <h3 className="font-semibold text-blue-900 mb-2">What happens next?</h3>
-          <ul className="text-sm text-blue-800 space-y-1">
-            <li>• You'll be automatically added as the team captain</li>
-            <li>• You'll receive an invite code to share with teammates</li>
-            <li>• Your team will be available to join leagues</li>
-            <li>• You can manage your team members from the team page</li>
-          </ul>
-        </div>
+        <Alert className="mt-6">
+          <AlertTitle>What happens next?</AlertTitle>
+          <AlertDescription>
+            <ul className="list-disc list-inside space-y-1 mt-2">
+              <li>You'll be automatically added as the team captain</li>
+              <li>You'll receive an invite code to share with teammates</li>
+              <li>Your team will be available to join leagues</li>
+              <li>You can manage your team members from the team page</li>
+            </ul>
+          </AlertDescription>
+        </Alert>
       </main>
     </div>
   );
