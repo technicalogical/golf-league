@@ -5,6 +5,13 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { useTheme } from './ThemeProvider';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 interface NavigationProps {
   displayName: string;
@@ -16,11 +23,12 @@ export default function Navigation({ displayName }: NavigationProps) {
   const { theme, toggleTheme } = useTheme();
 
   const navLinks = [
-    { href: '/dashboard', label: 'Dashboard', icon: '🏠' },
-    { href: '/leagues', label: 'Leagues', icon: '🏅' },
-    { href: '/teams/browse', label: 'Teams', icon: '👥' },
-    { href: '/standings', label: 'Standings', icon: '🏆' },
-    { href: '/matches/history', label: 'Matches', icon: '⛳' },
+    { href: '/dashboard', label: 'Dashboard' },
+    { href: '/leagues', label: 'Leagues' },
+    { href: '/teams/browse', label: 'Teams' },
+    { href: '/standings', label: 'Standings' },
+    { href: '/matches/history', label: 'Matches' },
+    { href: '/courses', label: 'Courses' },
   ];
 
   const isActive = (href: string) => {
@@ -39,8 +47,7 @@ export default function Navigation({ displayName }: NavigationProps) {
             href="/dashboard"
             className="flex items-center gap-2 text-xl font-bold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
           >
-            <span className="text-2xl">⛳</span>
-            <span className="hidden sm:inline">Golf League</span>
+            <span>Golf Scores</span>
           </Link>
 
           {/* Navigation Links */}
@@ -53,7 +60,6 @@ export default function Navigation({ displayName }: NavigationProps) {
                 className={isActive(link.href) ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' : ''}
               >
                 <Link href={link.href}>
-                  <span className="mr-1.5">{link.icon}</span>
                   {link.label}
                 </Link>
               </Button>
@@ -62,31 +68,35 @@ export default function Navigation({ displayName }: NavigationProps) {
 
           {/* User Menu & Mobile Menu Button */}
           <div className="flex items-center gap-4">
-            {/* Theme Toggle Button */}
-            <Button
-              onClick={toggleTheme}
-              variant="ghost"
-              size="icon"
-              aria-label="Toggle theme"
-            >
-              {theme === 'light' ? '🌙' : '☀️'}
-            </Button>
-
-            <Link
-              href="/profile/edit"
-              className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-medium hidden sm:block"
-            >
-              {displayName}
-            </Link>
-
-            <form action="/api/auth/logout" method="get" className="hidden md:block">
-              <Button
-                type="submit"
-                variant="destructive"
-              >
-                Logout
-              </Button>
-            </form>
+            {/* Desktop User Menu */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild className="hidden md:block">
+                <Button variant="ghost">
+                  {displayName}
+                  <svg className="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem asChild>
+                  <Link href="/profile/edit" className="cursor-pointer">
+                    Edit Profile
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={toggleTheme} className="cursor-pointer">
+                  {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <form action="/api/auth/logout" method="get" className="w-full">
+                    <button type="submit" className="w-full text-left text-red-600 dark:text-red-400">
+                      Logout
+                    </button>
+                  </form>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             {/* Mobile Hamburger Menu Button */}
             <Button
@@ -125,33 +135,43 @@ export default function Navigation({ displayName }: NavigationProps) {
                     href={link.href}
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    <span className="mr-2">{link.icon}</span>
                     {link.label}
                   </Link>
                 </Button>
               ))}
-              <Button
-                asChild
-                variant="ghost"
-                className="justify-start"
-              >
-                <Link
-                  href="/profile/edit"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <span className="mr-2">👤</span>
-                  {displayName}
-                </Link>
-              </Button>
-              <form action="/api/auth/logout" method="get">
+              <div className="border-t border-gray-200 dark:border-gray-700 my-2 pt-2">
                 <Button
-                  type="submit"
-                  variant="destructive"
-                  className="w-full"
+                  asChild
+                  variant="ghost"
+                  className="justify-start w-full"
                 >
-                  Logout
+                  <Link
+                    href="/profile/edit"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Edit Profile
+                  </Link>
                 </Button>
-              </form>
+                <Button
+                  onClick={() => {
+                    toggleTheme();
+                    setMobileMenuOpen(false);
+                  }}
+                  variant="ghost"
+                  className="justify-start w-full"
+                >
+                  {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
+                </Button>
+                <form action="/api/auth/logout" method="get">
+                  <Button
+                    type="submit"
+                    variant="destructive"
+                    className="w-full justify-start"
+                  >
+                    Logout
+                  </Button>
+                </form>
+              </div>
             </nav>
           </div>
         )}
