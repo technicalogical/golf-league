@@ -171,62 +171,71 @@ export default async function LeagueDetailPage({
 
       <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         {/* Action Buttons */}
-        <div className="mb-6 flex gap-4 flex-wrap">
-          {/* Links for all members */}
-          <Link
-            href={`/standings?league_id=${id}`}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold"
-          >
-            View Standings
-          </Link>
-          <Link
-            href={`/matches/history?league_id=${id}`}
-            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold"
-          >
-            Match History
-          </Link>
+        <div className="mb-6 space-y-4">
+          {/* Quick Actions for all members */}
+          <div className="flex gap-3 flex-wrap">
+            <Link
+              href={`/standings?league_id=${id}`}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold transition-colors"
+            >
+              View Standings
+            </Link>
+            <Link
+              href={`/matches/history?league_id=${id}`}
+              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold transition-colors"
+            >
+              Match History
+            </Link>
+            <Link
+              href={`/leagues/${id}/announcements`}
+              className="px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 font-semibold transition-colors"
+            >
+              Announcements
+            </Link>
+          </div>
 
-          {/* Admin-only buttons */}
+          {/* Admin Controls */}
           {isAdmin && (
-            <>
-              <Link
-                href={`/leagues/${id}/settings`}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-semibold"
-              >
-                League Settings
-              </Link>
-              <Link
-                href={`/leagues/${id}/teams/add`}
-                className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 font-semibold"
-              >
-                Add Teams
-              </Link>
-              <Link
-                href={`/leagues/${id}/members`}
-                className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 font-semibold"
-              >
-                Manage Members
-              </Link>
-              <Link
-                href={`/leagues/${id}/schedule`}
-                className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-semibold"
-              >
-                Generate Schedule
-              </Link>
-              <Link
-                href={`/leagues/${id}/weeks`}
-                className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-semibold"
-              >
-                Manage Week Settings
-              </Link>
-              <Link
-                href={`/leagues/${id}/announcements`}
-                className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 font-semibold"
-              >
-                Manage Announcements
-              </Link>
-              <DestroyScheduleButton leagueId={id} />
-            </>
+            <div className="bg-white dark:bg-gray-800 border-2 border-indigo-200 dark:border-indigo-700 rounded-lg p-4">
+              <h3 className="text-sm font-bold text-indigo-900 dark:text-indigo-200 mb-3 uppercase tracking-wide">
+                League Administration
+              </h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                <Link
+                  href={`/leagues/${id}/schedule`}
+                  className="px-4 py-2 bg-purple-100 dark:bg-purple-900/30 text-purple-900 dark:text-purple-200 border border-purple-300 dark:border-purple-700 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-900/50 font-semibold text-center transition-colors"
+                >
+                  Manage Schedule
+                </Link>
+                <Link
+                  href={`/leagues/${id}/handicaps`}
+                  className="px-4 py-2 bg-orange-100 dark:bg-orange-900/30 text-orange-900 dark:text-orange-200 border border-orange-300 dark:border-orange-700 rounded-lg hover:bg-orange-200 dark:hover:bg-orange-900/50 font-semibold text-center transition-colors"
+                >
+                  Manage Handicaps
+                </Link>
+                <Link
+                  href={`/leagues/${id}/teams/add`}
+                  className="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 font-semibold text-center transition-colors"
+                >
+                  Add Teams
+                </Link>
+                <Link
+                  href={`/leagues/${id}/members`}
+                  className="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 font-semibold text-center transition-colors"
+                >
+                  Manage Members
+                </Link>
+                <Link
+                  href={`/leagues/${id}/settings`}
+                  className="px-4 py-2 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-900 dark:text-indigo-200 border border-indigo-300 dark:border-indigo-700 rounded-lg hover:bg-indigo-200 dark:hover:bg-indigo-900/50 font-semibold text-center transition-colors"
+                >
+                  League Settings
+                </Link>
+              </div>
+              <div className="mt-3 flex justify-end">
+                <DestroyScheduleButton leagueId={id} />
+              </div>
+            </div>
           )}
         </div>
 

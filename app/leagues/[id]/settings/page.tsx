@@ -304,7 +304,6 @@ export default function LeagueSettingsPage() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="">None</SelectItem>
                             <SelectItem value="Monday">Monday</SelectItem>
                             <SelectItem value="Tuesday">Tuesday</SelectItem>
                             <SelectItem value="Wednesday">Wednesday</SelectItem>

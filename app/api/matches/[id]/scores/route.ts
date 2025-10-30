@@ -16,7 +16,9 @@ export async function POST(
     }
 
     const { id: matchId } = await params;
-    const { scores } = await request.json();
+    const { scores: inputScores, partial = false, recalculate = false } = await request.json();
+
+    let scores = inputScores;
 
     // Get match with course and holes
     const { data: match, error: matchError } = await supabaseAdmin
@@ -96,6 +98,36 @@ export async function POST(
 
     const allPlayers = [...team1Players, ...team2Players];
 
+    // If recalculate flag is set, load existing scores from database
+    if (recalculate && (!scores || scores.length === 0)) {
+      // First get scorecards for this match
+      const { data: matchScorecards } = await supabaseAdmin
+        .from('scorecards')
+        .select('id, player_id')
+        .eq('match_id', matchId);
+
+      if (matchScorecards && matchScorecards.length > 0) {
+        const scorecardIds = matchScorecards.map(sc => sc.id);
+
+        // Then get all hole scores for these scorecards
+        const { data: existingHoleScores } = await supabaseAdmin
+          .from('hole_scores')
+          .select('hole_id, strokes, scorecard_id')
+          .in('scorecard_id', scorecardIds);
+
+        if (existingHoleScores && existingHoleScores.length > 0) {
+          // Map scorecard_id to player_id
+          const scorecardMap = new Map(matchScorecards.map(sc => [sc.id, sc.player_id]));
+
+          scores = existingHoleScores.map((hs: any) => ({
+            player_id: scorecardMap.get(hs.scorecard_id),
+            hole_id: hs.hole_id,
+            strokes: hs.strokes,
+          })).filter((s: any) => s.player_id); // Filter out any null player_ids
+        }
+      }
+    }
+
     // Organize scores by player
     const scoresByPlayer: Record<string, any[]> = {};
     scores.forEach((score: any) => {
@@ -140,8 +172,15 @@ export async function POST(
       handicap_index: h.handicap_index,
     }));
 
-    // Calculate match results using our scoring engine
-    const matchResult = calculateTeamMatch(team1ScorePlayers, team2ScorePlayers, holes);
+    // Only calculate match results if we have complete scores
+    let matchResult = null;
+    if (!partial) {
+      // Check if all players have all scores before calculating
+      const allScoresComplete = playerScores.every(ps => ps.hole_scores.length === holes.length);
+      if (allScoresComplete) {
+        matchResult = calculateTeamMatch(team1ScorePlayers, team2ScorePlayers, holes);
+      }
+    }
 
     // Create or update scorecards for each player
     const scorecardIds: Record<string, string> = {};
@@ -151,15 +190,17 @@ export async function POST(
       const playerScore = playerScores[i];
       const totalScore = playerScore.hole_scores.reduce((sum, hs) => sum + hs.strokes, 0);
 
-      // Find player's matchup and points
+      // Find player's matchup and points (only if we calculated results)
       let pointsEarned = 0;
-      matchResult.matchups.forEach((matchup) => {
-        if (matchup.player1_id === player.id) {
-          pointsEarned = matchup.player1_points;
-        } else if (matchup.player2_id === player.id) {
-          pointsEarned = matchup.player2_points;
-        }
-      });
+      if (matchResult) {
+        matchResult.matchups.forEach((matchup) => {
+          if (matchup.player1_id === player.id) {
+            pointsEarned = matchup.player1_points;
+          } else if (matchup.player2_id === player.id) {
+            pointsEarned = matchup.player2_points;
+          }
+        });
+      }
 
       // Check if scorecard already exists
       const { data: existingScorecard } = await supabaseAdmin
@@ -208,18 +249,20 @@ export async function POST(
       const scorecardId = scorecardIds[score.player_id];
       if (!scorecardId) continue;
 
-      // Find points for this hole
+      // Find points for this hole (only if we have match results)
       let pointsEarned = 0;
-      matchResult.matchups.forEach((matchup) => {
-        const holeResult = matchup.hole_results.find((hr) => hr.hole_id === score.hole_id);
-        if (holeResult) {
-          if (holeResult.winner === score.player_id) {
-            pointsEarned = 1;
-          } else if (holeResult.winner === 'tie') {
-            pointsEarned = 0.5;
+      if (matchResult) {
+        matchResult.matchups.forEach((matchup) => {
+          const holeResult = matchup.hole_results.find((hr) => hr.hole_id === score.hole_id);
+          if (holeResult) {
+            if (holeResult.winner === score.player_id) {
+              pointsEarned = 1;
+            } else if (holeResult.winner === 'tie') {
+              pointsEarned = 0.5;
+            }
           }
-        }
-      });
+        });
+      }
 
       // Upsert hole score
       await supabaseAdmin.from('hole_scores').upsert(
@@ -235,18 +278,29 @@ export async function POST(
       );
     }
 
-    // Update match with final scores and status
-    await supabaseAdmin
-      .from('matches')
-      .update({
-        team1_points: matchResult.team1_total_points,
-        team2_points: matchResult.team2_total_points,
-        status: 'completed',
-      })
-      .eq('id', matchId);
+    // Update match with scores (only mark as completed if not partial)
+    const updateData: any = {};
+
+    if (matchResult) {
+      updateData.team1_points = matchResult.team1_total_points;
+      updateData.team2_points = matchResult.team2_total_points;
+    }
+
+    if (!partial) {
+      updateData.status = 'completed';
+    }
+
+    // Only update match if we have data to update
+    if (Object.keys(updateData).length > 0) {
+      await supabaseAdmin
+        .from('matches')
+        .update(updateData)
+        .eq('id', matchId);
+    }
 
     return NextResponse.json({
       success: true,
+      message: partial ? 'Scores saved successfully' : 'Match completed successfully',
       results: matchResult,
     });
   } catch (error: any) {

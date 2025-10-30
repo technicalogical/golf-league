@@ -145,6 +145,38 @@ export async function POST(
       );
     }
 
+    // Add all team members to league_members
+    for (const teamId of team_ids) {
+      // Get all members of this team
+      const { data: teamMembers } = await supabaseAdmin
+        .from('team_members')
+        .select('user_id')
+        .eq('team_id', teamId);
+
+      if (teamMembers && teamMembers.length > 0) {
+        for (const member of teamMembers) {
+          // Check if user is already a league member
+          const { data: existingMember } = await supabaseAdmin
+            .from('league_members')
+            .select('id')
+            .eq('league_id', leagueId)
+            .eq('user_id', member.user_id)
+            .single();
+
+          if (!existingMember) {
+            // Add user as player role in the league
+            await supabaseAdmin
+              .from('league_members')
+              .insert({
+                league_id: leagueId,
+                user_id: member.user_id,
+                role: 'player',
+              });
+          }
+        }
+      }
+    }
+
     return NextResponse.json(
       { message: `Successfully added ${team_ids.length} team(s) to league`, teams: insertedTeams },
       { status: 201 }
