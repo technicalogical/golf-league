@@ -20,7 +20,7 @@ export default async function DashboardPage() {
   // Fetch user profile
   const { data: profile } = await supabaseAdmin
     .from('profiles')
-    .select('profile_completed, display_name, name, email')
+    .select('profile_completed, display_name, name, email, is_site_admin')
     .eq('id', userId)
     .single();
 
@@ -488,6 +488,30 @@ export default async function DashboardPage() {
               </div>
             </CardContent>
           </Card>
+        )}
+
+        {/* Admin Tools - Only visible to site admins */}
+        {profile?.is_site_admin && (
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Admin Tools</h2>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <Link href="/admin/courses">
+                <Card className="p-5 hover:shadow-xl hover:scale-105 transition-all duration-200 border-2 hover:border-red-500 group text-center bg-red-50 dark:bg-red-900/20">
+                  <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">⚙️</div>
+                  <CardTitle className="text-base mb-1">Manage Courses</CardTitle>
+                  <p className="text-xs text-muted-foreground">Edit & delete courses</p>
+                </Card>
+              </Link>
+
+              <Link href="/admin/sync-players">
+                <Card className="p-5 hover:shadow-xl hover:scale-105 transition-all duration-200 border-2 hover:border-purple-500 group text-center bg-purple-50 dark:bg-purple-900/20">
+                  <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">🔄</div>
+                  <CardTitle className="text-base mb-1">Sync Players</CardTitle>
+                  <p className="text-xs text-muted-foreground">Sync team members</p>
+                </Card>
+              </Link>
+            </div>
+          </div>
         )}
 
         {/* Quick Actions - 2 columns on mobile, 4 on desktop */}
