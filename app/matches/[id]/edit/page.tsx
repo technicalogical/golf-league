@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Slider } from '@/components/ui/slider';
+import { CourseSelector } from '@/components/course-selector';
 
 const formSchema = z.object({
   course_id: z.string().min(1, 'Course is required'),
@@ -238,20 +239,14 @@ export default function EditMatchPage() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Course *</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select course..." />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {courses.map((course) => (
-                            <SelectItem key={course.id} value={course.id}>
-                              {course.name} (Par {course.par}) - {course.location}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <FormControl>
+                        <CourseSelector
+                          courses={courses}
+                          value={field.value}
+                          onValueChange={field.onChange}
+                          placeholder="Search or select course..."
+                        />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
