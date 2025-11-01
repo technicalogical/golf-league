@@ -25,6 +25,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { CourseSelector } from '@/components/course-selector';
 
 interface Team {
   id: string;
@@ -386,18 +387,12 @@ export default function WeekMatchManagementPage() {
 
                 <div>
                   <label className="block text-sm font-semibold mb-2">Course</label>
-                  <Select value={courseId} onValueChange={setCourseId}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select course" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {courses.map((course) => (
-                        <SelectItem key={course.id} value={course.id}>
-                          {course.name} (Par {course.par})
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <CourseSelector
+                    courses={courses}
+                    value={courseId}
+                    onValueChange={setCourseId}
+                    placeholder="Search or select course..."
+                  />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
