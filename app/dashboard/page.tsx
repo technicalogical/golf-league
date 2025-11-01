@@ -329,7 +329,7 @@ export default async function DashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {leaguesWithTeams.map((membership: any) => {
                 const league = membership.league;
-                const isAdmin = membership.role === 'admin';
+                const isAdmin = membership.role === 'league_admin';
 
                 return (
                   <Card key={membership.id} className="overflow-hidden">

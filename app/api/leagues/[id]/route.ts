@@ -25,7 +25,7 @@ export async function DELETE(
       .eq('user_id', userId)
       .single();
 
-    if (!membership || membership.role !== 'admin') {
+    if (!membership || (membership.role !== 'admin' && membership.role !== 'league_admin')) {
       return NextResponse.json(
         { error: 'Only league admins can delete leagues' },
         { status: 403 }
