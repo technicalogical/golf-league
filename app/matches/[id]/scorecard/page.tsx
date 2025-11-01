@@ -279,11 +279,13 @@ export default function ScorecardPage() {
     );
   }
 
-  const team1Players = players.filter((p, i) => i < 2);
-  const team2Players = players.filter((p, i) => i >= 2);
+  // Group players by team_id to handle any player ordering
+  const teamIds = Array.from(new Set(players.map(p => p.team_id)));
+  const team1Id = teamIds[0];
+  const team2Id = teamIds[1];
 
-  const team1Id = team1Players[0]?.team_id;
-  const team2Id = team2Players[0]?.team_id;
+  const team1Players = players.filter(p => p.team_id === team1Id);
+  const team2Players = players.filter(p => p.team_id === team2Id);
   const team1Record = team1Id ? teamRecords[team1Id] : null;
   const team2Record = team2Id ? teamRecords[team2Id] : null;
 
@@ -395,7 +397,7 @@ export default function ScorecardPage() {
                 <th className="p-2 md:p-3 text-center font-semibold w-10 md:w-12">Par</th>
                 <th className="p-2 md:p-3 text-center font-semibold w-10 md:w-12">HCP</th>
                 {players.map((player, index) => {
-                  const isTeam1 = index < 2;
+                  const isTeam1 = player.team_id === team1Id;
                   return (
                     <th
                       key={player.id}
@@ -467,7 +469,7 @@ export default function ScorecardPage() {
                   TOTAL
                 </td>
                 {players.map((player, index) => {
-                  const isTeam1 = index < 2;
+                  const isTeam1 = player.team_id === team1Id;
                   return (
                     <td
                       key={player.id}
