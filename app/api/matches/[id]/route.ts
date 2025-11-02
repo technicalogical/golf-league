@@ -36,7 +36,7 @@ export async function GET(
     // Fetch team 1 players
     const { data: team1Players } = await supabaseAdmin
       .from('players')
-      .select('id, name, handicap, user_id')
+      .select('id, name, handicap, user_id, team_id')
       .eq('team_id', match.team1_id)
       .eq('is_active', true)
       .order('handicap');
@@ -44,7 +44,7 @@ export async function GET(
     // Fetch team 2 players
     const { data: team2Players } = await supabaseAdmin
       .from('players')
-      .select('id, name, handicap, user_id')
+      .select('id, name, handicap, user_id, team_id')
       .eq('team_id', match.team2_id)
       .eq('is_active', true)
       .order('handicap');
