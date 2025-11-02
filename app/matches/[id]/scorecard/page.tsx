@@ -36,6 +36,8 @@ interface Match {
   status?: string;
   team1_points?: number | null;
   team2_points?: number | null;
+  team1_id?: string;
+  team2_id?: string;
   course?: Course;
 }
 
@@ -279,15 +281,15 @@ export default function ScorecardPage() {
     );
   }
 
-  // Group players by team_id to handle any player ordering
-  const teamIds = Array.from(new Set(players.map(p => p.team_id)));
-  const team1Id = teamIds[0];
-  const team2Id = teamIds[1];
+  // Use match team IDs instead of deriving from player array order
+  // (API reorders players based on logged-in user's team, so array order is unreliable)
+  const matchTeam1Id = match?.team1_id;
+  const matchTeam2Id = match?.team2_id;
 
-  const team1Players = players.filter(p => p.team_id === team1Id);
-  const team2Players = players.filter(p => p.team_id === team2Id);
-  const team1Record = team1Id ? teamRecords[team1Id] : null;
-  const team2Record = team2Id ? teamRecords[team2Id] : null;
+  const team1Players = players.filter(p => p.team_id === matchTeam1Id);
+  const team2Players = players.filter(p => p.team_id === matchTeam2Id);
+  const team1Record = matchTeam1Id ? teamRecords[matchTeam1Id] : null;
+  const team2Record = matchTeam2Id ? teamRecords[matchTeam2Id] : null;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
@@ -397,7 +399,7 @@ export default function ScorecardPage() {
                 <th className="p-2 md:p-3 text-center font-semibold w-10 md:w-12">Par</th>
                 <th className="p-2 md:p-3 text-center font-semibold w-10 md:w-12">HCP</th>
                 {players.map((player, index) => {
-                  const isTeam1 = player.team_id === team1Id;
+                  const isTeam1 = player.team_id === matchTeam1Id;
                   return (
                     <th
                       key={player.id}
@@ -469,7 +471,7 @@ export default function ScorecardPage() {
                   TOTAL
                 </td>
                 {players.map((player, index) => {
-                  const isTeam1 = player.team_id === team1Id;
+                  const isTeam1 = player.team_id === matchTeam1Id;
                   return (
                     <td
                       key={player.id}
