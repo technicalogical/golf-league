@@ -40,23 +40,37 @@ export async function GET() {
       );
     }
 
+    // Get all user IDs to fetch counts for
+    const userIds = users?.map(user => user.id) || [];
+
     // Get team counts for each user
-    const { data: teamCounts } = await supabaseAdmin
-      .from('team_members')
-      .select('user_id, count(*)')
-      .group('user_id');
+    const teamCountPromises = userIds.map(async (userId) => {
+      const { count } = await supabaseAdmin
+        .from('team_members')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId);
+      return { user_id: userId, count: count || 0 };
+    });
 
     // Get league counts for each user
-    const { data: leagueCounts } = await supabaseAdmin
-      .from('league_members')
-      .select('user_id, count(*)')
-      .group('user_id');
+    const leagueCountPromises = userIds.map(async (userId) => {
+      const { count } = await supabaseAdmin
+        .from('league_members')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId);
+      return { user_id: userId, count: count || 0 };
+    });
+
+    const [teamCounts, leagueCounts] = await Promise.all([
+      Promise.all(teamCountPromises),
+      Promise.all(leagueCountPromises)
+    ]);
 
     // Combine the data
     const usersWithCounts = users?.map(user => ({
       ...user,
-      teams_count: teamCounts?.find(tc => tc.user_id === user.id)?.count || 0,
-      leagues_count: leagueCounts?.find(lc => lc.user_id === user.id)?.count || 0,
+      teams_count: teamCounts.find(tc => tc.user_id === user.id)?.count || 0,
+      leagues_count: leagueCounts.find(lc => lc.user_id === user.id)?.count || 0,
     })) || [];
 
     return NextResponse.json(usersWithCounts);
