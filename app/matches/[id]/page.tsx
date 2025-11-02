@@ -20,12 +20,12 @@ export default async function MatchDetailPage({
     .from('matches')
     .select(`
       *,
-      team1:team1_id(
+      team1:teams!matches_team1_id_fkey(
         id,
         name,
         players(id, name, handicap, is_active)
       ),
-      team2:team2_id(
+      team2:teams!matches_team2_id_fkey(
         id,
         name,
         players(id, name, handicap, is_active)
