@@ -48,10 +48,16 @@ export default async function MatchDetailPage({
     .single();
 
   if (error || !match) {
+    console.error('Match fetch error:', error);
+    console.error('Match ID:', id);
+    console.error('Match data:', match);
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Match Not Found</h1>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+            {error ? `Error: ${error.message}` : 'No match data returned'}
+          </p>
           <Link href="/matches" className="text-blue-600 hover:text-blue-800">
             ← Back to Matches
           </Link>
