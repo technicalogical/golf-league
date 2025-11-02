@@ -121,6 +121,7 @@ export async function PATCH(
       registration_open,
       registration_info,
       custom_rules,
+      status,
     } = body;
 
     const updates: any = {};
@@ -138,6 +139,7 @@ export async function PATCH(
     if (registration_open !== undefined) updates.registration_open = registration_open;
     if (registration_info !== undefined) updates.registration_info = registration_info;
     if (custom_rules !== undefined) updates.custom_rules = custom_rules;
+    if (status !== undefined) updates.status = status;
 
     // Update league
     const { data: league, error } = await supabaseAdmin
