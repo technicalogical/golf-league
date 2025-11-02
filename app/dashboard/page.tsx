@@ -495,19 +495,35 @@ export default async function DashboardPage() {
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Admin Tools</h2>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <Link href="/admin/courses">
+              <Link href="/admin">
                 <Card className="p-5 hover:shadow-xl hover:scale-105 transition-all duration-200 border-2 hover:border-red-500 group text-center bg-red-50 dark:bg-red-900/20">
-                  <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">⚙️</div>
+                  <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">🛠️</div>
+                  <CardTitle className="text-base mb-1">Admin Dashboard</CardTitle>
+                  <p className="text-xs text-muted-foreground">Full admin controls</p>
+                </Card>
+              </Link>
+
+              <Link href="/admin/teams">
+                <Card className="p-5 hover:shadow-xl hover:scale-105 transition-all duration-200 border-2 hover:border-green-500 group text-center bg-green-50 dark:bg-green-900/20">
+                  <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">👥</div>
+                  <CardTitle className="text-base mb-1">Manage Teams</CardTitle>
+                  <p className="text-xs text-muted-foreground">Delete teams</p>
+                </Card>
+              </Link>
+
+              <Link href="/admin/courses">
+                <Card className="p-5 hover:shadow-xl hover:scale-105 transition-all duration-200 border-2 hover:border-blue-500 group text-center bg-blue-50 dark:bg-blue-900/20">
+                  <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">⛳</div>
                   <CardTitle className="text-base mb-1">Manage Courses</CardTitle>
                   <p className="text-xs text-muted-foreground">Edit & delete courses</p>
                 </Card>
               </Link>
 
-              <Link href="/admin/sync-players">
+              <Link href="/admin/users">
                 <Card className="p-5 hover:shadow-xl hover:scale-105 transition-all duration-200 border-2 hover:border-purple-500 group text-center bg-purple-50 dark:bg-purple-900/20">
-                  <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">🔄</div>
-                  <CardTitle className="text-base mb-1">Sync Players</CardTitle>
-                  <p className="text-xs text-muted-foreground">Sync team members</p>
+                  <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">👤</div>
+                  <CardTitle className="text-base mb-1">Manage Users</CardTitle>
+                  <p className="text-xs text-muted-foreground">Grant admin access</p>
                 </Card>
               </Link>
             </div>

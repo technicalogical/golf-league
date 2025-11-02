@@ -48,9 +48,14 @@ export default async function MatchDetailPage({
     .single();
 
   if (error || !match) {
-    console.error('Match fetch error:', error);
+    console.error('Match fetch error:', JSON.stringify(error, null, 2));
     console.error('Match ID:', id);
     console.error('Match data:', match);
+    if (error) {
+      console.error('Error message:', error.message);
+      console.error('Error details:', error.details);
+      console.error('Error hint:', error.hint);
+    }
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
