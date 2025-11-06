@@ -42,10 +42,34 @@ export default async function MatchDetailPage({
         player_id,
         total_score,
         player:players(id, name, handicap)
-      )
+      ),
+      league:leagues(id, name)
     `)
     .eq('id', id)
     .single();
+
+  // Fetch match scoring config if it exists
+  let matchScoringConfig = null;
+  if (match) {
+    const { data: scoringConfig } = await supabase
+      .from('match_scoring_config')
+      .select(`
+        *,
+        scoring_rule:scoring_rules(
+          id,
+          name,
+          description,
+          handicap_method,
+          hole_points,
+          match_bonus_points,
+          tie_points
+        )
+      `)
+      .eq('match_id', id)
+      .single();
+
+    matchScoringConfig = scoringConfig;
+  }
 
   if (error || !match) {
     console.error('Match fetch error:', JSON.stringify(error, null, 2));
@@ -234,6 +258,16 @@ export default async function MatchDetailPage({
                     Par {match.course?.par} • {match.course?.location}
                   </div>
                 </div>
+                {match.league && (
+                  <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
+                    <span className="font-semibold text-gray-900 dark:text-white">League:</span>
+                    <div className="text-gray-600 dark:text-gray-300 mt-1">
+                      <Link href={`/leagues/${match.league.id}`} className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
+                        {match.league.name}
+                      </Link>
+                    </div>
+                  </div>
+                )}
                 <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
                   <span className="font-semibold text-gray-900 dark:text-white">Status:</span>
                   <div className="mt-1">
@@ -244,6 +278,47 @@ export default async function MatchDetailPage({
                 </div>
               </div>
             </div>
+
+            {/* Scoring Method */}
+            {matchScoringConfig && matchScoringConfig.scoring_rule && (
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Scoring Method</h2>
+                <div className="space-y-3 text-sm">
+                  <div>
+                    <span className="font-semibold text-indigo-900 dark:text-indigo-100">
+                      {matchScoringConfig.scoring_rule.name}
+                    </span>
+                    {matchScoringConfig.scoring_rule.description && (
+                      <p className="text-gray-600 dark:text-gray-300 mt-1 text-xs">
+                        {matchScoringConfig.scoring_rule.description}
+                      </p>
+                    )}
+                  </div>
+                  <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
+                    <div className="flex flex-wrap gap-2">
+                      <span className="inline-flex items-center px-2 py-1 rounded text-xs bg-indigo-100 dark:bg-indigo-800 text-indigo-800 dark:text-indigo-100">
+                        {matchScoringConfig.override_hole_points ?? matchScoringConfig.scoring_rule.hole_points} pts/hole
+                      </span>
+                      {(matchScoringConfig.override_match_bonus_points ?? matchScoringConfig.scoring_rule.match_bonus_points) > 0 && (
+                        <span className="inline-flex items-center px-2 py-1 rounded text-xs bg-indigo-100 dark:bg-indigo-800 text-indigo-800 dark:text-indigo-100">
+                          +{matchScoringConfig.override_match_bonus_points ?? matchScoringConfig.scoring_rule.match_bonus_points} bonus
+                        </span>
+                      )}
+                      <span className="inline-flex items-center px-2 py-1 rounded text-xs bg-indigo-100 dark:bg-indigo-800 text-indigo-800 dark:text-indigo-100 capitalize">
+                        {(matchScoringConfig.override_handicap_method ?? matchScoringConfig.scoring_rule.handicap_method).replace('_', ' ')}
+                      </span>
+                    </div>
+                  </div>
+                  {matchScoringConfig.is_tournament_match && (
+                    <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
+                      <span className="inline-flex items-center px-2 py-1 rounded text-xs bg-yellow-100 dark:bg-yellow-800 text-yellow-800 dark:text-yellow-100">
+                        Tournament Match (x{matchScoringConfig.tournament_multiplier})
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </main>

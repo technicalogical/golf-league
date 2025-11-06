@@ -49,11 +49,26 @@ interface League {
   status: string;
 }
 
+interface ScoringRule {
+  id: string;
+  name: string;
+  description: string;
+  handicap_method: string;
+  hole_points: number;
+  match_bonus_points: number;
+}
+
+interface LeagueScoringInfo {
+  league_id: string;
+  scoring_rule?: ScoringRule;
+}
+
 export default function NewMatchPage() {
   const router = useRouter();
   const [teams, setTeams] = useState<Team[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [leagues, setLeagues] = useState<League[]>([]);
+  const [leagueScoringInfo, setLeagueScoringInfo] = useState<Record<string, LeagueScoringInfo>>({});
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -73,6 +88,7 @@ export default function NewMatchPage() {
 
   const holesToPlay = form.watch('holes_to_play');
   const team1Id = form.watch('team1_id');
+  const selectedLeagueId = form.watch('league_id');
 
   useEffect(() => {
     async function loadData() {
@@ -95,6 +111,24 @@ export default function NewMatchPage() {
           l.status === 'active' || l.status === 'upcoming'
         );
         setLeagues(activeLeagues);
+
+        // Fetch scoring rules for each league
+        const scoringInfo: Record<string, LeagueScoringInfo> = {};
+        for (const league of activeLeagues) {
+          try {
+            const scoringRes = await fetch(`/api/leagues/${league.id}/scoring-rules`);
+            if (scoringRes.ok) {
+              const data = await scoringRes.json();
+              scoringInfo[league.id] = {
+                league_id: league.id,
+                scoring_rule: data.scoring_rule,
+              };
+            }
+          } catch (err) {
+            console.error(`Failed to fetch scoring rule for league ${league.id}:`, err);
+          }
+        }
+        setLeagueScoringInfo(scoringInfo);
       } catch (err) {
         console.error('Error loading data:', err);
         setError('Failed to load teams and courses');
@@ -348,10 +382,54 @@ export default function NewMatchPage() {
                             ))}
                           </SelectContent>
                         </Select>
+                        <FormDescription>
+                          Selecting a league will automatically apply its scoring method
+                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
+                )}
+
+                {selectedLeagueId && leagueScoringInfo[selectedLeagueId]?.scoring_rule && (
+                  <div className="rounded-lg border border-indigo-200 bg-indigo-50 dark:bg-indigo-900/20 dark:border-indigo-800 p-4">
+                    <div className="flex items-start gap-3">
+                      <div className="flex-shrink-0 mt-0.5">
+                        <svg className="h-5 w-5 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="text-sm font-semibold text-indigo-900 dark:text-indigo-100 mb-1">
+                          Scoring Method
+                        </h4>
+                        <p className="text-sm font-medium text-indigo-800 dark:text-indigo-200 mb-1">
+                          {leagueScoringInfo[selectedLeagueId].scoring_rule!.name}
+                        </p>
+                        {leagueScoringInfo[selectedLeagueId].scoring_rule!.description && (
+                          <p className="text-xs text-indigo-700 dark:text-indigo-300 mb-2">
+                            {leagueScoringInfo[selectedLeagueId].scoring_rule!.description}
+                          </p>
+                        )}
+                        <div className="flex flex-wrap gap-2 text-xs">
+                          <span className="inline-flex items-center px-2 py-1 rounded bg-indigo-100 dark:bg-indigo-800 text-indigo-800 dark:text-indigo-100">
+                            {leagueScoringInfo[selectedLeagueId].scoring_rule!.hole_points} pts/hole
+                          </span>
+                          {leagueScoringInfo[selectedLeagueId].scoring_rule!.match_bonus_points > 0 && (
+                            <span className="inline-flex items-center px-2 py-1 rounded bg-indigo-100 dark:bg-indigo-800 text-indigo-800 dark:text-indigo-100">
+                              +{leagueScoringInfo[selectedLeagueId].scoring_rule!.match_bonus_points} bonus
+                            </span>
+                          )}
+                          <span className="inline-flex items-center px-2 py-1 rounded bg-indigo-100 dark:bg-indigo-800 text-indigo-800 dark:text-indigo-100 capitalize">
+                            {leagueScoringInfo[selectedLeagueId].scoring_rule!.handicap_method.replace('_', ' ')}
+                          </span>
+                        </div>
+                        <p className="text-xs text-indigo-600 dark:text-indigo-400 mt-2">
+                          This match will automatically use the league's scoring configuration
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 )}
 
                 <FormField

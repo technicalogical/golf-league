@@ -123,6 +123,44 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // If match is part of a league, inherit the league's scoring rule
+    if (league_id) {
+      try {
+        // Get the active scoring rule for the league
+        const { data: leagueScoringRule } = await supabaseAdmin
+          .from('league_scoring_rules')
+          .select('scoring_rule_id, override_hole_points, override_match_bonus_points, override_max_handicap_difference')
+          .eq('league_id', league_id)
+          .eq('is_active', true)
+          .single();
+
+        if (leagueScoringRule) {
+          // Create match scoring config based on league rule
+          const { error: configError } = await supabaseAdmin
+            .from('match_scoring_config')
+            .insert({
+              match_id: match.id,
+              scoring_rule_id: leagueScoringRule.scoring_rule_id,
+              override_hole_points: leagueScoringRule.override_hole_points,
+              override_match_bonus_points: leagueScoringRule.override_match_bonus_points,
+              override_max_handicap_difference: leagueScoringRule.override_max_handicap_difference,
+              is_tournament_match: false,
+              tournament_multiplier: 1.0,
+            });
+
+          if (configError) {
+            console.error('Warning: Failed to create match scoring config:', configError);
+            // Don't fail the entire match creation if this fails
+          }
+        } else {
+          console.warn(`League ${league_id} does not have an active scoring rule`);
+        }
+      } catch (error) {
+        console.error('Error setting up match scoring config:', error);
+        // Don't fail the entire match creation if this fails
+      }
+    }
+
     return NextResponse.json(match, { status: 201 });
   } catch (error: any) {
     console.error('Error in POST /api/matches:', error);
