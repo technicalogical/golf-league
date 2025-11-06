@@ -184,6 +184,21 @@ export default async function AdminDashboard() {
               </CardHeader>
             </Card>
           </Link>
+
+          {/* System Monitoring */}
+          <Link href="/admin/monitoring">
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-indigo-500">
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <div className="text-4xl">📊</div>
+                  <div>
+                    <CardTitle>System Monitor</CardTitle>
+                    <CardDescription>Analytics, metrics, and performance</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+            </Card>
+          </Link>
         </div>
       </div>
     </div>

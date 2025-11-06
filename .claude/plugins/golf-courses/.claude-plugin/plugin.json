@@ -1,0 +1,11 @@
+{
+  "name": "golf-courses",
+  "description": "Complete database of 16 professional golf simulator courses with hole-by-hole data for golf league scheduling and scoring",
+  "version": "1.0.0",
+  "skills": [
+    {
+      "name": "course-database",
+      "description": "Complete hole-by-hole data for 16 professional golf simulator courses including yardages, par, handicap, and ratings for integration into golf league scheduling and scoring systems"
+    }
+  ]
+}
