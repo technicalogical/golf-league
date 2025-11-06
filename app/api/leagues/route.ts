@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { name, description, start_date, end_date, day_of_week, time_of_day, status = 'upcoming' } = body;
+    const { name, description, start_date, end_date, day_of_week, time_of_day, status = 'upcoming', scoring_rule_id } = body;
 
     // Validate input
     if (!name || !start_date) {
@@ -78,6 +78,39 @@ export async function POST(request: NextRequest) {
       user_id: userId,
       role: 'league_admin',
     });
+
+    // Assign scoring rule to league
+    let ruleIdToAssign = scoring_rule_id;
+
+    // If no scoring rule provided, get the default one
+    if (!ruleIdToAssign) {
+      const { data: defaultRule } = await supabaseAdmin
+        .from('scoring_rules')
+        .select('id')
+        .eq('is_system_default', true)
+        .eq('is_active', true)
+        .single();
+
+      if (defaultRule) {
+        ruleIdToAssign = defaultRule.id;
+      }
+    }
+
+    // Assign the scoring rule if we have one
+    if (ruleIdToAssign) {
+      const { error: scoringError } = await supabaseAdmin
+        .from('league_scoring_rules')
+        .insert({
+          league_id: league.id,
+          scoring_rule_id: ruleIdToAssign,
+          is_active: true,
+        });
+
+      if (scoringError) {
+        console.error('Error assigning scoring rule to league:', scoringError);
+        // Don't fail the whole request, just log it
+      }
+    }
 
     return NextResponse.json(league, { status: 201 });
   } catch (error: any) {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
@@ -13,6 +13,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { ScoringRule, getScoringRuleDescription } from '@/lib/types/scoring';
 
 const formSchema = z.object({
   name: z.string().min(3, 'League name must be at least 3 characters').max(100),
@@ -22,6 +23,7 @@ const formSchema = z.object({
   day_of_week: z.string().optional(),
   time_of_day: z.string().optional(),
   status: z.enum(['upcoming', 'active', 'completed', 'archived']),
+  scoring_rule_id: z.string().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -29,6 +31,8 @@ type FormData = z.infer<typeof formSchema>;
 export default function NewLeaguePage() {
   const router = useRouter();
   const [error, setError] = useState('');
+  const [scoringRules, setScoringRules] = useState<ScoringRule[]>([]);
+  const [loadingScoringRules, setLoadingScoringRules] = useState(true);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -40,8 +44,32 @@ export default function NewLeaguePage() {
       day_of_week: '',
       time_of_day: '',
       status: 'upcoming',
+      scoring_rule_id: '',
     },
   });
+
+  useEffect(() => {
+    loadScoringRules();
+  }, []);
+
+  async function loadScoringRules() {
+    try {
+      const response = await fetch('/api/scoring-rules?active=true');
+      if (response.ok) {
+        const data = await response.json();
+        setScoringRules(data);
+        // Set default scoring rule if available
+        const defaultRule = data.find((rule: ScoringRule) => rule.is_system_default);
+        if (defaultRule) {
+          form.setValue('scoring_rule_id', defaultRule.id);
+        }
+      }
+    } catch (err) {
+      console.error('Error loading scoring rules:', err);
+    } finally {
+      setLoadingScoringRules(false);
+    }
+  }
 
   async function onSubmit(data: FormData) {
     setError('');
@@ -60,6 +88,7 @@ export default function NewLeaguePage() {
           day_of_week: data.day_of_week || null,
           time_of_day: data.time_of_day || null,
           status: data.status,
+          scoring_rule_id: data.scoring_rule_id || null,
         }),
       });
 
@@ -226,6 +255,45 @@ export default function NewLeaguePage() {
                           <SelectItem value="archived">Archived</SelectItem>
                         </SelectContent>
                       </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="scoring_rule_id"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Scoring Method</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                        disabled={loadingScoringRules}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder={loadingScoringRules ? "Loading..." : "Select scoring method..."} />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {scoringRules.map((rule) => (
+                            <SelectItem key={rule.id} value={rule.id}>
+                              {rule.name}
+                              {rule.is_system_default && ' (Default)'}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormDescription>
+                        {field.value && scoringRules.find(r => r.id === field.value) ? (
+                          <span className="text-xs">
+                            {getScoringRuleDescription(scoringRules.find(r => r.id === field.value)!)}
+                          </span>
+                        ) : (
+                          'Choose how matches are scored (can be changed later)'
+                        )}
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}

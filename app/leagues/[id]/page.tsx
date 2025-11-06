@@ -113,6 +113,17 @@ export default async function LeagueDetailPage({
     .order('pinned', { ascending: false })
     .order('created_at', { ascending: false });
 
+  // Fetch scoring rule for this league
+  const { data: leagueScoringRule } = await supabaseAdmin
+    .from('league_scoring_rules')
+    .select(`
+      *,
+      scoring_rule:scoring_rules(*)
+    `)
+    .eq('league_id', id)
+    .eq('is_active', true)
+    .single();
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <header className="bg-white dark:bg-gray-800 shadow">
@@ -156,13 +167,21 @@ export default async function LeagueDetailPage({
               )}
             </div>
           </div>
-          <div className="mt-4 flex gap-6 text-sm text-gray-600 dark:text-gray-300">
+          <div className="mt-4 flex flex-wrap gap-6 text-sm text-gray-600 dark:text-gray-300">
             <span>
               <strong>Start:</strong> {new Date(league.start_date).toLocaleDateString()}
             </span>
             {league.end_date && (
               <span>
                 <strong>End:</strong> {new Date(league.end_date).toLocaleDateString()}
+              </span>
+            )}
+            {leagueScoringRule?.scoring_rule && (
+              <span className="flex items-center gap-2">
+                <strong>Scoring:</strong>
+                <span className="px-2 py-0.5 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-200 rounded text-xs font-medium">
+                  {leagueScoringRule.scoring_rule.name}
+                </span>
               </span>
             )}
           </div>

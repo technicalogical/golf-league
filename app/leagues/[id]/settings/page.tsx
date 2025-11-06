@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { ScoringRule, LeagueScoringRule, getScoringRuleDescription } from '@/lib/types/scoring';
 
 const formSchema = z.object({
   name: z.string().min(3, 'League name must be at least 3 characters').max(100),
@@ -66,6 +67,10 @@ export default function LeagueSettingsPage() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
+  const [scoringRules, setScoringRules] = useState<ScoringRule[]>([]);
+  const [currentScoringRule, setCurrentScoringRule] = useState<LeagueScoringRule | null>(null);
+  const [loadingScoringRules, setLoadingScoringRules] = useState(true);
+  const [selectedScoringRuleId, setSelectedScoringRuleId] = useState<string>('');
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -91,6 +96,8 @@ export default function LeagueSettingsPage() {
 
   useEffect(() => {
     loadLeague();
+    loadScoringRules();
+    loadCurrentScoringRule();
   }, [leagueId]);
 
   async function loadLeague() {
@@ -122,6 +129,67 @@ export default function LeagueSettingsPage() {
       setError('Failed to load league settings');
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function loadScoringRules() {
+    try {
+      const response = await fetch('/api/scoring-rules?active=true');
+      if (response.ok) {
+        const data = await response.json();
+        setScoringRules(data);
+      }
+    } catch (err) {
+      console.error('Error loading scoring rules:', err);
+    } finally {
+      setLoadingScoringRules(false);
+    }
+  }
+
+  async function loadCurrentScoringRule() {
+    try {
+      const response = await fetch(`/api/leagues/${leagueId}/scoring-rules`);
+      if (response.ok) {
+        const data = await response.json();
+        setCurrentScoringRule(data);
+        if (data?.scoring_rule_id) {
+          setSelectedScoringRuleId(data.scoring_rule_id);
+        }
+      }
+    } catch (err) {
+      console.error('Error loading current scoring rule:', err);
+    }
+  }
+
+  async function handleScoringRuleChange() {
+    if (!selectedScoringRuleId) {
+      setError('Please select a scoring rule');
+      return;
+    }
+
+    setError('');
+    setSuccess('');
+
+    try {
+      const response = await fetch(`/api/leagues/${leagueId}/scoring-rules`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          scoring_rule_id: selectedScoringRuleId,
+        }),
+      });
+
+      if (!response.ok) {
+        const responseData = await response.json();
+        throw new Error(responseData.error || 'Failed to update scoring rule');
+      }
+
+      setSuccess('Scoring rule updated successfully!');
+      loadCurrentScoringRule();
+    } catch (err: any) {
+      setError(err.message);
     }
   }
 
@@ -331,6 +399,83 @@ export default function LeagueSettingsPage() {
                       </FormItem>
                     )}
                   />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Scoring Rules */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Scoring Method</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Current Scoring Rule</label>
+                  {loadingScoringRules ? (
+                    <p className="text-gray-500">Loading scoring rules...</p>
+                  ) : currentScoringRule?.scoring_rule ? (
+                    <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+                      <div className="font-semibold text-gray-900 dark:text-white mb-1">
+                        {currentScoringRule.scoring_rule.name}
+                      </div>
+                      <div className="text-sm text-gray-600 dark:text-gray-400">
+                        {getScoringRuleDescription(currentScoringRule.scoring_rule)}
+                      </div>
+                      {currentScoringRule.scoring_rule.description && (
+                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                          {currentScoringRule.scoring_rule.description}
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-700">
+                      <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                        No scoring rule assigned. Please select one below.
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <label htmlFor="scoring_rule_select" className="block text-sm font-medium mb-2">
+                    Change Scoring Rule
+                  </label>
+                  <div className="flex gap-2">
+                    <Select
+                      value={selectedScoringRuleId}
+                      onValueChange={setSelectedScoringRuleId}
+                      disabled={loadingScoringRules}
+                    >
+                      <SelectTrigger id="scoring_rule_select" className="flex-1">
+                        <SelectValue placeholder={loadingScoringRules ? "Loading..." : "Select a scoring rule..."} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {scoringRules.map((rule) => (
+                          <SelectItem key={rule.id} value={rule.id}>
+                            {rule.name}
+                            {rule.is_system_default && ' (Default)'}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Button
+                      type="button"
+                      onClick={handleScoringRuleChange}
+                      disabled={!selectedScoringRuleId || selectedScoringRuleId === currentScoringRule?.scoring_rule_id}
+                    >
+                      Update
+                    </Button>
+                  </div>
+                  {selectedScoringRuleId && scoringRules.find(r => r.id === selectedScoringRuleId) && (
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">
+                      {getScoringRuleDescription(scoringRules.find(r => r.id === selectedScoringRuleId)!)}
+                    </p>
+                  )}
+                </div>
+
+                <div className="text-xs text-gray-500 dark:text-gray-400 bg-blue-50 dark:bg-blue-900/20 p-3 rounded border border-blue-200 dark:border-blue-700">
+                  <strong>Note:</strong> Changing the scoring rule will affect all future matches.
+                  Completed matches will retain their original scoring method.
                 </div>
               </CardContent>
             </Card>
