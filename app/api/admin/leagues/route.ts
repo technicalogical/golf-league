@@ -39,8 +39,8 @@ export async function GET() {
         is_public,
         registration_open,
         created_at,
-        admin_id,
-        admin:profiles!leagues_admin_id_fkey(name, email)
+        created_by,
+        admin:profiles!leagues_created_by_fkey(name, email)
       `)
       .order('created_at', { ascending: false });
 

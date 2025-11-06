@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
         .from('players')
         .select('id')
         .eq('team_id', tm.team_id)
-        .eq('profile_id', tm.user_id)
+        .eq('user_id', tm.user_id)
         .single();
 
       if (existingPlayer) {
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
           .from('players')
           .insert({
             team_id: tm.team_id,
-            profile_id: tm.user_id,
+            user_id: tm.user_id,
             name: playerName,
             handicap: 18, // Default handicap, can be updated later
             is_active: true,

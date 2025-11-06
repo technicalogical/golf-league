@@ -47,52 +47,57 @@ export async function DELETE(
 
     // Delete in the correct order due to foreign key constraints
 
-    // 1. Delete hole scores (if any matches exist)
-    await supabaseAdmin
-      .from('hole_scores')
-      .delete()
-      .in('scorecard_id',
-        supabaseAdmin
-          .from('scorecards')
-          .select('id')
-          .in('player_id',
-            supabaseAdmin
-              .from('players')
-              .select('id')
-              .eq('team_id', teamId)
-          )
-      );
+    // 1. First get players for this team
+    const { data: players } = await supabaseAdmin
+      .from('players')
+      .select('id')
+      .eq('team_id', teamId);
 
-    // 2. Delete scorecards
-    await supabaseAdmin
-      .from('scorecards')
-      .delete()
-      .in('player_id',
-        supabaseAdmin
-          .from('players')
-          .select('id')
-          .eq('team_id', teamId)
-      );
+    if (players && players.length > 0) {
+      const playerIds = players.map(p => p.id);
 
-    // 3. Delete matches involving this team
+      // Get scorecards for these players
+      const { data: scorecards } = await supabaseAdmin
+        .from('scorecards')
+        .select('id')
+        .in('player_id', playerIds);
+
+      if (scorecards && scorecards.length > 0) {
+        const scorecardIds = scorecards.map(s => s.id);
+
+        // Delete hole scores for these scorecards
+        await supabaseAdmin
+          .from('hole_scores')
+          .delete()
+          .in('scorecard_id', scorecardIds);
+      }
+
+      // Delete scorecards for these players
+      await supabaseAdmin
+        .from('scorecards')
+        .delete()
+        .in('player_id', playerIds);
+    }
+
+    // 2. Delete matches involving this team
     await supabaseAdmin
       .from('matches')
       .delete()
       .or(`team1_id.eq.${teamId},team2_id.eq.${teamId}`);
 
-    // 4. Delete players
+    // 3. Delete players
     await supabaseAdmin
       .from('players')
       .delete()
       .eq('team_id', teamId);
 
-    // 5. Delete league team associations
+    // 4. Delete league team associations
     await supabaseAdmin
       .from('league_teams')
       .delete()
       .eq('team_id', teamId);
 
-    // 6. Delete team members
+    // 5. Delete team members
     await supabaseAdmin
       .from('team_members')
       .delete()

@@ -45,36 +45,39 @@ export async function DELETE(
     // CASCADE DELETE - Order matters for foreign key constraints
     console.log(`Starting cascade deletion for league: ${league.name}`);
 
-    // 1. Delete hole scores first (deepest level)
-    const { data: scorecardIds } = await supabaseAdmin
-      .from('scorecards')
+    // 1. First get matches for this league
+    const { data: matches } = await supabaseAdmin
+      .from('matches')
       .select('id')
-      .in('match_id',
-        supabaseAdmin
-          .from('matches')
-          .select('id')
-          .eq('league_id', leagueId)
-      );
+      .eq('league_id', leagueId);
 
-    if (scorecardIds && scorecardIds.length > 0) {
+    if (matches && matches.length > 0) {
+      const matchIds = matches.map(m => m.id);
+
+      // Get scorecards for these matches
+      const { data: scorecards } = await supabaseAdmin
+        .from('scorecards')
+        .select('id')
+        .in('match_id', matchIds);
+
+      if (scorecards && scorecards.length > 0) {
+        const scorecardIds = scorecards.map(s => s.id);
+
+        // Delete hole scores for these scorecards
+        await supabaseAdmin
+          .from('hole_scores')
+          .delete()
+          .in('scorecard_id', scorecardIds);
+        console.log(`Deleted hole scores for ${scorecardIds.length} scorecards`);
+      }
+
+      // Delete scorecards for these matches
       await supabaseAdmin
-        .from('hole_scores')
+        .from('scorecards')
         .delete()
-        .in('scorecard_id', scorecardIds.map(s => s.id));
-      console.log(`Deleted hole scores for ${scorecardIds.length} scorecards`);
+        .in('match_id', matchIds);
+      console.log('Deleted scorecards');
     }
-
-    // 2. Delete scorecards
-    await supabaseAdmin
-      .from('scorecards')
-      .delete()
-      .in('match_id',
-        supabaseAdmin
-          .from('matches')
-          .select('id')
-          .eq('league_id', leagueId)
-      );
-    console.log('Deleted scorecards');
 
     // 3. Delete matches
     const { error: matchError } = await supabaseAdmin
@@ -92,34 +95,38 @@ export async function DELETE(
     console.log('Deleted matches');
 
     // 4. Delete players (only those who are only in this league)
-    const { data: playersToDelete } = await supabaseAdmin
-      .from('players')
-      .select('id, user_id')
-      .in('user_id',
-        supabaseAdmin
-          .from('league_members')
-          .select('user_id')
-          .eq('league_id', leagueId)
-      );
+    const { data: leagueMembers } = await supabaseAdmin
+      .from('league_members')
+      .select('user_id')
+      .eq('league_id', leagueId);
 
-    if (playersToDelete) {
-      for (const player of playersToDelete) {
-        // Check if player is in other leagues
-        const { count: otherLeagueCount } = await supabaseAdmin
-          .from('league_members')
-          .select('*', { count: 'exact', head: true })
-          .eq('user_id', player.user_id)
-          .neq('league_id', leagueId);
+    if (leagueMembers && leagueMembers.length > 0) {
+      const userIds = leagueMembers.map(m => m.user_id);
 
-        // Only delete if not in other leagues
-        if (otherLeagueCount === 0) {
-          await supabaseAdmin
-            .from('players')
-            .delete()
-            .eq('id', player.id);
+      const { data: playersToDelete } = await supabaseAdmin
+        .from('players')
+        .select('id, user_id')
+        .in('user_id', userIds);
+
+      if (playersToDelete) {
+        for (const player of playersToDelete) {
+          // Check if player is in other leagues
+          const { count: otherLeagueCount } = await supabaseAdmin
+            .from('league_members')
+            .select('*', { count: 'exact', head: true })
+            .eq('user_id', player.user_id)
+            .neq('league_id', leagueId);
+
+          // Only delete if not in other leagues
+          if (otherLeagueCount === 0) {
+            await supabaseAdmin
+              .from('players')
+              .delete()
+              .eq('id', player.id);
+          }
         }
+        console.log('Deleted isolated players');
       }
-      console.log('Deleted isolated players');
     }
 
     // 5. Delete league_teams relationships
@@ -138,14 +145,14 @@ export async function DELETE(
 
     // 7. Delete announcements
     await supabaseAdmin
-      .from('announcements')
+      .from('league_announcements')
       .delete()
       .eq('league_id', leagueId);
     console.log('Deleted announcements');
 
     // 8. Delete join requests
     await supabaseAdmin
-      .from('join_requests')
+      .from('league_join_requests')
       .delete()
       .eq('league_id', leagueId);
     console.log('Deleted join requests');

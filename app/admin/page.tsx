@@ -155,6 +155,21 @@ export default async function AdminDashboard() {
             </Card>
           </Link>
 
+          {/* Scoring Rules Management */}
+          <Link href="/admin/scoring-rules">
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-cyan-500">
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <div className="text-4xl">📊</div>
+                  <div>
+                    <CardTitle>Scoring Rules</CardTitle>
+                    <CardDescription>Configure match scoring systems</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+            </Card>
+          </Link>
+
           {/* Player Sync */}
           <Link href="/admin/sync-players">
             <Card className="hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-orange-500">

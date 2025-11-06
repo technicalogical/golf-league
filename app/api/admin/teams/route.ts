@@ -33,7 +33,7 @@ export async function GET() {
         id,
         name,
         captain_id,
-        is_open,
+        open_to_join,
         created_at,
         captain:profiles!teams_captain_id_fkey(name, email)
       `)

@@ -29,7 +29,7 @@ export async function GET() {
     // Get all users
     const { data: users, error } = await supabaseAdmin
       .from('profiles')
-      .select('id, name, email, display_name, is_site_admin, created_at, last_sign_in')
+      .select('id, name, email, display_name, is_site_admin, created_at, updated_at')
       .order('created_at', { ascending: false });
 
     if (error) {

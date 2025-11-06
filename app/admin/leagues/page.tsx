@@ -41,7 +41,7 @@ interface League {
   is_public: boolean;
   registration_open: boolean;
   created_at: string;
-  admin_id: string;
+  created_by: string;
   admin: {
     name: string;
     email: string;

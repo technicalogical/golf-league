@@ -28,7 +28,7 @@ interface Team {
   id: string;
   name: string;
   captain_id: string | null;
-  is_open: boolean;
+  open_to_join: boolean;
   created_at: string;
   captain?: {
     name: string;
@@ -181,7 +181,7 @@ export default function AdminTeamsPage() {
                     <TableCell>{team.member_count}</TableCell>
                     <TableCell>{team.league_count}</TableCell>
                     <TableCell>
-                      {team.is_open ? (
+                      {team.open_to_join ? (
                         <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
                           Open
                         </Badge>

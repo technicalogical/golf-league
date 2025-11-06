@@ -15,6 +15,14 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 interface User {
   id: string;
@@ -23,7 +31,7 @@ interface User {
   display_name?: string;
   is_site_admin: boolean;
   created_at: string;
-  last_sign_in?: string;
+  updated_at?: string;
   teams_count: number;
   leagues_count: number;
 }
@@ -33,6 +41,10 @@ export default function AdminUsersPage() {
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<User | null>(null);
+  const [confirmEmail, setConfirmEmail] = useState('');
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     loadUsers();
@@ -92,6 +104,38 @@ export default function AdminUsersPage() {
     }
   }
 
+  function openDeleteDialog(user: User) {
+    setUserToDelete(user);
+    setConfirmEmail('');
+    setDeleteDialogOpen(true);
+  }
+
+  async function handleDeleteUser() {
+    if (!userToDelete || confirmEmail !== userToDelete.email) return;
+
+    setDeleting(true);
+    try {
+      const response = await fetch(`/api/admin/users/${userToDelete.id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setUsers(users.filter(user => user.id !== userToDelete.id));
+        setDeleteDialogOpen(false);
+        setUserToDelete(null);
+        setConfirmEmail('');
+      } else {
+        const error = await response.json();
+        alert(`Failed to delete user: ${error.error}`);
+      }
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      alert('Error deleting user');
+    } finally {
+      setDeleting(false);
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
@@ -139,7 +183,8 @@ export default function AdminUsersPage() {
                   <TableHead>Leagues</TableHead>
                   <TableHead>Site Admin</TableHead>
                   <TableHead>Joined</TableHead>
-                  <TableHead>Last Active</TableHead>
+                  <TableHead>Last Updated</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -168,10 +213,20 @@ export default function AdminUsersPage() {
                       {new Date(user.created_at).toLocaleDateString()}
                     </TableCell>
                     <TableCell className="text-sm text-gray-500">
-                      {user.last_sign_in
-                        ? new Date(user.last_sign_in).toLocaleDateString()
+                      {user.updated_at
+                        ? new Date(user.updated_at).toLocaleDateString()
                         : 'Never'
                       }
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => openDeleteDialog(user)}
+                        disabled={user.is_site_admin}
+                      >
+                        Delete User
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -185,6 +240,58 @@ export default function AdminUsersPage() {
             )}
           </CardContent>
         </Card>
+
+        {/* Delete Confirmation Dialog */}
+        <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Delete User Account</DialogTitle>
+              <DialogDescription>
+                This action cannot be undone. This will permanently delete the user account
+                and remove all associated data including teams, leagues, matches, and scorecards.
+              </DialogDescription>
+            </DialogHeader>
+
+            {userToDelete && (
+              <div className="py-4">
+                <p className="mb-4">
+                  You are about to delete: <strong>{userToDelete.name || userToDelete.email}</strong>
+                </p>
+                <p className="mb-4 text-sm text-gray-600">
+                  This user is in {userToDelete.teams_count} teams and {userToDelete.leagues_count} leagues.
+                </p>
+                <div className="space-y-2">
+                  <label htmlFor="confirmEmail" className="text-sm font-medium">
+                    To confirm, type the user's email address:
+                  </label>
+                  <Input
+                    id="confirmEmail"
+                    value={confirmEmail}
+                    onChange={(e) => setConfirmEmail(e.target.value)}
+                    placeholder={userToDelete.email}
+                  />
+                </div>
+              </div>
+            )}
+
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setDeleteDialogOpen(false)}
+                disabled={deleting}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={handleDeleteUser}
+                disabled={deleting || confirmEmail !== userToDelete?.email}
+              >
+                {deleting ? 'Deleting...' : 'Delete User'}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
