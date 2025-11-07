@@ -31,6 +31,7 @@ const formSchema = z.object({
   registration_open: z.boolean(),
   registration_info: z.string().optional(),
   custom_rules: z.string().optional(),
+  header_image_url: z.string().url('Invalid URL format').optional().or(z.literal('')),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -51,6 +52,7 @@ interface LeagueSettings {
   registration_open: boolean;
   registration_info: string;
   custom_rules: string;
+  header_image_url?: string;
   day_of_week?: string;
   time_of_day?: string;
 }
@@ -89,6 +91,7 @@ export default function LeagueSettingsPage() {
       registration_open: false,
       registration_info: '',
       custom_rules: '',
+      header_image_url: '',
     },
   });
 
@@ -327,6 +330,26 @@ export default function LeagueSettingsPage() {
                           {...field}
                         />
                       </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="header_image_url"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Header Image URL</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="https://example.com/your-image.jpg"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Optional: Add a custom background image for the league header. Use a high-resolution image (1200x400px recommended).
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}

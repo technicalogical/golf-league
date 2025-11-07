@@ -126,26 +126,54 @@ export default async function LeagueDetailPage({
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <header className="bg-white dark:bg-gray-800 shadow">
-        <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-          <div className="flex gap-4 text-sm mb-2">
-            <Link href="/dashboard" className="text-blue-600 hover:text-blue-800">
+      <header
+        className={`${
+          league.header_image_url
+            ? 'relative bg-cover bg-center bg-no-repeat'
+            : 'bg-white dark:bg-gray-800'
+        } shadow`}
+        style={league.header_image_url ? {
+          backgroundImage: `url(${league.header_image_url})`,
+        } : undefined}
+      >
+        {/* Overlay for better text readability when image is present */}
+        {league.header_image_url && (
+          <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+        )}
+
+        <div className={`relative max-w-7xl mx-auto px-4 ${
+          league.header_image_url ? 'py-12 sm:py-16 lg:py-20' : 'py-6 sm:px-6 lg:px-8'
+        }`}>
+          <div className={`flex gap-4 text-sm mb-2 ${
+            league.header_image_url ? 'text-white/90' : ''
+          }`}>
+            <Link href="/dashboard" className={`${
+              league.header_image_url ? 'text-white hover:text-white/80' : 'text-blue-600 hover:text-blue-800'
+            }`}>
               ← Dashboard
             </Link>
-            <span className="text-gray-400">|</span>
-            <Link href="/leagues" className="text-blue-600 hover:text-blue-800">
+            <span className={league.header_image_url ? 'text-white/60' : 'text-gray-400'}>|</span>
+            <Link href="/leagues" className={`${
+              league.header_image_url ? 'text-white hover:text-white/80' : 'text-blue-600 hover:text-blue-800'
+            }`}>
               All Leagues
             </Link>
-            <span className="text-gray-400">|</span>
-            <Link href={`/leagues/${id}/public`} className="text-blue-600 hover:text-blue-800">
+            <span className={league.header_image_url ? 'text-white/60' : 'text-gray-400'}>|</span>
+            <Link href={`/leagues/${id}/public`} className={`${
+              league.header_image_url ? 'text-white hover:text-white/80' : 'text-blue-600 hover:text-blue-800'
+            }`}>
               League Profile
             </Link>
           </div>
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{league.name}</h1>
+              <h1 className={`${
+                league.header_image_url ? 'text-4xl md:text-5xl text-white' : 'text-3xl text-gray-900 dark:text-white'
+              } font-bold`}>{league.name}</h1>
               {league.description && (
-                <p className="text-gray-600 mt-1">{league.description}</p>
+                <p className={`mt-2 ${
+                  league.header_image_url ? 'text-white/90 text-lg' : 'text-gray-600'
+                }`}>{league.description}</p>
               )}
             </div>
             <div className="flex gap-2">
@@ -167,7 +195,9 @@ export default async function LeagueDetailPage({
               )}
             </div>
           </div>
-          <div className="mt-4 flex flex-wrap gap-6 text-sm text-gray-600 dark:text-gray-300">
+          <div className={`mt-4 flex flex-wrap gap-6 text-sm ${
+            league.header_image_url ? 'text-white/80' : 'text-gray-600 dark:text-gray-300'
+          }`}>
             <span>
               <strong>Start:</strong> {new Date(league.start_date).toLocaleDateString()}
             </span>
