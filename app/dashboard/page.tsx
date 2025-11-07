@@ -493,8 +493,29 @@ export default async function DashboardPage() {
         {/* Admin Tools - Only visible to site admins */}
         {profile?.is_site_admin && (
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Admin Tools</h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Admin Tools</h2>
+              <Button asChild variant="outline">
+                <Link href="/admin">
+                  Full Admin Dashboard →
+                </Link>
+              </Button>
+            </div>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <Link href="/admin/scoring-rules">
+                <Card className="p-5 hover:shadow-xl hover:scale-105 transition-all duration-200 border-2 hover:border-cyan-500 group text-center bg-cyan-50 dark:bg-cyan-900/20">
+                  <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">📊</div>
+                  <CardTitle className="text-base mb-1">Scoring Rules</CardTitle>
+                  <p className="text-xs text-muted-foreground">Manage scoring systems</p>
+                </Card>
+              </Link>
+              <Link href="/admin/leagues">
+                <Card className="p-5 hover:shadow-xl hover:scale-105 transition-all duration-200 border-2 hover:border-yellow-500 group text-center bg-yellow-50 dark:bg-yellow-900/20">
+                  <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">🏆</div>
+                  <CardTitle className="text-base mb-1">Manage Leagues</CardTitle>
+                  <p className="text-xs text-muted-foreground">View all leagues</p>
+                </Card>
+              </Link>
               <Link href="/admin/teams">
                 <Card className="p-5 hover:shadow-xl hover:scale-105 transition-all duration-200 border-2 hover:border-green-500 group text-center bg-green-50 dark:bg-green-900/20">
                   <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">👥</div>
@@ -511,12 +532,25 @@ export default async function DashboardPage() {
               </Link>
               <Link href="/admin/courses">
                 <Card className="p-5 hover:shadow-xl hover:scale-105 transition-all duration-200 border-2 hover:border-red-500 group text-center bg-red-50 dark:bg-red-900/20">
-                  <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">⚙️</div>
+                  <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">⛳</div>
                   <CardTitle className="text-base mb-1">Manage Courses</CardTitle>
                   <p className="text-xs text-muted-foreground">Edit & delete courses</p>
                 </Card>
               </Link>
-
+              <Link href="/admin/database">
+                <Card className="p-5 hover:shadow-xl hover:scale-105 transition-all duration-200 border-2 hover:border-red-600 group text-center bg-red-50 dark:bg-red-900/20">
+                  <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">🗄️</div>
+                  <CardTitle className="text-base mb-1">Database Tools</CardTitle>
+                  <p className="text-xs text-muted-foreground">Cleanup & maintenance</p>
+                </Card>
+              </Link>
+              <Link href="/admin/monitoring">
+                <Card className="p-5 hover:shadow-xl hover:scale-105 transition-all duration-200 border-2 hover:border-indigo-500 group text-center bg-indigo-50 dark:bg-indigo-900/20">
+                  <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">📈</div>
+                  <CardTitle className="text-base mb-1">System Monitor</CardTitle>
+                  <p className="text-xs text-muted-foreground">Performance & metrics</p>
+                </Card>
+              </Link>
               <Link href="/admin/sync-players">
                 <Card className="p-5 hover:shadow-xl hover:scale-105 transition-all duration-200 border-2 hover:border-purple-500 group text-center bg-purple-50 dark:bg-purple-900/20">
                   <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">🔄</div>
