@@ -2,6 +2,120 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/auth';
 import { supabaseAdmin } from '@/lib/supabase-server';
 import { calculateTeamMatch, PlayerScore, HoleData } from '@/lib/scoring';
+import { ScoringEngine, Player as ScoringPlayer, Course, CourseHole, PlayerScores as EnginePlayerScores, HoleScore } from '@/lib/scoring-engine';
+import { ScoringRule, MatchScoringConfig } from '@/lib/types/scoring';
+
+/**
+ * Calculate match results using the new ScoringEngine with dynamic rules
+ * This function supports all handicap methods, stroke allocations, and point systems
+ */
+function calculateMatchWithScoringEngine(
+  team1Players: any[],
+  team2Players: any[],
+  scoresByPlayer: Record<string, any[]>,
+  holes: any[],
+  scoringRule: ScoringRule,
+  scoringConfig?: MatchScoringConfig
+) {
+  const engine = new ScoringEngine();
+
+  // Sort players by handicap for pairing
+  const team1Sorted = [...team1Players].sort((a, b) => a.handicap - b.handicap);
+  const team2Sorted = [...team2Players].sort((a, b) => a.handicap - b.handicap);
+
+  // Build course data for engine
+  const course: Course = {
+    id: holes[0]?.course_id || 'course',
+    holes: holes.map(h => ({
+      hole_number: h.hole_number,
+      par: h.par,
+      handicap_ranking: h.handicap_index,
+    }))
+  };
+
+  // Calculate two matchups: lowest vs lowest, highest vs highest
+  const matchups = [
+    { player1: team1Sorted[0], player2: team2Sorted[0] },
+    { player1: team1Sorted[1], player2: team2Sorted[1] }
+  ];
+
+  const matchupResults = matchups.map(({ player1, player2 }) => {
+    // Build player scores for engine
+    const player1Scores: EnginePlayerScores = {
+      player: {
+        id: player1.id,
+        name: player1.name,
+        handicap: player1.handicap
+      },
+      scores: (scoresByPlayer[player1.id] || []).map(hs => {
+        const hole = holes.find(h => h.id === hs.hole_id);
+        return {
+          hole_number: hole?.hole_number || 0,
+          gross_score: hs.strokes
+        };
+      })
+    };
+
+    const player2Scores: EnginePlayerScores = {
+      player: {
+        id: player2.id,
+        name: player2.name,
+        handicap: player2.handicap
+      },
+      scores: (scoresByPlayer[player2.id] || []).map(hs => {
+        const hole = holes.find(h => h.id === hs.hole_id);
+        return {
+          hole_number: hole?.hole_number || 0,
+          gross_score: hs.strokes
+        };
+      })
+    };
+
+    // Apply scoring config overrides
+    const overrides = scoringConfig ? {
+      override_handicap_method: scoringConfig.override_handicap_method,
+      override_handicap_percentage: scoringConfig.override_handicap_percentage,
+      override_max_handicap_difference: scoringConfig.override_max_handicap_difference,
+      override_stroke_holes: scoringConfig.override_stroke_holes,
+      override_hole_points: scoringConfig.override_hole_points,
+      override_match_bonus_points: scoringConfig.override_match_bonus_points,
+    } : undefined;
+
+    // Calculate match result using engine
+    const result = engine.calculateMatchResult(
+      player1Scores,
+      player2Scores,
+      course,
+      scoringRule,
+      overrides
+    );
+
+    return {
+      player1_id: player1.id,
+      player2_id: player2.id,
+      player1_points: result.player1_total_points,
+      player2_points: result.player2_total_points,
+      hole_results: result.hole_results.map(hr => ({
+        hole_id: holes.find(h => h.hole_number === hr.hole_number)?.id,
+        hole_number: hr.hole_number,
+        player1_net_score: hr.player1_net,
+        player2_net_score: hr.player2_net,
+        winner: hr.winner === 'player1' ? player1.id : hr.winner === 'player2' ? player2.id : 'tie',
+        strokes_given_to: null, // Could be derived from net vs gross
+      }))
+    };
+  });
+
+  // Calculate team totals
+  const team1TotalPoints = matchupResults[0].player1_points + matchupResults[1].player1_points;
+  const team2TotalPoints = matchupResults[0].player2_points + matchupResults[1].player2_points;
+
+  return {
+    team1_total_points: team1TotalPoints,
+    team2_total_points: team2TotalPoints,
+    matchups: matchupResults,
+  };
+}
 
 export async function POST(
   request: NextRequest,
@@ -20,7 +134,7 @@ export async function POST(
 
     let scores = inputScores;
 
-    // Get match with course and holes
+    // Get match with course, holes, and scoring configuration
     const { data: match, error: matchError } = await supabaseAdmin
       .from('matches')
       .select(`
@@ -28,6 +142,10 @@ export async function POST(
         course:courses(
           *,
           holes(*)
+        ),
+        match_scoring_config(
+          *,
+          scoring_rule:scoring_rules(*)
         )
       `)
       .eq('id', matchId)
@@ -172,13 +290,33 @@ export async function POST(
       handicap_index: h.handicap_index,
     }));
 
+    // Extract scoring config and rule
+    const scoringConfig = Array.isArray(match.match_scoring_config) && match.match_scoring_config.length > 0
+      ? match.match_scoring_config[0]
+      : null;
+    const scoringRule = scoringConfig?.scoring_rule;
+
     // Only calculate match results if we have complete scores
     let matchResult = null;
     if (!partial) {
       // Check if all players have all scores before calculating
       const allScoresComplete = playerScores.every(ps => ps.hole_scores.length === holes.length);
       if (allScoresComplete) {
-        matchResult = calculateTeamMatch(team1ScorePlayers, team2ScorePlayers, holes);
+        // Use new ScoringEngine if scoring rule is configured, otherwise fall back to legacy logic
+        if (scoringRule) {
+          console.log(`Using ScoringEngine with rule: ${scoringRule.name}`);
+          matchResult = calculateMatchWithScoringEngine(
+            team1Players,
+            team2Players,
+            scoresByPlayer,
+            holes,
+            scoringRule,
+            scoringConfig
+          );
+        } else {
+          console.log('Using legacy scoring logic (no scoring rule configured)');
+          matchResult = calculateTeamMatch(team1ScorePlayers, team2ScorePlayers, holes);
+        }
       }
     }
 

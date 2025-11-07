@@ -9,7 +9,7 @@ export async function GET(
   try {
     const { id } = await params;
 
-    // Fetch match with all details
+    // Fetch match with all details including scoring configuration
     const { data: match, error: matchError } = await supabaseAdmin
       .from('matches')
       .select(`
@@ -21,6 +21,10 @@ export async function GET(
           name,
           par,
           holes(id, hole_number, par, handicap_index, yardage, yardage_black, yardage_gold, yardage_blue, yardage_white, yardage_red)
+        ),
+        match_scoring_config(
+          *,
+          scoring_rule:scoring_rules(*)
         )
       `)
       .eq('id', id)
@@ -116,11 +120,18 @@ export async function GET(
       ];
     }
 
+    // Extract scoring config - it comes as an array from Supabase relations
+    const scoringConfig = Array.isArray(match.match_scoring_config) && match.match_scoring_config.length > 0
+      ? match.match_scoring_config[0]
+      : null;
+
     return NextResponse.json({
       match,
       holes,
       players,
       existing_scores: existingScores,
+      scoring_config: scoringConfig,
+      teams: [team1, team2],
     });
   } catch (error) {
     console.error('Error in GET /api/matches/[id]:', error);

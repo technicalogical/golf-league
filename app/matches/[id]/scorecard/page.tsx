@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { ScoringRule, MatchScoringConfig, getScoringRuleDescription } from '@/lib/types/scoring';
 
 interface Hole {
   id: string;
@@ -62,6 +63,12 @@ interface Score {
   strokes: number | '';
 }
 
+interface ScoringConfig {
+  scoring_rule?: ScoringRule;
+  override_handicap_method?: string;
+  override_hole_points?: number;
+}
+
 export default function ScorecardPage() {
   const params = useParams();
   const router = useRouter();
@@ -71,6 +78,7 @@ export default function ScorecardPage() {
   const [players, setPlayers] = useState<Player[]>([]);
   const [scores, setScores] = useState<Score[]>([]);
   const [match, setMatch] = useState<Match | null>(null);
+  const [scoringConfig, setScoringConfig] = useState<ScoringConfig | null>(null);
   const [teamRecords, setTeamRecords] = useState<Record<string, TeamRecord>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -86,6 +94,7 @@ export default function ScorecardPage() {
       const data = await response.json();
 
       setMatch(data.match);
+      setScoringConfig(data.scoring_config || null);
 
       // Filter holes based on match format
       let filteredHoles = data.holes || [];
@@ -303,7 +312,7 @@ export default function ScorecardPage() {
         {match && match.course && (
           <Card className="mb-6">
             <CardContent className="pt-6">
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid md:grid-cols-3 gap-4">
                 <div>
                   <h3 className="font-bold text-lg mb-2">{match.course.name}</h3>
                   <div className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
@@ -324,6 +333,24 @@ export default function ScorecardPage() {
                     {match.stimp_setting && <p>Stimp: {match.stimp_setting}</p>}
                   </div>
                 </div>
+                {scoringConfig?.scoring_rule && (
+                  <div>
+                    <h3 className="font-semibold text-sm text-gray-500 dark:text-gray-400 mb-2">Scoring Rules</h3>
+                    <div className="space-y-1 text-sm">
+                      <p className="font-semibold text-blue-600 dark:text-blue-400">
+                        {scoringConfig.scoring_rule.name}
+                      </p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400">
+                        {getScoringRuleDescription(scoringConfig.scoring_rule)}
+                      </p>
+                      {scoringConfig.override_hole_points && (
+                        <Badge variant="outline" className="text-xs">
+                          {scoringConfig.override_hole_points} pts/hole
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
